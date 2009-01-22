@@ -1,0 +1,72 @@
+/*
+Tools for the Keccak sponge function family.
+Authors: Guido Bertoni, Joan Daemen, Michaël Peeters and Gilles Van Assche
+
+This code is hereby put in the public domain. It is given as is, 
+without any guarantee.
+
+For more information, feedback or questions, please refer to our website:
+http://keccak.noekeon.org/
+*/
+
+#include <fstream>
+#include <math.h>
+#include "Keccak-f25LUT.h"
+
+using namespace std;
+
+KeccakF25LUT::KeccakF25LUT(unsigned int aNrRounds)
+    : KeccakF(25, aNrRounds)
+{
+    generateLUT();
+}
+
+void KeccakF25LUT::generateLUT()
+{
+   if (!retrieveLUT()) {
+        cout << "Generating the look-up table..." << flush;
+        vector<UINT64> lanes(25, 0);
+        LUT.resize(1<<25);
+        for (SliceValue sliceIn=0; sliceIn< (1<<25) ; sliceIn++) {
+            if ((sliceIn & 0xfffff) == 0) cout << " " << floor(sliceIn*100.0/(1<<25)) << "%" << flush;
+            setSlice(lanes, sliceIn);
+            forward(lanes);
+            SliceValue sliceOut = getSlice(lanes);
+            LUT[sliceIn] = sliceOut;
+        }
+        cout << " done, now saving to disk..." << flush;
+        saveLUT();
+        cout << "and saved." << endl;
+    }
+}
+
+void KeccakF25LUT::saveLUT() const
+{
+    string fileName = buildFileName("", ".LUT");
+    ofstream fout(fileName.c_str(), ios::binary);
+    for (SliceValue i=0 ; i<(1<<25); i++) {
+        static unsigned char tmp[4];
+        tmp[0] =  LUT[i]&0xFF;
+        tmp[1] = (LUT[i]>>8)&0xFF;
+        tmp[2] = (LUT[i]>>16)&0xFF;
+        tmp[3] = (LUT[i]>>24)&0xFF;
+        fout.write((char *)tmp, 4);
+    }
+}
+
+bool KeccakF25LUT::retrieveLUT()
+{
+    string fileName = buildFileName("", ".LUT");
+    ifstream fin(fileName.c_str(), ios::binary);
+    if (!fin) return false;
+    LUT.resize(1<<25);
+    for (SliceValue i=0 ; i<(1<<25); i++) {
+        static unsigned char tmp[4]; 
+        fin.read((char *)tmp, 4);
+        LUT[i]  = tmp[3];  LUT[i] <<= 8;
+        LUT[i] ^= tmp[2];  LUT[i] <<= 8;
+        LUT[i] ^= tmp[1];  LUT[i] <<= 8;
+        LUT[i] ^= tmp[0];
+    }
+    return true;
+}

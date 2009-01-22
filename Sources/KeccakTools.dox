@@ -1,0 +1,41 @@
+/*
+Tools for the Keccak sponge function family.
+Authors: Guido Bertoni, Joan Daemen, Michaël Peeters and Gilles Van Assche
+
+This code is hereby put in the public domain. It is given as is, 
+without any guarantee.
+
+For more information, feedback or questions, please refer to our website:
+http://keccak.noekeon.org/
+*/
+
+/**
+ * @file
+ * This file contains only documentation stuff.
+ */
+
+/**
+ * @mainpage
+ * <b>KeccakTools</b> is a set of C++ classes that can help analyze the Keccak 
+ * sponge function family, designed by Guido Bertoni, Joan Daemen, Michaël 
+ * Peeters and Gilles Van Assche. For more information, please refer to our 
+ * website: http://keccak.noekeon.org/
+ *
+ * KeccakTools provides the following features:
+ * - the implementation of the seven Keccak-<i>f</i> permutations, from 
+ *   Keccak-<i>f</i>[25] to Keccak-<i>f</i>[1600], possibly with a specified 
+ *   number of rounds;
+ * - the implementation of the <em>inverses</em> of the seven Keccak-<i>f</i> 
+ *   permutations;
+ * - the generation of look-up tables for Keccak-<i>f</i>[25];
+ * - the generation of GF(2) equations of the round functions and step mappings 
+ *   in the Keccak-<i>f</i>'s and their inverses;
+ * - the generation of optimized C code for the round functions, including lane 
+ *   complementing and bit interleaving techniques;
+ * - the implementation of the sponge construction using any transformation or 
+ *   permutation, and of the Keccak sponge function family.
+ *
+ * This code is hereby put in the public domain. It is given as is, without any guarantee.
+ *
+ * <em>KeccakTools <b>version 1.0</b>, 22 January 2009.</em>
+ */
