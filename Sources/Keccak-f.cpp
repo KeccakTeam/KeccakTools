@@ -50,9 +50,9 @@ KeccakF::KeccakF(unsigned int aWidth, unsigned int aNrRounds)
         throw(KeccakException("The width must be 25 times a power of two between 1 and 64."));
     }
     nrRounds = (aNrRounds == 0) ? nominalNrRounds : aNrRounds;
+    mask = (UINT64(~0)) >> (64-laneSize);
     initializeRhoOffsets();
     initializeRoundConstants();
-    mask = (UINT64(~0)) >> (64-laneSize);
 }
 
 unsigned int KeccakF::getWidth() const
@@ -193,7 +193,7 @@ void KeccakF::initializeRoundConstants()
             if (LFSR86540(LFSRstate))
                 c ^= (UINT64)1<<bitPosition;
         }
-        roundConstants.push_back(c);
+        roundConstants.push_back(c & mask);
     }
 }
 

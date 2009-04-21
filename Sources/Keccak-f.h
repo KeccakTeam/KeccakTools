@@ -541,7 +541,7 @@ template<class T>
 void KeccakF::iota(vector<T>& A, unsigned int roundNumber) const
 {
     if (roundNumber < roundConstants.size())
-        A[index(0,0)] ^= (roundConstants[roundNumber] & mask);
+        A[index(0,0)] ^= roundConstants[roundNumber];
 }
 
 template<class T> 

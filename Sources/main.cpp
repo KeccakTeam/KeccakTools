@@ -110,36 +110,30 @@ void generateEquations()
 
 void generateCode()
 {
-    const SliceValue inChiMask = 0x9d14ad;
-    const SliceValue outChiMask = 0x121106; // see Keccak main document Sec. 7.2.1
-    KeccakFCodeGen keccakF(1600);
-
     {
-        string fileName = keccakF.buildFileName("Code-", "-64bits.txt");
+        KeccakFCodeGen keccakF(1600);
+
+        string fileName = keccakF.buildFileName("", "-64.macros");
         ofstream fout(fileName.c_str());
-
-        fout << "// declarations for 64-bit platform" << endl;
-        keccakF.genDeclarations(fout);
-
-        fout << "// first and middle rounds on 64-bit platform" << endl;
-        keccakF.genCodeForRound(fout, true, inChiMask, outChiMask);
-
-        fout << "// last round on 64-bit platform" << endl;
-        keccakF.genCodeForRound(fout, false, inChiMask, outChiMask);
+        keccakF.genMacroFile(fout, true);
     }
 
     {
-        string fileName = keccakF.buildFileName("Code-", "-32bits.txt");
+        KeccakFCodeGen keccakF(1600);
+
+        string fileName = keccakF.buildFileName("", "-simd64.macros");
         ofstream fout(fileName.c_str());
+        keccakF.setOutputMacros(true);
+        keccakF.genMacroFile(fout);
+    }
 
-        fout << "// declarations for 32-bit platform" << endl;
-        keccakF.genDeclarations(fout, 2);
+    {
+        KeccakFCodeGen keccakF(1600);
 
-        fout << "// first and middle rounds on 32-bit platform with interleaving" << endl;
-        keccakF.genCodeForRound(fout, true, inChiMask, outChiMask, 2);
-
-        fout << "// last round on 32-bit platform with interleaving" << endl;
-        keccakF.genCodeForRound(fout, false, inChiMask, outChiMask, 2);
+        string fileName = keccakF.buildFileName("", "-32.macros");
+        ofstream fout(fileName.c_str());
+        keccakF.setInterleavingFactor(2);
+        keccakF.genMacroFile(fout, true);
     }
 }
 
@@ -176,13 +170,15 @@ int main(int argc, char *argv[])
         testKeccakF();
         testKeccak();
 
+        //TODO: uncomment the desired function
+
         //genKATShortMsg_main();
 
-        generateEquations();
+        //generateEquations();
 
         //generateCode();
 
-        testKeccakF25LUT();
+        //testKeccakF25LUT();
     }
     catch(SpongeException e) {
         cout << e.reason << endl;
