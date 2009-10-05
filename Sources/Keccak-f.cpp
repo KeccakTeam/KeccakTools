@@ -29,34 +29,34 @@ KeccakF::KeccakF(unsigned int aWidth, unsigned int aNrRounds)
         nominalNrRounds = 12;
         break;
     case 50:
-        nominalNrRounds = 13;
-        break;
-    case 100:
         nominalNrRounds = 14;
         break;
-    case 200:
-        nominalNrRounds = 15;
-        break;
-    case 400:
+    case 100:
         nominalNrRounds = 16;
         break;
+    case 200:
+        nominalNrRounds = 18;
+        break;
+    case 400:
+        nominalNrRounds = 20;
+        break;
     case 800:
-        nominalNrRounds = 17;
+        nominalNrRounds = 22;
         break;
     case 1600:
-        nominalNrRounds = 18;
+        nominalNrRounds = 24;
         break;
     default:
         throw(KeccakException("The width must be 25 times a power of two between 1 and 64."));
     }
     nrRounds = (aNrRounds == 0) ? nominalNrRounds : aNrRounds;
-    mask = (UINT64(~0)) >> (64-laneSize);
+    mask = (LaneValue(~0)) >> (64-laneSize);
     initializeRhoOffsets();
     initializeRoundConstants();
 }
 
 unsigned int KeccakF::getWidth() const
-{   
+{
     return width;
 }
 
@@ -77,31 +77,31 @@ unsigned int KeccakF::index(int x)
     return x;
 }
 
-void KeccakF::pi(unsigned int x, unsigned int y, unsigned int& X, unsigned int& Y) const
+void KeccakF::pi(unsigned int x, unsigned int y, unsigned int& X, unsigned int& Y)
 {
     X = (0*x + 1*y)%5;
     Y = (2*x + 3*y)%5;
 }
 
-void KeccakF::inversePi(unsigned int X, unsigned int Y, unsigned int& x, unsigned int& y) const
+void KeccakF::inversePi(unsigned int X, unsigned int Y, unsigned int& x, unsigned int& y)
 {
     x = (1*X + 3*Y)%5;
     y = (1*X + 0*Y)%5;
 }
 
-void KeccakF::ROL(UINT64& L, int offset) const
+void KeccakF::ROL(LaneValue& L, int offset) const
 {
     offset %= (int)laneSize;
     if (offset < 0) offset += laneSize;
 
     if (offset != 0) {
         L &= mask;
-        L = (((UINT64)L) << offset) ^ (((UINT64)L) >> (laneSize-offset));
+        L = (((LaneValue)L) << offset) ^ (((LaneValue)L) >> (laneSize-offset));
     }
     L &= mask;
 }
 
-void KeccakF::fromBytesToLanes(UINT8 *in, vector<UINT64>& out) const
+void KeccakF::fromBytesToLanes(UINT8 *in, vector<LaneValue>& out) const
 {
     out.resize(25);
     if ((laneSize == 1) || (laneSize == 2) || (laneSize == 4) || (laneSize == 8)) {
@@ -112,12 +112,12 @@ void KeccakF::fromBytesToLanes(UINT8 *in, vector<UINT64>& out) const
         for(unsigned int i=0; i<25; i++) {
             out[i] = 0;
             for(unsigned int j=0; j<(laneSize/8); j++)
-                out[i] |= UINT64((UINT8)(in[i*laneSize/8+j])) << (8*j);
+                out[i] |= LaneValue((UINT8)(in[i*laneSize/8+j])) << (8*j);
         }
     }
 }
 
-void KeccakF::fromLanesToBytes(const vector<UINT64>& in, UINT8 *out) const
+void KeccakF::fromLanesToBytes(const vector<LaneValue>& in, UINT8 *out) const
 {
     if ((laneSize == 1) || (laneSize == 2) || (laneSize == 4) || (laneSize == 8)) {
         for(unsigned int i=0; i<(25*laneSize+7)/8; i++)
@@ -134,7 +134,7 @@ void KeccakF::fromLanesToBytes(const vector<UINT64>& in, UINT8 *out) const
 
 void KeccakF::operator()(UINT8 * state) const
 {
-    vector<UINT64> A(25);
+    vector<LaneValue> A(25);
     fromBytesToLanes(state, A);
     forward(A);
     fromLanesToBytes(A, state);
@@ -142,7 +142,7 @@ void KeccakF::operator()(UINT8 * state) const
 
 void KeccakF::inverse(UINT8 * state) const
 {
-    vector<UINT64> A(25);
+    vector<LaneValue> A(25);
     fromBytesToLanes(state, A);
     inverse(A);
     fromLanesToBytes(A, state);
@@ -187,11 +187,11 @@ void KeccakF::initializeRoundConstants()
     roundConstants.clear();
     UINT8 LFSRstate = 0x01;
     for(unsigned int i=0; i<nrRounds; i++) {
-        UINT64 c = 0;
+        LaneValue c = 0;
         for(unsigned int j=0; j<7; j++) {
             unsigned int bitPosition = (1<<j)-1; //2^j-1
             if (LFSR86540(LFSRstate))
-                c ^= (UINT64)1<<bitPosition;
+                c ^= (LaneValue)1<<bitPosition;
         }
         roundConstants.push_back(c & mask);
     }

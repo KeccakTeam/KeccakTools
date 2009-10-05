@@ -86,7 +86,7 @@ public:
     /**
       * Method that absorbs data. The data is given as a sequence of bytes.
       * Within each byte, the bits are understood to be ordered from the
-      * least significant byte to the most significant byte.
+      * least significant bit to the most significant bit.
       * The last incomplete block is kept in attribute currentBlock.
       *
       * @pre This function must be used in the absorbing phase only.

@@ -283,13 +283,13 @@ void KeccakFCodeGen::genCodeForPrepareTheta(ostream& fout, string A, string C) c
 
 void KeccakFCodeGen::genRoundConstants(ostream& fout) const
 {
-    vector<vector<UINT64> > interleavedRC;
+    vector<vector<LaneValue> > interleavedRC;
 
-    for(vector<UINT64>::const_iterator i=roundConstants.begin(); i!=roundConstants.end(); ++i) {
-        vector<UINT64> iRC(interleavingFactor, 0);
+    for(vector<LaneValue>::const_iterator i=roundConstants.begin(); i!=roundConstants.end(); ++i) {
+        vector<LaneValue> iRC(interleavingFactor, 0);
         for(unsigned int z=0; z<laneSize; z++)
-            if (((*i) & ((UINT64)1 << z)) != 0)
-                iRC[z%interleavingFactor] |= ((UINT64)1 << (z/interleavingFactor));
+            if (((*i) & ((LaneValue)1 << z)) != 0)
+                iRC[z%interleavingFactor] |= ((LaneValue)1 << (z/interleavingFactor));
         interleavedRC.push_back(iRC);
     }
 
@@ -433,8 +433,6 @@ void KeccakFCodeGen::genMacroFile(ostream& fout, bool laneComplementing) const
     genRoundConstants(fout);
     fout << "#define copyFromStateAndXor1024bits(X, state, input) \\" << endl;
     genCopyFromStateAndXor(fout, 1024);
-    fout << "#define copyFromStateAndXor512bits(X, state, input) \\" << endl;
-    genCopyFromStateAndXor(fout, 512);
     fout << "#define copyFromState(X, state) \\" << endl;
     genCopyFromStateAndXor(fout, 0);
     fout << "#define copyToState(state, X) \\" << endl;
@@ -540,4 +538,11 @@ string KeccakFCodeGen::strConst(const string& A) const
     }
     else
         return A;
+}
+
+string KeccakFCodeGen::getName() const
+{
+    stringstream a;
+    a << "KeccakF-" << dec << width;
+    return a.str();
 }

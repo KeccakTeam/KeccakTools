@@ -10,6 +10,7 @@ http://keccak.noekeon.org/
 */
 
 #include <iostream>
+#include <sstream>
 #include "Keccak-fParts.h"
 
 using namespace std;
@@ -34,29 +35,28 @@ unsigned int getNrActiveRows(const SliceValue& slice)
       + (getRowFromSlice(slice, 4) != 0 ? 1 : 0);
 }
 
-#if 0
-PackedActiveRows getActiveRowPattern(const vector<SliceValue>& state)
+unsigned int getNrActiveRows(const vector<SliceValue>& slices)
 {
-    PackedActiveRows result = 0;
-    for(unsigned int z=0; z<state.size(); z++)
-        for(unsigned int y=0; y<5; y++)
-            if (getRowFromSlice(state[z], y) != 0)
-                result |= (PackedActiveRows)1 << (y+5*z);
+    unsigned int a = 0;
+    for(unsigned int i=0; i<slices.size(); i++)
+        a += getNrActiveRows(slices[i]);
+    return a;
+}
+
+unsigned int getNrActiveRows(const vector<LaneValue>& lanes)
+{
+    unsigned int result = 0;
+    for(unsigned int y=0; y<5; y++) {
+        LaneValue m = lanes[KeccakF::index(0, y)] 
+            | lanes[KeccakF::index(1, y)] 
+            | lanes[KeccakF::index(2, y)] 
+            | lanes[KeccakF::index(3, y)] 
+            | lanes[KeccakF::index(4, y)];
+        result += getHammingWeightLane(m);
+    }
     return result;
 }
 
-PackedActiveRows translateActiveRowPatternAlongZ(PackedActiveRows a, unsigned int dz, unsigned int numberOfSlices)
-{
-    if (dz != 0) {
-        PackedActiveRows mask = (UINT32(~0)) >> (32-5*numberOfSlices);
-        a &= mask;
-        a = (((UINT32)a) << (5*dz)) ^ (((UINT32)a) >> (5*(numberOfSlices-dz)));
-        return a & mask;
-    }
-    else
-        return a;
-}
-#endif
 
 RowValue translateRowSafely(RowValue row, int dx)
 {
@@ -124,62 +124,161 @@ unsigned int getHammingWeight(const vector<SliceValue>& state)
     return result;
 }
 
-void displayPlane(ostream& fout, const vector<SliceValue>& state, int offset, unsigned int y)
+unsigned int getHammingWeightLane(LaneValue lane)
 {
-    for(unsigned int z=0; z<state.size(); z++) {
-        RowValue row = getRowFromSlice(state[z], y);
-        for(unsigned int sx=0; sx<5; sx++) {
-            unsigned int x = KeccakF::index(sx-offset);
-            if ((row & (1<<x)) != 0)
-                fout << "X";
-            else
-                if ((x == 0) && (y == 0) && (z == 0))
-                    fout << "+";
+    return HammingWeightTable[lane & 0xFF]
+        + HammingWeightTable[(lane >>  8) & 0xFF]
+        + HammingWeightTable[(lane >> 16) & 0xFF]
+        + HammingWeightTable[(lane >> 24) & 0xFF]
+        + HammingWeightTable[(lane >> 32) & 0xFF]
+        + HammingWeightTable[(lane >> 40) & 0xFF]
+        + HammingWeightTable[(lane >> 48) & 0xFF]
+        + HammingWeightTable[(lane >> 56) & 0xFF];
+}
+
+unsigned int getHammingWeight(const vector<LaneValue>& state)
+{
+    unsigned int result = 0;
+    for(unsigned int z=0; z<state.size(); z++)
+        result += getHammingWeightLane(state[z]);
+    return result;
+}
+
+void getDisplayMap(const vector<SliceValue>& state, vector<unsigned int>& displayMap)
+{
+    bool optimizeEmptySlices = (state.size() >= 8);
+    if (optimizeEmptySlices) {
+        unsigned int z=0;
+        while(z < state.size()) {
+            while((z < state.size()) && (state[z] != 0))
+                z++;
+            displayMap.push_back(z);
+            while((z < state.size()) && (state[z] == 0))
+                z++;
+            displayMap.push_back(z);
+        }
+    }
+    else {
+        displayMap.push_back(state.size());
+        displayMap.push_back(state.size());
+    }
+}
+
+inline unsigned int getDisplayNumberOfSpaces(const unsigned int& delta)
+{
+    return (delta <= 3) ? delta : ((delta < 10) ? 3 : 4);
+}
+
+void displayPlane(ostream& fout, const vector<SliceValue>& state, int offset, unsigned int y, const vector<unsigned int>& displayMap)
+{
+    unsigned int z=0;
+    for(unsigned int i=0; i<displayMap.size(); i+=2) {
+        for( ; z<displayMap[i]; z++) {
+            RowValue row = getRowFromSlice(state[z], y);
+            for(unsigned int sx=0; sx<5; sx++) {
+                unsigned int x = KeccakF::index(sx-offset);
+                if ((row & (1<<x)) != 0)
+                    fout << "X";
                 else
-                    fout << ".";
+                    if ((x == 0) && (y == 0) && (z == 0))
+                        fout << "+";
+                    else
+                        fout << ".";
+            }
+            if (z < (displayMap[i]-1))
+                fout << "   ";
+            else if (z < (state.size()-1))
+                fout << " ";
         }
-        if (z < (state.size()-1))
-            fout << "   ";
+        if (displayMap[i] < displayMap[i+1]) {
+            int delta = displayMap[i+1] - displayMap[i];
+            if (y == 0) {
+                ostringstream sout;
+                if (delta == 1)
+                    sout << "z";
+                else if (delta == 2)
+                    sout << "zz";
+                else
+                    sout << "z^" << dec << delta;
+                fout << sout.str();
+            }
+            else {
+                unsigned int numberOfSpaces = getDisplayNumberOfSpaces(displayMap[i+1] - displayMap[i]);
+                for(unsigned int j=0; j<numberOfSpaces; j++)
+                    fout << " ";
+            }
+            z = displayMap[i+1];
+            if (z < state.size())
+                fout << " ";
+        }
     }
 }
 
-void displayNothing(ostream& fout, const vector<SliceValue>& state)
+void displayNothing(ostream& fout, const vector<SliceValue>& state, const vector<unsigned int>& displayMap)
 {
-    for(unsigned int z=0; z<state.size(); z++) {
-        fout << "     "; // 5 spaces
-        if (z < (state.size()-1))
-            fout << "   ";
+    unsigned int z=0;
+    for(unsigned int i=0; i<displayMap.size(); i+=2) {
+        for( ; z<displayMap[i]; z++) {
+            fout << "     "; // 5 spaces
+            if (z < (displayMap[i]-1))
+                fout << "   ";
+            else if (z < (state.size()-1))
+                fout << " ";
+        }
+        if (displayMap[i] < displayMap[i+1]) {
+            unsigned int numberOfSpaces = getDisplayNumberOfSpaces(displayMap[i+1] - displayMap[i]);
+            for(unsigned int j=0; j<numberOfSpaces; j++)
+                fout << " ";
+            z = displayMap[i+1];
+            if (z < state.size())
+                fout << " ";
+        }
     }
 }
 
-void displayParity(ostream& fout, const vector<SliceValue>& state, const int& offset)
+void displayParity(ostream& fout, const vector<SliceValue>& state, const int& offset, const vector<unsigned int>& displayMap)
 {
-    for(unsigned int z=0; z<state.size(); z++) {
-        RowValue parity = 0;
-        for(unsigned int y=0; y<5; y++)
-            parity ^= getRowFromSlice(state[z], y);
-        for(unsigned int sx=0; sx<5; sx++) {
-            unsigned int x = KeccakF::index(sx-offset);
-            if ((parity & (1<<x)) != 0)
-                fout << "O";
-            else
-                fout << "-";
+    unsigned int z=0;
+    for(unsigned int i=0; i<displayMap.size(); i+=2) {
+        for( ; z<displayMap[i]; z++) {
+            RowValue parity = 0;
+            for(unsigned int y=0; y<5; y++)
+                parity ^= getRowFromSlice(state[z], y);
+            for(unsigned int sx=0; sx<5; sx++) {
+                unsigned int x = KeccakF::index(sx-offset);
+                if ((parity & (1<<x)) != 0)
+                    fout << "O";
+                else
+                    fout << "-";
+            }
+            if (z < (displayMap[i]-1))
+                fout << "   ";
+            else if (z < (state.size()-1))
+                fout << " ";
         }
-        if (z < (state.size()-1))
-            fout << "   ";
+        if (displayMap[i] < displayMap[i+1]) {
+            unsigned int numberOfSpaces = getDisplayNumberOfSpaces(displayMap[i+1] - displayMap[i]);
+            for(unsigned int j=0; j<numberOfSpaces; j++)
+                fout << " ";
+            z = displayMap[i+1];
+            if (z < state.size())
+                fout << " ";
+        }
     }
 }
 
 void displayState(ostream& fout, const vector<SliceValue>& state, bool showParity)
 {
     const int offset = 2;
+    vector<unsigned int> displayMap;
+    getDisplayMap(state, displayMap);
     for(unsigned int sy=0; sy<5; sy++) {
         unsigned int y = KeccakF::index(-1-sy-offset);
-        displayPlane(fout, state, offset, y);
+        displayPlane(fout, state, offset, y, displayMap);
         fout << endl;
     }
     if (showParity) {
-        displayParity(fout, state, offset);
+        displayParity(fout, state, offset, displayMap);
         fout << endl;
     }
 }
@@ -196,21 +295,24 @@ void displayStates(ostream& fout,
                    const vector<SliceValue>& state2, bool showParity2)
 {
     const int offset = 2;
+    vector<unsigned int> displayMap1, displayMap2;
+    getDisplayMap(state1, displayMap1);
+    getDisplayMap(state2, displayMap2);
     for(unsigned int sy=0; sy<5; sy++) {
         unsigned int y = KeccakF::index(-1-sy-offset);
-        displayPlane(fout, state1, offset, y);
+        displayPlane(fout, state1, offset, y, displayMap1);
         fout << "  |  "; 
-        displayPlane(fout, state2, offset, y);
+        displayPlane(fout, state2, offset, y, displayMap2);
         fout << endl;
     }
     if (showParity1 || showParity2) {
         if (showParity1)
-            displayParity(fout, state1, offset);
+            displayParity(fout, state1, offset, displayMap1);
         else
-            displayNothing(fout, state1);
+            displayNothing(fout, state1, displayMap1);
         if (showParity2) {
             fout << "     ";
-            displayParity(fout, state2, offset);
+            displayParity(fout, state2, offset, displayMap2);
         }
         fout << endl;
     }
@@ -222,28 +324,32 @@ void displayStates(ostream& fout,
                    const vector<SliceValue>& state3, bool showParity3)
 {
     const int offset = 2;
+    vector<unsigned int> displayMap1, displayMap2, displayMap3;
+    getDisplayMap(state1, displayMap1);
+    getDisplayMap(state2, displayMap2);
+    getDisplayMap(state3, displayMap3);
     for(unsigned int sy=0; sy<5; sy++) {
         unsigned int y = KeccakF::index(-1-sy-offset);
-        displayPlane(fout, state1, offset, y);
+        displayPlane(fout, state1, offset, y, displayMap1);
         fout << "  |  "; 
-        displayPlane(fout, state2, offset, y);
+        displayPlane(fout, state2, offset, y, displayMap2);
         fout << "  |  ";
-         displayPlane(fout, state3, offset, y);
+        displayPlane(fout, state3, offset, y, displayMap3);
         fout << endl;
     }
     if (showParity1 || showParity2 || showParity3) {
         if (showParity1)
-            displayParity(fout, state1, offset);
+            displayParity(fout, state1, offset, displayMap1);
         else
-            displayNothing(fout, state1);
+            displayNothing(fout, state1, displayMap1);
         fout << "     ";
         if (showParity2)
-            displayParity(fout, state2, offset);
+            displayParity(fout, state2, offset, displayMap2);
         else
-            displayNothing(fout, state2);
+            displayNothing(fout, state2, displayMap2);
         if (showParity3) {
             fout << "     ";
-            displayParity(fout, state3, offset);
+            displayParity(fout, state3, offset, displayMap3);
         }
         fout << endl;
     }
@@ -260,26 +366,36 @@ void translateStateAlongZ(vector<SliceValue>& state, unsigned int dz)
     }
 }
 
-RowValue getRow(const vector<UINT64>& lanes, unsigned int y, unsigned int z)
+RowValue getRow(const vector<LaneValue>& lanes, unsigned int y, unsigned int z)
 {
     RowValue result = 0;
     for(unsigned int x=0; x<5; x++) {
-        if ((lanes[KeccakF::index(x, y)] & ((UINT64)1 << z)) != 0)
+        if ((lanes[KeccakF::index(x, y)] & ((LaneValue)1 << z)) != 0)
             result ^= (1 << x);
     }
     return result;
 }
 
-void setRow(vector<UINT64>& lanes, RowValue row, unsigned int y, unsigned int z)
+void setRow(vector<LaneValue>& lanes, RowValue row, unsigned int y, unsigned int z)
 {
     for(unsigned int x=0; x<5; x++)
         if ((row & (1 << x)) != 0)
-            lanes[KeccakF::index(x, y)] |= (UINT64)1 << z;
+            lanes[KeccakF::index(x, y)] |= (LaneValue)1 << z;
         else
-            lanes[KeccakF::index(x, y)] &= ~((UINT64)1 << z);
+            lanes[KeccakF::index(x, y)] &= ~((LaneValue)1 << z);
 }
 
-SliceValue getSlice(const vector<UINT64>& lanes, unsigned int z)
+RowValue getRow(const vector<SliceValue>& slices, unsigned int y, unsigned int z)
+{
+    return getRowFromSlice(slices[z], y);
+}
+
+void setRow(vector<SliceValue>& slices, RowValue row, unsigned int y, unsigned int z)
+{
+    slices[z] = (slices[z] & (~getSliceFromRow(0x1F, y))) | getSliceFromRow(row, y);
+}
+
+SliceValue getSlice(const vector<LaneValue>& lanes, unsigned int z)
 {
     SliceValue result = 0;
     for(unsigned int y=0; y<5; y++)
@@ -287,22 +403,72 @@ SliceValue getSlice(const vector<UINT64>& lanes, unsigned int z)
     return result;
 }
 
-void setSlice(vector<UINT64>& lanes, SliceValue slice, unsigned int z)
+void setSlice(vector<LaneValue>& lanes, SliceValue slice, unsigned int z)
 {
     for(unsigned int y=0; y<5; y++)
         setRow(lanes, getRowFromSlice(slice, y), y, z);
 }
 
-void fromLanesToSlices(vector<SliceValue>& slices, const vector<UINT64>& lanes, unsigned int laneSize)
+void fromLanesToSlices(vector<SliceValue>& slices, const vector<LaneValue>& lanes, unsigned int laneSize)
 {
     slices.resize(laneSize);
     for(unsigned int z=0; z<laneSize; z++)
         slices[z] = getSlice(lanes, z);
 }
 
-void fromSlicesToLanes(vector<UINT64>& lanes, const vector<SliceValue>& slices)
+void fromSlicesToLanes(vector<LaneValue>& lanes, const vector<SliceValue>& slices)
 {
     lanes.assign(25, 0);
     for(unsigned int z=0; z<slices.size(); z++)
         setSlice(lanes, slices[z], z);
+}
+
+// -------------------------------------------------------------
+//
+// Parities
+//
+// -------------------------------------------------------------
+
+RowValue getParity(SliceValue slice)
+{
+    RowValue parity = 0;
+    for(unsigned int y=0; y<nrRowsAndColumns; y++)
+        parity ^= getRowFromSlice(slice, y);
+    return parity;
+}
+
+PackedParities getParities(const vector<SliceValue>& state)
+{
+    PackedParities parities = 0;
+    for(unsigned int z=0; z<state.size(); z++)
+        parities ^= getParitiesFromParity(getParity(state[z]), z);
+    return parities;
+}
+
+void getParities(vector<RowValue>& parities, const vector<SliceValue>& state)
+{
+    parities.resize(state.size());
+    for(unsigned int z=0; z<state.size(); z++)
+        parities[z] = getParity(state[z]);
+}
+
+void getParities(vector<LaneValue>& parities, const vector<LaneValue>& state)
+{
+    if (parities.size() != nrRowsAndColumns)
+        parities.resize(nrRowsAndColumns);
+    for(unsigned int x=0; x<nrRowsAndColumns; x++) {
+        parities[x] = state[KeccakF::index(x,0)]; 
+        for(unsigned int y=1; y<5; y++) 
+            parities[x] ^= state[KeccakF::index(x,y)];
+    }
+}
+
+void fromSlicesToLanesParities(vector<LaneValue>& paritiesLanes, const vector<RowValue>& paritiesSlices)
+{
+    paritiesLanes.assign(nrRowsAndColumns, 0);
+    for(unsigned int z=0; z<paritiesSlices.size(); z++)
+        for(unsigned int x=0; x<nrRowsAndColumns; x++) {
+            if ((paritiesSlices[z] & ((RowValue)1 << x)) != 0)
+                paritiesLanes[x] ^= (LaneValue)1 << z;
+        }
 }

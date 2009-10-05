@@ -25,7 +25,7 @@ void KeccakF25LUT::generateLUT()
 {
    if (!retrieveLUT()) {
         cout << "Generating the look-up table..." << flush;
-        vector<UINT64> lanes(25, 0);
+        vector<LaneValue> lanes(25, 0);
         LUT.resize(1<<25);
         for (SliceValue sliceIn=0; sliceIn< (1<<25) ; sliceIn++) {
             if ((sliceIn & 0xfffff) == 0) cout << " " << floor(sliceIn*100.0/(1<<25)) << "%" << flush;

@@ -53,7 +53,8 @@ STATUS_CODES genShortMsg(int hashbitlen)
     BitSequence Msg[256], MD[64];
     BitSequence Squeezed[SqueezingOutputLength/8];
     FILE        *fp_in, *fp_out;
-    
+    unsigned int bitrate, capacity, diversifier;
+
     if ( (fp_in = fopen("ShortMsgKAT.txt", "r")) == NULL ) {
         printf("Couldn't open <ShortMsgKAT.txt> for read\n");
         return KAT_FILE_OPEN_ERROR;
@@ -98,9 +99,15 @@ STATUS_CODES genShortMsg(int hashbitlen)
         }
         fprintf(fp_out, "\nLen = %d\n", msglen);
         fprintBstr(fp_out, "Msg = ", Msg, msgbytelen);
-        Keccak keccak(  (hashbitlen <= 256) ? 1024 :  512, 
-                        (hashbitlen <= 256) ?  576 : 1088,
-                        hashbitlen/8);
+
+        if (hashbitlen == 0)
+            capacity = 576;
+        else
+            capacity = hashbitlen*2;
+        bitrate = 1600-capacity;
+        diversifier = hashbitlen/8;
+        Keccak keccak(bitrate, capacity, diversifier);
+
         fromNISTConventionToInternalConvention(Msg, msglen);
         keccak.absorb(Msg, msglen);
         keccak.pad();

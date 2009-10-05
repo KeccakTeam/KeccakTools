@@ -73,10 +73,10 @@ SymbolicLane::SymbolicLane()
 {
 }
 
-SymbolicLane::SymbolicLane(UINT64 aValues)
+SymbolicLane::SymbolicLane(LaneValue aValues)
 {
     for(unsigned int i=0; i<64; i++)
-        values.push_back(SymbolicBit((aValues & ((UINT64)1 << i)) != 0));
+        values.push_back(SymbolicBit((aValues & ((LaneValue)1 << i)) != 0));
 }
 
 SymbolicLane::SymbolicLane(unsigned int laneSize, const string& prefixSymbol)
@@ -107,11 +107,11 @@ SymbolicLane operator~(const SymbolicLane& lane)
     return result;
 }
 
-SymbolicLane operator^(const SymbolicLane& a, UINT64 b)
+SymbolicLane operator^(const SymbolicLane& a, LaneValue b)
 {
     SymbolicLane result = a;
     for(unsigned int i=0; i<result.values.size(); i++)
-        if (b & ((UINT64)1 << i))
+        if (b & ((LaneValue)1 << i))
             result.values[i].complement();
     return result;
 }
@@ -151,25 +151,19 @@ KeccakFEquations::KeccakFEquations(unsigned int aWidth, unsigned int aNrRounds)
 void KeccakFEquations::genEquations(ostream& fout, const vector<SymbolicLane>& state, const string& prefixOutput, bool forSage) const
 {
     for(unsigned int y=0; y<5; y++)
-    for(unsigned int x=0; x<5; x++) { 
-        string outputLane = laneName(prefixOutput, x, y);
+    for(unsigned int x=0; x<5; x++) {
         for(unsigned int z=0; z<laneSize; z++) {
-            fout << outputLane;
-            if (laneSize > 1) {
-                fout.fill('0');
-                if (laneSize <= 10)
-                    fout.width(1);
-                else if (laneSize <= 100)
-                    fout.width(2);
-                fout << z;
-            }
+            string outputBit = bitName(prefixOutput, x, y, z);
+            if (forSage)
+                fout << "    '";
+            fout << outputBit;
             if (forSage)
                 fout << " + ";
             else
                 fout << " = ";
             fout << state[index(x,y)].values[z].value;
             if (forSage)
-                fout << ", ";
+                fout << "',";
             fout << endl;
         }
     }
@@ -177,8 +171,14 @@ void KeccakFEquations::genEquations(ostream& fout, const vector<SymbolicLane>& s
 
 void KeccakFEquations::initializeState(vector<SymbolicLane>& state, const string& prefix) const
 {
+    initializeState(state, prefix, laneSize);
+}
+
+void KeccakFEquations::initializeState(vector<SymbolicLane>& state, const string& prefix,
+    unsigned int laneSize)
+{
     state.resize(25);
-    for(unsigned int x=0; x<5; x++) 
+    for(unsigned int x=0; x<5; x++)
     for(unsigned int y=0; y<5; y++)
         state[index(x,y)] = SymbolicLane(laneSize, laneName(prefix, x, y));
 }
@@ -258,9 +258,9 @@ void KeccakFEquations::genComponentEquations(ostream& fout, const string& prefix
     }
 }
 
-void KeccakFEquations::genAbsoluteValuesBeforeChi(ostream& fout, const vector<UINT64>& input, const string& prefix) const
+void KeccakFEquations::genAbsoluteValuesBeforeChi(ostream& fout, const vector<LaneValue>& input, const string& prefix) const
 {
-    vector<UINT64> state(input);
+    vector<LaneValue> state(input);
     for(unsigned int i=0; i<nrRounds; i++) {
         theta(state);
         rho(state);

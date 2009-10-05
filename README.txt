@@ -3,7 +3,7 @@ function family, designed by Guido Bertoni, Joan Daemen, Michaël Peeters and
 Gilles Van Assche. For more information, please refer to our website: 
 http://keccak.noekeon.org/
 
-KeccakTools version 1.1, 21 April 2009.
+KeccakTools version 2.0, October 2009.
 
 RELEASE NOTES
 

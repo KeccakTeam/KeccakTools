@@ -58,7 +58,7 @@ public:
       * @param  input   The input state.
       * @param  prefix  The prefix of the variables.
       */
-    void genAbsoluteValuesBeforeChi(ostream& fout, const vector<UINT64>& input, const string& prefix) const;
+    void genAbsoluteValuesBeforeChi(ostream& fout, const vector<LaneValue>& input, const string& prefix) const;
 protected:
     /**
       * Internal method to generate the equations from symbolic lanes. 
@@ -81,6 +81,16 @@ protected:
       * @param  prefix  The prefix of the variables.
       */
     void initializeState(vector<SymbolicLane>& state, const string& prefix) const;
+public:
+    /**
+      * Method that initializes the symbolic bits of a symbolic state
+      * with variables using the same prefix.
+      *
+      * @param  state   The symbolic state to initialize.
+      * @param  prefix  The prefix of the variables.
+      * @param  laneSize    The number of bits per lane.
+      */
+    static void initializeState(vector<SymbolicLane>& state, const string& prefix, unsigned int laneSize);
 };
 
 /**
@@ -110,11 +120,11 @@ public:
     vector<SymbolicBit> values;
 public:
     SymbolicLane();
-    SymbolicLane(UINT64 aValues);
+    SymbolicLane(LaneValue aValues);
     SymbolicLane(unsigned int laneLength, const string& prefixSymbol);
     void ROL(int offset, unsigned int laneLength);
     friend SymbolicLane operator~(const SymbolicLane& lane);
-    friend SymbolicLane operator^(const SymbolicLane& a, UINT64 b);
+    friend SymbolicLane operator^(const SymbolicLane& a, LaneValue b);
     friend SymbolicLane operator^(const SymbolicLane& a, const SymbolicLane& b);
     friend SymbolicLane operator&(const SymbolicLane& a, const SymbolicLane& b);
     SymbolicLane& operator^=(const SymbolicLane& b);

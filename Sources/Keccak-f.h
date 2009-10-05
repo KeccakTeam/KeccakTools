@@ -2,7 +2,7 @@
 Tools for the Keccak sponge function family.
 Authors: Guido Bertoni, Joan Daemen, Michaël Peeters and Gilles Van Assche
 
-This code is hereby put in the public domain. It is given as is, 
+This code is hereby put in the public domain. It is given as is,
 without any guarantee.
 
 For more information, feedback or questions, please refer to our website:
@@ -33,6 +33,8 @@ public:
     KeccakException(const string& aReason);
 };
 
+typedef UINT64 LaneValue;
+
 /**
   * Class implementing the 7 Keccak-f permutations, as well as their inverses.
   */
@@ -44,14 +46,14 @@ protected:
     unsigned int laneSize;
     /** The nominal number of rounds, as function of the width. */
     unsigned int nominalNrRounds;
-    /** The actual number of rounds. */
+    /** The actual number of rounds (for experiments on reduced-round version). */
     unsigned int nrRounds;
     /** The translation offsets for ρ. */
     vector<int> rhoOffsets; 
     /** The round constants for ι. */
-    vector<UINT64> roundConstants;
+    vector<LaneValue> roundConstants;
     /** A 64-bit word whose first laneSize bits are 1 and all others 0. */
-    UINT64 mask;
+    LaneValue mask;
 public:
     /**
       * The constructor. The width and number of rounds are given to the 
@@ -89,7 +91,7 @@ public:
       * Method that returns a short string that uniquely identifies the
       * Keccak-f instance.
       */
-    string getName() const;
+    virtual string getName() const;
     /** 
       * Method that builds a file name by prepending a prefix and appending 
       * a suffix to getName().
@@ -108,6 +110,26 @@ public:
       */
     static unsigned int index(int x, int y);
     /**
+      * Method that extracts the x coordinate from a lane numbered according
+      * to the index() method.
+      *
+      * @param  index       The index of a lane, between 0 and 24.
+      */
+    inline static unsigned int getX(unsigned int index)
+    {
+        return index % 5;
+    }
+    /**
+      * Method that extracts the y coordinate from a lane numbered according
+      * to the index() method.
+      *
+      * @param  index       The index of a lane, between 0 and 24.
+      */
+    inline static unsigned int getY(unsigned int index)
+    {
+        return index / 5;
+    }
+    /**
       * Method that reduces modulo 5 the coordinate x expressed as a signed
       * integer.
       *
@@ -123,10 +145,10 @@ public:
       * @param  state   The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       */
-    template<class T> void forward(vector<T>& state) const;
+    template<class Lane> void forward(vector<Lane>& state) const;
     /**
       * Template method that applies the inverse permutation.
       * This function is a template to allow both numerical and symbolic values 
@@ -135,10 +157,10 @@ public:
       * @param  state   The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       */
-    template<class T> void inverse(vector<T>& state) const;
+    template<class Lane> void inverse(vector<Lane>& state) const;
     /**
       * Template method that applies the round function.
       * This function is a template to allow both numerical and symbolic values 
@@ -147,11 +169,11 @@ public:
       * @param  A       The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       * @param  roundNumber     The round number, from 0 to nrRounds - 1.
       */
-    template<class T> void round(vector<T>& A, unsigned int roundNumber) const;
+    template<class Lane> void round(vector<Lane>& A, unsigned int roundNumber) const;
     /**
       * Template method that applies the inverse of the round function. 
       * This function is a template to allow both numerical and symbolic values 
@@ -160,11 +182,11 @@ public:
       * @param  A       The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       * @param  roundNumber     The round number, from 0 to nrRounds - 1.
       */
-    template<class T> void inverseRound(vector<T>& A, unsigned int roundNumber) const;
+    template<class Lane> void inverseRound(vector<Lane>& A, unsigned int roundNumber) const;
     /**
       * Template method that applies χ.
       * This function is a template to allow both numerical and symbolic values 
@@ -173,10 +195,10 @@ public:
       * @param  A       The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       */
-    template<class T> void chi(vector<T>& A) const;
+    template<class Lane> void chi(vector<Lane>& A) const;
     /**
       * Template method that applies the inverse of χ.
       * This function is a template to allow both numerical and symbolic values 
@@ -185,10 +207,10 @@ public:
       * @param  A       The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       */
-    template<class T> void inverseChi(vector<T>& A) const;
+    template<class Lane> void inverseChi(vector<Lane>& A) const;
     /**
       * Template method that applies θ.
       * This function is a template to allow both numerical and symbolic values 
@@ -197,10 +219,10 @@ public:
       * @param  A       The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       */
-    template<class T> void theta(vector<T>& A) const;
+    template<class Lane> void theta(vector<Lane>& A) const;
     /**
       * Template method that applies the inverse of θ.
       * This function is a template to allow both numerical and symbolic values 
@@ -209,10 +231,10 @@ public:
       * @param  A       The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       */
-    template<class T> void inverseTheta(vector<T>& A) const;
+    template<class Lane> void inverseTheta(vector<Lane>& A) const;
     /**
       * Template method that applies π.
       * This function is a template to allow both numerical and symbolic values 
@@ -221,10 +243,10 @@ public:
       * @param  A       The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       */
-    template<class T> void pi(vector<T>& A) const;
+    template<class Lane> void pi(vector<Lane>& A) const;
     /**
       * Method that applies the π coordinate transformation to a lane position (x,y).
       *
@@ -233,7 +255,7 @@ public:
       * @param[out] X   The output coordinate x.
       * @param[out] Y   The output coordinate y.
       */
-    void pi(unsigned int x, unsigned int y, unsigned int& X, unsigned int& Y) const;
+    static void pi(unsigned int x, unsigned int y, unsigned int& X, unsigned int& Y);
     /**
       * Template method that applies the inverse of π.
       * This function is a template to allow both numerical and symbolic values 
@@ -242,10 +264,10 @@ public:
       * @param  A       The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       */
-    template<class T> void inversePi(vector<T>& A) const;
+    template<class Lane> void inversePi(vector<Lane>& A) const;
     /**
       * Method that applies the inverse π coordinate transformation to a lane position (X,Y).
       *
@@ -254,7 +276,7 @@ public:
       * @param[out] x   The output coordinate x.
       * @param[out] y   The output coordinate y.
       */
-    void inversePi(unsigned int X, unsigned int Y, unsigned int& x, unsigned int& y) const;
+    static void inversePi(unsigned int X, unsigned int Y, unsigned int& x, unsigned int& y);
     /**
       * Template method that applies ρ.
       * This function is a template to allow both numerical and symbolic values 
@@ -263,10 +285,22 @@ public:
       * @param  A       The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       */
-    template<class T> void rho(vector<T>& A) const;
+    template<class Lane> void rho(vector<Lane>& A) const;
+    /**
+      * Method that applies the ρ coordinate transformation to a bit position (x,y,z).
+      *
+      * @param[in]  x   The input coordinate x.
+      * @param[in]  y   The input coordinate y.
+      * @param[in]  z   The input coordinate z.
+      * @return         The output coordinate z.
+      */
+    inline unsigned int rho(unsigned int x, unsigned int y, unsigned int z) const
+    {
+        return (z+rhoOffsets[index(x,y)])%laneSize;
+    }
     /**
       * Template method that applies the inverse of ρ.
       * This function is a template to allow both numerical and symbolic values 
@@ -275,10 +309,22 @@ public:
       * @param  A       The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       */
-    template<class T> void inverseRho(vector<T>& A) const;
+    template<class Lane> void inverseRho(vector<Lane>& A) const;
+    /**
+      * Method that applies the inverse ρ coordinate transformation to a bit position (x,y,z).
+      *
+      * @param[in]  x   The input coordinate x.
+      * @param[in]  y   The input coordinate y.
+      * @param[in]  z   The input coordinate z.
+      * @return         The output coordinate z.
+      */
+    inline unsigned int inverseRho(unsigned int x, unsigned int y, unsigned int z) const
+    {
+        return (640+z-rhoOffsets[index(x,y)])%laneSize;
+    }
     /**
       * Template method that applies ι, which is its own inverse.
       * This function is a template to allow both numerical and symbolic values 
@@ -287,11 +333,11 @@ public:
       * @param  A       The given state is organized as a vector of 25 lanes.
       *                 The mapping between the coordinates (x, y) and the
       *                 numbering inside the vector is defined by index().
-      *                 The parameter type @a T can be a UINT64 for an
+      *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
       * @param  roundNumber     The round number, from 0 to nrRounds - 1.
       */
-    template<class T> void iota(vector<T>& A, unsigned int roundNumber) const;
+    template<class Lane> void iota(vector<Lane>& A, unsigned int roundNumber) const;
     /**
       * Template method that translates a lane along the z-axis.
       * This function is a template to allow both numerical and symbolic values 
@@ -301,15 +347,15 @@ public:
       * @param offset   The translation offset. It can be any signed
       *                 integer, as it will be reduced modulo laneSize.
       */
-    template<class T> void ROL(T& L, int offset) const;
+    template<class Lane> void ROL(Lane& L, int offset) const;
     /**
-      * Method that implementats ROL when the lane is in a 64-bit word UINT64.
+      * Method that implementats ROL when the lane is in a 64-bit word LaneValue.
       *
       * @param  L       The given lane.
       * @param offset   The translation offset. It can be any signed
       *                 integer, as it will be reduced modulo laneSize.
       */
-    void ROL(UINT64& L, int offset) const;
+    void ROL(LaneValue& L, int offset) const;
     /**
       * Method that converts a state given as an array of bytes into a vector
       * of lanes in 64-bit words.
@@ -320,7 +366,7 @@ public:
       * @param  out     The state as a vector of lanes.
       *                 It will be resized to 25 if necessary.
       */
-    void fromBytesToLanes(UINT8 *in, vector<UINT64>& out) const;
+    void fromBytesToLanes(UINT8 *in, vector<LaneValue>& out) const;
     /**
       * Method that converts a vector of lanes in 64-bit words into a state 
       * given as an array of bytes.
@@ -331,17 +377,7 @@ public:
       *                 The array @a out must have a size of at least 
       *                 ceil(getWidth()/8.0) bytes.
       */
-    void fromLanesToBytes(const vector<UINT64>& in, UINT8 *out) const;
-    /**
-      * Method that initializes the nrRounds round constants according to the 
-      * specifications.
-      */
-    void initializeRoundConstants();
-    /**
-      * Method that initializes the 25 lane translation offsets for ρ according to 
-      * the specifications.
-      */
-    void initializeRhoOffsets();
+    void fromLanesToBytes(const vector<LaneValue>& in, UINT8 *out) const;
     /**
       * Function that appends the z coordinate to the given prefix. 
       * If the lane size is 1, the z coordinate is not appended.
@@ -385,24 +421,35 @@ public:
       * @param x        The x coordinate.
       */
     static string sheetName(const string& prefix, unsigned int x);
+private:
+    /**
+      * Method that initializes the nrRounds round constants according to the
+      * specifications.
+      */
+    void initializeRoundConstants();
+    /**
+      * Method that initializes the 25 lane translation offsets for ρ according to
+      * the specifications.
+      */
+    void initializeRhoOffsets();
 };
 
-template<class T>
-void KeccakF::forward(vector<T>& state) const
+template<class Lane>
+void KeccakF::forward(vector<Lane>& state) const
 {
     for(unsigned int i=0; i<nrRounds; i++)
         round(state, i);
 }
 
-template<class T>
-void KeccakF::inverse(vector<T>& state) const
+template<class Lane>
+void KeccakF::inverse(vector<Lane>& state) const
 {
     for(int i=nrRounds-1; i>=0; i--)
         inverseRound(state, i);
 }
 
-template<class T>
-void KeccakF::round(vector<T>& state, unsigned int roundNumber) const
+template<class Lane>
+void KeccakF::round(vector<Lane>& state, unsigned int roundNumber) const
 {
     theta(state);
     rho(state);
@@ -411,8 +458,8 @@ void KeccakF::round(vector<T>& state, unsigned int roundNumber) const
     iota(state, roundNumber);
 }
 
-template<class T>
-void KeccakF::inverseRound(vector<T>& state, unsigned int roundNumber) const
+template<class Lane>
+void KeccakF::inverseRound(vector<Lane>& state, unsigned int roundNumber) const
 {
     iota(state, roundNumber);
     inverseChi(state);
@@ -421,10 +468,10 @@ void KeccakF::inverseRound(vector<T>& state, unsigned int roundNumber) const
     inverseTheta(state);
 }
 
-template<class T>
-void KeccakF::chi(vector<T>& A) const
+template<class Lane>
+void KeccakF::chi(vector<Lane>& A) const
 {
-    vector<T> C(5);
+    vector<Lane> C(5);
     for(unsigned int y=0; y<5; y++) { 
         for(unsigned int x=0; x<5; x++)
             C[x] = A[index(x,y)] ^ ((~A[index(x+1,y)]) & A[index(x+2,y)]);
@@ -433,10 +480,10 @@ void KeccakF::chi(vector<T>& A) const
     }
 }
 
-template<class T>
-void KeccakF::inverseChi(vector<T>& A) const
+template<class Lane>
+void KeccakF::inverseChi(vector<Lane>& A) const
 {
-    vector<T> C(5);
+    vector<Lane> C(5);
     for(unsigned int y=0; y<5; y++) { 
         for(unsigned int x=0; x<5; x++) 
             C[x] = A[index(x,y)];
@@ -447,40 +494,43 @@ void KeccakF::inverseChi(vector<T>& A) const
     }
 }
 
-template<class T>
-void KeccakF::theta(vector<T>& A) const
+template<class Lane>
+void KeccakF::theta(vector<Lane>& A) const
 {
-    vector<T> C(5);
+    vector<Lane> C(5);
     for(unsigned int x=0; x<5; x++) {
         C[x] = A[index(x,0)]; 
         for(unsigned int y=1; y<5; y++) 
             C[x] ^= A[index(x,y)];
     }
-    vector<T> D(C);
-    for(unsigned int x=0; x<5; x++)
-        ROL(D[x], 1);
+    vector<Lane> D(5);
+    for(unsigned int x=0; x<5; x++) {
+        Lane temp = C[index(x+1)];
+        ROL(temp, 1);
+        D[x] = temp ^ C[index(x-1)];
+    }
     for(int x=0; x<5; x++)
         for(unsigned int y=0; y<5; y++)
-            A[index(x,y)] ^= D[index(x+1)] ^ C[index(x-1)];
+            A[index(x,y)] ^= D[x];
 }
 
-template<class T>
-void KeccakF::inverseTheta(vector<T>& A) const
+template<class Lane>
+void KeccakF::inverseTheta(vector<Lane>& A) const
 {
-    vector<T> C(5);
+    vector<Lane> C(5);
     for(unsigned int x=0; x<5; x++) {
         C[x] = A[index(x,0)];
         for(unsigned int y=1; y<5; y++){ 
             C[x] ^= A[index(x,y)];
         }
     }
-    const UINT64 inversePositions64[5] = {
+    const LaneValue inversePositions64[5] = {
         0xDE26BC4D789AF134ULL,
         0x09AF135E26BC4D78ULL,
         0xEBC4D789AF135E26ULL,
         0x7135E26BC4D789AFULL,
         0xCD789AF135E26BC4ULL };
-    vector<UINT64> inversePositions(5, 0);
+    vector<LaneValue> inversePositions(5, 0);
     for(unsigned int z=0; z<64; z+=laneSize)
         for(unsigned int x=0; x<5; x++)
             inversePositions[x] ^= inversePositions64[x] >> z;
@@ -497,10 +547,10 @@ void KeccakF::inverseTheta(vector<T>& A) const
     }
 }
 
-template<class T>
-void KeccakF::pi(vector<T>& A) const
+template<class Lane>
+void KeccakF::pi(vector<Lane>& A) const
 {
-    vector<T> a(A);
+    vector<Lane> a(A);
     for(unsigned int x=0; x<5; x++) 
     for(unsigned int y=0; y<5; y++) {
         unsigned int X, Y;
@@ -509,10 +559,10 @@ void KeccakF::pi(vector<T>& A) const
     }
 }
 
-template<class T>
-void KeccakF::inversePi(vector<T>& A) const
+template<class Lane>
+void KeccakF::inversePi(vector<Lane>& A) const
 {
-    vector<T> a(A);
+    vector<Lane> a(A);
     for(unsigned int X=0; X<5; X++) 
     for(unsigned int Y=0; Y<5; Y++) {
         unsigned int x, y;
@@ -521,31 +571,31 @@ void KeccakF::inversePi(vector<T>& A) const
     }
 }
 
-template<class T>
-void KeccakF::rho(vector<T>& A) const
+template<class Lane>
+void KeccakF::rho(vector<Lane>& A) const
 {
     for(unsigned int x=0; x<5; x++) 
     for(unsigned int y=0; y<5; y++)
         ROL(A[index(x,y)], rhoOffsets[index(x,y)]);
 }
 
-template<class T>
-void KeccakF::inverseRho(vector<T>& A) const
+template<class Lane>
+void KeccakF::inverseRho(vector<Lane>& A) const
 {
     for(unsigned int x=0; x<5; x++) 
     for(unsigned int y=0; y<5; y++)
         ROL(A[index(x,y)], -rhoOffsets[index(x,y)]);
 }
 
-template<class T>
-void KeccakF::iota(vector<T>& A, unsigned int roundNumber) const
+template<class Lane>
+void KeccakF::iota(vector<Lane>& A, unsigned int roundNumber) const
 {
     if (roundNumber < roundConstants.size())
         A[index(0,0)] ^= roundConstants[roundNumber];
 }
 
-template<class T> 
-void KeccakF::ROL(T& L, int offset) const
+template<class Lane> 
+void KeccakF::ROL(Lane& L, int offset) const
 {
     L.ROL(offset, laneSize);
 }

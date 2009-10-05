@@ -32,8 +32,8 @@ protected:
     /** The word size, which is equal to laneSize/interleavingFactor.
       */
     unsigned int wordSize;
-    /** Boolean that indicates whether macros should be used instead of 
-      * standard Boolean operators in C.
+    /** Tells whether the operations should be written as macros (if true)
+      * or using regular operators (if false).
       */
     bool outputMacros;
 public:
@@ -49,10 +49,11 @@ public:
       */
     void setInterleavingFactor(unsigned int anInterleavingFactor);
     /**
-      * Method to specify if macros should be used instead of standard
-      * Boolean operators in C.
+      * Method to set whether the operations should be written as macros
+      * or using regular operators.
       *
-      * @param  anOutputMacros  The desired value of outputMacros.
+      * @param  anOutputMacros  If true, macros are output; 
+      *                         if false, operators are output.
       */
     void setOutputMacros(bool anOutputMacros);
     /**
@@ -158,6 +159,7 @@ public:
       *                 straightforward code.
       */
     void genMacroFile(ostream& fout, bool laneComplementing=false) const;
+    virtual string getName() const;
 protected:
     string buildWordName(const string& prefixSymbol, unsigned int x, unsigned int y, unsigned int z) const;
     string buildWordName(const string& prefixSymbol, unsigned int x, unsigned int z) const;
