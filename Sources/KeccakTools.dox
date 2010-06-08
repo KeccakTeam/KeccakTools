@@ -22,20 +22,32 @@ http://keccak.noekeon.org/
  * website: http://keccak.noekeon.org/
  *
  * KeccakTools provides the following features:
- * - the implementation of the seven Keccak-<i>f</i> permutations, from 
- *   Keccak-<i>f</i>[25] to Keccak-<i>f</i>[1600], possibly with a specified 
- *   number of rounds;
- * - the implementation of the <em>inverses</em> of the seven Keccak-<i>f</i> 
- *   permutations;
+ * - the parameterized implementation of the seven Keccak-<i>f</i> permutations, 
+ *   from Keccak-<i>f</i>[25] to Keccak-<i>f</i>[1600], possibly with a specific number of rounds;
+ * - the implementation of the <em>inverses</em> of the Keccak-<i>f</i> permutations;
  * - the generation of look-up tables for Keccak-<i>f</i>[25];
- * - the generation of GF(2) equations of the round functions and step mappings 
- *   in the Keccak-<i>f</i>'s and their inverses;
- * - the generation of optimized C code for the round functions, including lane 
- *   complementing and bit interleaving techniques;
- * - the implementation of the sponge construction using any transformation or 
- *   permutation, and of the Keccak sponge function family.
+ * - the generation of GF(2) equations of the round functions and step mappings in the 
+ *   Keccak-<i>f</i> permutations and their inverses;
+ * - the generation of optimized C code for the Keccak-<i>f</i> round functions, 
+ *   including lane complementing and bit interleaving techniques;
+ * - the implementation of the sponge construction using any transformation or permutation, 
+ *   and of the Keccak sponge function family;
+ * - the processing of linear and differential <em>trails</em>:
+ *		- the representation and serialization of linear and differential trails;
+ *		- for χ, the affine representation of
+ *			- the output differences compatible with a given input difference, and
+ *			- the input masks compatible with a given output mask;
+ *		- for the round function, the iteration through all
+ *			- the output differences compatible with a given input difference,
+ *			- the input differences compatible with a given output difference (possibly up to a specified weight),
+ *			- the input masks compatible with a given output mask,
+ *			- the output masks compatible with a given input mask (possibly up to a specified weight);
+ *		- the generation of the conditions, expressed as equations in GF(2), for a pair to follow a given differential trail.
+ *
+ * Note that the equations can be generated in a format compatible
+ * with <a href="http://www.sagemath.org">SAGE</a>.
  *
  * This code is hereby put in the public domain. It is given as is, without any guarantee.
  *
- * <em>KeccakTools <b>version 2.0</b>, October 2009.</em>
+ * <em>KeccakTools <b>version 2.1</b>, June 2010.</em>
  */

@@ -36,7 +36,7 @@ public:
 typedef UINT64 LaneValue;
 
 /**
-  * Class implementing the 7 Keccak-f permutations, as well as their inverses.
+  * Class implementing the 7 Keccak-<i>f</i> permutations, as well as their inverses.
   */
 class KeccakF : public Permutation {
 protected:
@@ -60,8 +60,8 @@ public:
       * constructor. If omitted or set to zero, nrRounds is set to 
       * nominalNrRounds.
       *
-      * @param  aWidth      The width of the Keccak-f permutation. 
-      *                     It must be one of the valid Keccak-f widths, namely
+      * @param  aWidth      The width of the Keccak-<i>f</i> permutation. 
+      *                     It must be one of the valid Keccak-<i>f</i> widths, namely
       *                     25, 50, 100, 200, 400, 800 or 1600.
       * @param  aNrRounds   The desired number of rounds. By omitting or 
       *                     setting this parameter to 0, the nominal number
@@ -72,24 +72,28 @@ public:
       * Method that returns the number of bits of its domain and range.
       */
     unsigned int getWidth() const;
+    /** 
+      * Method that retuns the lane size of the Keccak-<i>f</i> instance.
+      */
+    unsigned int getLaneSize() const;
     /**
-      * Method that applies the Keccak-f permutation onto the parameter 
+      * Method that applies the Keccak-<i>f</i> permutation onto the parameter 
       * @a state.
       */
     void operator()(UINT8 * state) const;
     /**
-      * Method that applies the inverse of the Keccak-f permutation onto 
+      * Method that applies the inverse of the Keccak-<i>f</i> permutation onto 
       * the parameter @a state.
       */
     void inverse(UINT8 * state) const;
     /**
-      * Method that returns a string describing the instance of the Keccak-f 
+      * Method that returns a string describing the instance of the Keccak-<i>f</i> 
       * permutation.
       */
     string getDescription() const;
     /**
       * Method that returns a short string that uniquely identifies the
-      * Keccak-f instance.
+      * Keccak-<i>f</i> instance.
       */
     virtual string getName() const;
     /** 

@@ -18,13 +18,13 @@ http://keccak.noekeon.org/
 using namespace std;
 
 /**
-  * Class implementing code generation for the Keccak-f permutations.
+  * Class implementing code generation for the Keccak-<i>f</i> permutations.
   */
 class KeccakFCodeGen : public KeccakF {
 protected:
      /** The interleaving factor, i.e., the ratio between the lane size and the
        * target word size. For instance, to generate 32-bit interleaved code
-       * for Keccak-f[1600], interleavingFactor must be set to 2 (=64/32). By 
+       * for Keccak-<i>f</i>[1600], interleavingFactor must be set to 2 (=64/32). By 
        * default, the interleavingFactor is 1, meaning no interleaving. The 
        * interleavingFactor must divide the lane size.
        */
@@ -33,9 +33,13 @@ protected:
       */
     unsigned int wordSize;
     /** Tells whether the operations should be written as macros (if true)
-      * or using regular operators (if false).
+      * or using regular operators (if false). By default, it is false.
       */
     bool outputMacros;
+    /** Tells which type of scheduling is used in the generation of the code.
+      * It must be 1 or 2. By default, it is 1.
+      */
+    unsigned int scheduleType;
 public:
     /**
       * The constructor. See KeccakF() for more details.
@@ -45,7 +49,7 @@ public:
       * Method to set the interleaving factor.
       *
       * @param  anInterleavingFactor    The interleaving factor, see
-      *                 interleavingFactor.
+      *                                 interleavingFactor.
       */
     void setInterleavingFactor(unsigned int anInterleavingFactor);
     /**
@@ -56,6 +60,15 @@ public:
       *                         if false, operators are output.
       */
     void setOutputMacros(bool anOutputMacros);
+    /**
+      * Method to set whether the schedule type.
+      * It must be 1 or 2.
+      * Type 1 is best when there are more registers available.
+      * Type 2 is best when there are less registers available.
+      *
+      * @param  aScheduleType   The schedule type, 1 or 2.
+      */
+    void setScheduleType(unsigned int aScheduleType);
     /**
       * Method that displays the round constants.
       */
@@ -171,6 +184,7 @@ protected:
     string strROL(const string& symbol, unsigned int amount) const;
     string strXOR(const string& A, const string& B) const;
     string strXOReq(const string& A, const string& B) const;
+    unsigned int schedule(unsigned int i) const;
 };
 
 #endif

@@ -2,7 +2,7 @@
 Tools for the Keccak sponge function family.
 Authors: Guido Bertoni, Joan Daemen, Michaël Peeters and Gilles Van Assche
 
-This code is hereby put in the public domain. It is given as is, 
+This code is hereby put in the public domain. It is given as is,
 without any guarantee.
 
 For more information, feedback or questions, please refer to our website:
@@ -16,8 +16,8 @@ http://keccak.noekeon.org/
 using namespace std;
 
 KeccakFCodeGen::KeccakFCodeGen(unsigned int aWidth, unsigned int aNrRounds)
-    : KeccakF(aWidth, aNrRounds), interleavingFactor(1), 
-    wordSize(laneSize), outputMacros(false)
+    : KeccakF(aWidth, aNrRounds), interleavingFactor(1),
+    wordSize(laneSize), outputMacros(false), scheduleType(1)
 {
 }
 
@@ -30,6 +30,12 @@ void KeccakFCodeGen::setInterleavingFactor(unsigned int anInterleavingFactor)
 void KeccakFCodeGen::setOutputMacros(bool anOutputMacros)
 {
     outputMacros = anOutputMacros;
+}
+
+void KeccakFCodeGen::setScheduleType(unsigned int aScheduleType)
+{
+    if ((aScheduleType >= 1) && (aScheduleType <= 2))
+        scheduleType = aScheduleType;
 }
 
 void KeccakFCodeGen::displayRoundConstants()
@@ -47,7 +53,7 @@ void KeccakFCodeGen::displayRhoOffsets(bool moduloWordLength)
 {
     int offset = 2;
 
-    cout << "Rho:" << endl;
+    cout << "ρ:" << endl;
     cout << "col  |";
     for(unsigned int sx=0; sx<5; sx++) {
         unsigned int x = index(sx-offset);
@@ -133,24 +139,16 @@ void KeccakFCodeGen::genDeclarationsSheets(ostream& fout, const string& prefixSy
     }
 }
 
-unsigned int schedule(unsigned int i)
+unsigned int KeccakFCodeGen::schedule(unsigned int i) const
 {
-    switch(i) {
-    case 3:
-        return 5;
-        break;
-    case 4:
-        return  3;
-        break;
-    case 5:
-        return  6;
-        break;
-    case 6:
-        return  4;
-        break;
-    default:
+    if (scheduleType == 1)
         return i;
+    else if (scheduleType == 2) {
+        const unsigned int theSchedule[10] = { 0, 1, 2, 5, 3, 6, 4, 7, 8, 9 };
+        return theSchedule[i];
     }
+    else
+        return i;
 }
 
 void KeccakFCodeGen::genCodeForRound(ostream& fout, bool prepareTheta, 
@@ -158,8 +156,8 @@ void KeccakFCodeGen::genCodeForRound(ostream& fout, bool prepareTheta,
                                      string A, string B, string C,
                                      string D, string E, string header) const
 {
-    fout << "// --- Theta Rho Pi Chi Iota";
-    if (prepareTheta) fout << " Prepare-theta";
+    fout << "// --- Code for round";
+    if (prepareTheta) fout << ", with prepare-theta";
     if (outChiMask != 0) {
         fout << " (lane complementing pattern '";
         for(unsigned int y=0; y<5; y++)
@@ -208,12 +206,12 @@ void KeccakFCodeGen::genCodeForRound(ostream& fout, bool prepareTheta,
             unsigned j = schedule(i);
 
             if (j == X) {
-                // Theta
+                // θ
                 fout << "    ";
                 fout << strXOReq(buildWordName(A, x, y, z), buildWordName(D, x, z));
                 fout << "; \\" << endl;
 
-                // Rho Pi
+                // ρ then π
                 fout << "    " << buildWordName(B, X, Y, Z) << " = ";
                 fout << strROL(buildWordName(A, x, y, z), rInt);
                 fout << "; \\" << endl;
@@ -227,7 +225,7 @@ void KeccakFCodeGen::genCodeForRound(ostream& fout, bool prepareTheta,
                 bool LC2 = (M1==M2) && (M0 != M1);
                 bool LOR = ((!M1) && M2) || (M0 && (M1==M2));
                 bool LC0 = !LOR==M0; 
-                // Chi
+                // χ
                 fout << "    " << buildWordName(E, X, Y, Z) << " = ";
                 fout << strXOR(
                     strNOT(buildWordName(B, X, Y, Z), LC0),
@@ -235,7 +233,7 @@ void KeccakFCodeGen::genCodeForRound(ostream& fout, bool prepareTheta,
                 fout << "; \\" << endl;
 
                 if ((X == 0) && (Y == 0)) {
-                    // Iota
+                    // ι
                     stringstream str;
                     str << "KeccakF" << width << "RoundConstants";
                     if (interleavingFactor > 1)
@@ -247,7 +245,7 @@ void KeccakFCodeGen::genCodeForRound(ostream& fout, bool prepareTheta,
                 }
 
                 if (prepareTheta) {
-                    // Prepare Theta
+                    // Prepare θ
                     if (Y == 0) {
                         fout << "    " << buildWordName(C, X, Z);
                         fout << " = ";
@@ -412,7 +410,7 @@ void KeccakFCodeGen::genMacroFile(ostream& fout, bool laneComplementing) const
     genCodeForPrepareTheta(fout);
     if (laneComplementing) {
         const SliceValue inChiMask = 0x9d14ad;
-        const SliceValue outChiMask = 0x121106; // see Keccak main document Sec. 7.2.1
+        const SliceValue outChiMask = 0x121106; // see Keccak main document on lane complementing
         fout << "#ifdef UseBebigokimisa" << endl;
         genCodeForRound(fout, true, inChiMask, outChiMask,
             "A##", "B", "C", "D", "E##", 
@@ -433,6 +431,8 @@ void KeccakFCodeGen::genMacroFile(ostream& fout, bool laneComplementing) const
     genRoundConstants(fout);
     fout << "#define copyFromStateAndXor1024bits(X, state, input) \\" << endl;
     genCopyFromStateAndXor(fout, 1024);
+    fout << "#define copyFromStateAndXor1088bits(X, state, input) \\" << endl;
+    genCopyFromStateAndXor(fout, 1088);
     fout << "#define copyFromState(X, state) \\" << endl;
     genCopyFromStateAndXor(fout, 0);
     fout << "#define copyToState(state, X) \\" << endl;

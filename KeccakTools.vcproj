@@ -183,7 +183,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sources\Keccak-fAffineBases.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Sources\Keccak-fCodeGen.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Sources\Keccak-fDCEquations.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Sources\Keccak-fDCLC.cpp"
 				>
 			</File>
 			<File
@@ -191,7 +203,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sources\Keccak-fParity.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Sources\Keccak-fParts.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Sources\Keccak-fPropagation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Sources\Keccak-fTrails.cpp"
 				>
 			</File>
 			<File
@@ -225,7 +249,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sources\Keccak-fAffineBases.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Sources\Keccak-fCodeGen.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sources\Keccak-fDCEquations.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sources\Keccak-fDCLC.h"
 				>
 			</File>
 			<File
@@ -233,7 +269,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sources\Keccak-fParity.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Sources\Keccak-fParts.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sources\Keccak-fPropagation.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sources\Keccak-fTrails.h"
 				>
 			</File>
 			<File

@@ -12,10 +12,15 @@ http://keccak.noekeon.org/
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include "Keccak.h"
 #include "Keccak-f25LUT.h"
 #include "Keccak-fCodeGen.h"
+#include "Keccak-fDCEquations.h"
+#include "Keccak-fDCLC.h"
 #include "Keccak-fEquations.h"
+#include "Keccak-fPropagation.h"
+#include "Keccak-fTrails.h"
 
 using namespace std;
 
@@ -152,33 +157,150 @@ void testKeccakF25LUT()
 
 void genKATShortMsg_main();
 
+void testKeccakFDCLC()
+{
+    KeccakFDCLC keccakFDCLC(200);
+    KeccakFPropagation DC(keccakFDCLC, KeccakFPropagation::DC);
+    KeccakFPropagation LC(keccakFDCLC, KeccakFPropagation::LC);
+    cout << keccakFDCLC << endl;
+
+    ofstream fout("Keccak-f-Chi-DCLC.txt");
+    keccakFDCLC.displayAll(fout, &DC, &LC);
+}
+
+void displayTrails()
+{
+    for(unsigned int width=25; width<=200; width*=2) {
+        KeccakFDCLC keccakFDCLC(width);
+        {
+            KeccakFPropagation DC(keccakFDCLC, KeccakFPropagation::DC);
+            string fileName = DC.buildFileName("-trails");
+            Trail::produceHumanReadableFile(DC, fileName);
+        }
+        {
+            KeccakFPropagation LC(keccakFDCLC, KeccakFPropagation::LC);
+            string fileName = LC.buildFileName("-trails");
+            Trail::produceHumanReadableFile(LC, fileName);
+        }
+    }
+}
+
+void extendTrailAtTheEnd()
+{
+    KeccakFDCLC keccakFDCLC(200);
+    KeccakFPropagation DC(keccakFDCLC, KeccakFPropagation::DC);
+    cout << keccakFDCLC << endl;
+
+    // Trail from file 'KeccakF-200-DC-trails', 4 rounds, last state removed, now 3 rounds
+    istringstream sin("8 26 3 15 9 8 0 0 0 0 0 0 849108 1010842 0 1004000 0 0 0 0 0 803000 401000 0 0 0 0 0 0 80010");
+    // Read the trail and display it
+    Trail trail(sin);
+    keccakFDCLC.checkDCTrail(trail); // optional
+    trail.display(DC, cout); // for information
+
+    // Create an output file with extensions of the trail at the end
+    {
+        string fileName = DC.buildFileName("-extensionAtTheEnd-trails");
+        {
+            ofstream fout(fileName.c_str());
+            const vector<SliceValue>& lastStateOfTrail = trail.states.back();
+            AffineSpaceOfStates affineSpace = DC.buildStateBase(lastStateOfTrail);
+            affineSpace.display(cout); // for information
+            for(SlicesAffineSpaceIterator i = affineSpace.getIterator(); !i.isEnd(); ++i) {
+                Trail newTrail(trail);
+                newTrail.append(*i, DC.getWeight(*i));
+                newTrail.save(fout);
+            }
+        }
+        Trail::produceHumanReadableFile(DC, fileName);
+    }
+
+    // Create an output file with extensions of the trail at the end,
+    // restricting states to be in the kernel
+    {
+        string fileName = DC.buildFileName("-extensionAtTheEndInTheKernel-trails");
+        {
+            ofstream fout(fileName.c_str());
+            const vector<SliceValue>& lastStateOfTrail = trail.states.back();
+            AffineSpaceOfStates affineSpace = DC.buildStateBase(lastStateOfTrail);
+            for(SlicesAffineSpaceIterator i = affineSpace.getIteratorWithGivenParity(0); !i.isEnd(); ++i) {
+                Trail newTrail(trail);
+                newTrail.append(*i, DC.getWeight(*i));
+                newTrail.save(fout);
+            }
+        }
+        Trail::produceHumanReadableFile(DC, fileName);
+    }
+}
+
+void extendTrailAtTheBeginning()
+{
+    KeccakFDCLC keccakFDCLC(100);
+    KeccakFPropagation LC(keccakFDCLC, KeccakFPropagation::LC);
+    cout << keccakFDCLC << endl;
+
+    // Trail from file 'KeccakF-100-LC-trails', 6 rounds, first state removed, now 5 rounds
+    istringstream sin("4 52 5 8 4 16 14 1c 15a8000 0 0 0 0 4010 0 0 0 0 318c63 9c6318 20004 200002 5800b 80010 800800 1231802 47868 800001");
+    // Read the trail and display it
+    Trail trail(sin);
+    keccakFDCLC.checkLCTrail(trail); // optional
+    trail.display(LC, cout); // for information
+
+    // Create an output file with extensions of the trail at the beginning,
+    // restricting the first state to have weight up to 16
+    {
+        string fileName = LC.buildFileName("-extensionAtTheBeginning-trails");
+        {
+            ofstream fout(fileName.c_str());
+            const vector<SliceValue>& firstStateOfTrail = trail.states.front();
+            vector<SliceValue> invLambdaOfFirstStateOfTrail;
+            // We have to compute λ^-1 on the state to convert it to an ouput state of χ
+            LC.reverseLambda(firstStateOfTrail, invLambdaOfFirstStateOfTrail);
+            for(ReverseStateIterator i = LC.getReverseStateIterator(invLambdaOfFirstStateOfTrail, 16); !i.isEnd(); ++i) {
+                Trail newTrail(trail);
+                newTrail.prepend(*i, LC.getWeight(*i));
+                newTrail.save(fout);
+            }
+        }
+        Trail::produceHumanReadableFile(LC, fileName);
+    }
+}
+
+void generateDCTrailEquations()
+{
+    KeccakFDCEquations keccakFDCEq(50);
+    KeccakFPropagation DC(keccakFDCEq, KeccakFPropagation::DC);
+    cout << keccakFDCEq << endl;
+
+    // Trail from file 'KeccakF-50-DC-trails', 4 rounds
+    istringstream sin("2 1d 4 7 d 5 4 0 849000 84018c a0000 0 3404 4 100000");
+    // Read the trail and display it
+    Trail trail(sin);
+    keccakFDCEq.checkDCTrail(trail); // optional
+    trail.display(DC, cout); // for information
+
+    {
+        string fileName = string("DC") + keccakFDCEq.getName() + "-equations.txt";
+        ofstream fout(fileName.c_str());
+        keccakFDCEq.genDCEquations(fout, trail);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     try {
-        // Keccak-f[1600] with 33 rounds!
-        KeccakF keccakF(1600, 33);
-        cout << keccakF << endl;
-
-        // Sponge(r=512, c=1088) using Keccak-f[1600] with 33 rounds!
-        Sponge sponge(&keccakF, 1088);
-        cout << sponge << endl;
-
-        // Keccak[] = Keccak[r=1024, c=576, d=0]
-        Keccak keccak;
-        cout << keccak << endl;
-
-        testKeccakF();
-        testKeccak();
-
         //TODO: uncomment the desired function
-
+        //testKeccakF();
+        //testKeccak();
         //genKATShortMsg_main();
-
         //generateEquations();
-
         //generateCode();
-
         //testKeccakF25LUT();
+        //testKeccakFDCLC();
+        //displayTrails();
+        //extendTrailAtTheEnd();
+        //extendTrailAtTheBeginning();
+        //generateDCTrailEquations();
     }
     catch(SpongeException e) {
         cout << e.reason << endl;

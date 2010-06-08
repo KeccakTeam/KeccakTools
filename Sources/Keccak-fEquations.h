@@ -21,7 +21,7 @@ using namespace std;
 class SymbolicLane;
 
 /**
-  * Class implementing equation generation for the Keccak-f permutations.
+  * Class implementing equation generation for the Keccak-<i>f</i> permutations.
   */
 class KeccakFEquations : public KeccakF {
 public:
@@ -30,7 +30,7 @@ public:
       */
     KeccakFEquations(unsigned int aWidth, unsigned int aNrRounds = 0);
     /**
-      * Method that generate equations for the rounds of the chosen Keccak-f
+      * Method that generate equations for the rounds of the chosen Keccak-<i>f</i>
       * instance. The variables starting with letter A are the input of round #0.
       * The B's are the output of round #0 and the input of round #1.
       * The C's are the output of round #1 and the input of round #2, etc.
@@ -42,7 +42,7 @@ public:
     void genRoundEquations(ostream& fout, bool forSage=false) const;
     /**
       * Method that generate equations for the mappings θ, ρ, π, χ and ι 
-      * of the chosen Keccak-f instance.
+      * of the chosen Keccak-<i>f</i> instance.
       *
       * @param  fout    The stream to which the equations are sent.
       * @param  prefixInput     The prefix of the input variables.
@@ -50,9 +50,12 @@ public:
       */
     void genComponentEquations(ostream& fout, const string& prefixInput, const string& prefixOutput) const;
     /**
-      * Method that, given the input to the chosen Keccak-f permutation,
+      * Method that, given the input to the chosen Keccak-<i>f</i> permutation,
       * generates initialization equations to set the absolute value 
       * just before χ at each round.
+      * This can be used in combination with KeccakFDCEquations::buildDCTrailFromPair()
+      * and KeccakFDCEquations::genDCEquations() to test that the conditions
+      * produced by the latter method are indeed satisfied by a known pair value.
       *
       * @param  fout    The stream to which the equations are sent.
       * @param  input   The input state.
@@ -75,7 +78,7 @@ protected:
     void genEquations(ostream& fout, const vector<SymbolicLane>& state, const string& prefixOutput, bool forSage=false) const;
     /**
       * Internal method that initializes the symbolic bits of a symbolic state 
-      * with variables using the same prefix.
+      * with variables using the given prefix.
       *
       * @param  state   The symbolic state to initialize.
       * @param  prefix  The prefix of the variables.
@@ -84,7 +87,7 @@ protected:
 public:
     /**
       * Method that initializes the symbolic bits of a symbolic state
-      * with variables using the same prefix.
+      * with variables using the given prefix.
       *
       * @param  state   The symbolic state to initialize.
       * @param  prefix  The prefix of the variables.

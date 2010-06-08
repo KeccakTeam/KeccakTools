@@ -1,0 +1,329 @@
+DC/LC analysis of Keccak-f[25]
+Linear cryptanalysis
+
+1 trails of length 2 read and checked.
+1 trails of length 3 read and checked.
+1 trails of length 4 read and checked.
+1 trails of length 5 read and checked.
+1 trails of length 6 read and checked.
+1 trails of length 7 read and checked.
+1 trails of length 8 read and checked.
+Minimum weight: 8
+       1 trails of weight  8
+       1 trails of weight 16
+       1 trails of weight 24
+       1 trails of weight 30
+       1 trails of weight 38
+       1 trails of weight 44
+       1 trails of weight 50
+
+Showing the trails up to weight 50 (in no particular order).
+
+2-round linear trail of total weight 8
+* Profile related to χ:
+Propagation weights:    4   4
+Active rows:            2   2
+* Profile related to θ:
+Gaps:      2   0
+Kernel:    N   k
+Previous round would have weight at least 10
+Round 0 (weight 4) after previous χ, then before θ of gap 2, then before χ (2 active rows):
+.XXXX  |  X.XXX  |  .....
+XX..X  |  X..XX  |  ..X..
+X.XXX  |  ..XXX  |  X.+..
+XXXX.  |  X.XXX  |  .....
+XX..X  |  X.XXX  |  .....
+          ---OO
+Round 1 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+.....  |  .....  |  .....
+..X..  |  .....  |  .....
+X.+..  |  X.+..  |  X.+..
+.....  |  .....  |  .....
+.....  |  X....  |  X....
+          -----
+
+3-round linear trail of total weight 16
+* Profile related to χ:
+Propagation weights:    6   6   4
+Active rows:            3   3   2
+* Profile related to θ:
+Gaps:      1   0   0
+Kernel:    N   k   k
+Previous round would have weight at least 10
+Round 0 (weight 6) after previous χ, then before θ of gap 1, then before χ (3 active rows):
+.XX..  |  ..XX.  |  .....
+X.X.X  |  ...X.  |  ..X..
+..XX.  |  X.XX.  |  X.+..
+.X...  |  ..XX.  |  .....
+....X  |  ...X.  |  ..X..
+          O-OO-
+Round 1 (weight 6) after previous χ, then before θ of gap 0, then before χ (3 active rows):
+.....  |  .....  |  .....
+..XX.  |  .X...  |  .X...
+X.+..  |  XX+..  |  XX+..
+.....  |  .....  |  .....
+..X..  |  X....  |  X....
+          -----
+Round 2 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+.....  |  .....  |  .....
+.X...  |  .....  |  .....
+X.+..  |  ..+..  |  ..+..
+.....  |  X...X  |  X...X
+XX...  |  X...X  |  X...X
+          -----
+
+4-round linear trail of total weight 24
+* Profile related to χ:
+Propagation weights:    4   8   6   6
+Active rows:            2   3   2   3
+* Profile related to θ:
+Gaps:      2   0   0   0
+Kernel:    N   k   N   N
+Previous round would have weight at least 10
+Round 0 (weight 4) after previous χ, then before θ of gap 2, then before χ (2 active rows):
+.XXXX  |  X.XXX  |  .....
+XX..X  |  X..XX  |  ..X..
+X.XXX  |  ..XXX  |  X.+..
+XXXX.  |  X.XXX  |  .....
+XX..X  |  X.XXX  |  .....
+          ---OO
+Round 1 (weight 8) after previous χ, then before θ of gap 0, then before χ (3 active rows):
+.....  |  ..X..  |  ..X..
+..X.X  |  .....  |  .....
+X.X..  |  X.X..  |  X.X..
+.....  |  .....  |  .....
+.....  |  X....  |  X....
+          -----
+Round 2 (weight 6) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+..X..  |  .....  |  .....
+.....  |  .....  |  .....
+X.X..  |  .XXX.  |  .XXX.
+.....  |  .....  |  .....
+X.X..  |  X...X  |  X...X
+          OOOOO
+Round 3 (weight 6) after previous χ, then before θ of gap 0, then before χ (3 active rows):
+.....  |  ...XX  |  ...XX
+.....  |  .....  |  .....
+.XX.X  |  ..X..  |  ..X..
+.....  |  XX...  |  XX...
+.X..X  |  .....  |  .....
+          OOOOO
+
+5-round linear trail of total weight 30
+* Profile related to χ:
+Propagation weights:    4   4  12   6   4
+Active rows:            2   2   4   2   2
+* Profile related to θ:
+Gaps:      2   0   1   1   0
+Kernel:    N   k   N   N   k
+Previous round would have weight at least 10
+Round 0 (weight 4) after previous χ, then before θ of gap 2, then before χ (2 active rows):
+.XXXX  |  X.XXX  |  .....
+XX..X  |  X..XX  |  ..X..
+X.XXX  |  ..XXX  |  X.+..
+XXXX.  |  X.XXX  |  .....
+XX..X  |  X.XXX  |  .....
+          ---OO
+Round 1 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+.....  |  .....  |  .....
+..X..  |  .....  |  .....
+X.+..  |  X.+..  |  X.+..
+.....  |  .....  |  .....
+.....  |  X....  |  X....
+          -----
+Round 2 (weight 12) after previous χ, then before θ of gap 1, then before χ (4 active rows):
+.....  |  .....  |  .XX..
+.....  |  .....  |  .XX..
+X.X..  |  .XX..  |  ..+..
+.....  |  X....  |  XXX..
+XXX..  |  X...X  |  XXX.X
+          -OO-O
+Round 3 (weight 6) after previous χ, then before θ of gap 1, then before χ (2 active rows):
+.XXXX  |  X.X..  |  X...X
+.XX.X  |  ..X.X  |  .....
+..+..  |  X.+XX  |  X.XX.
+X.X..  |  ..X.X  |  .....
+X..X.  |  ..X.X  |  .....
+          ---O-
+Round 4 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+....X  |  X....  |  X....
+.....  |  .....  |  .....
+X.+..  |  ..+..  |  ..+..
+.....  |  .....  |  .....
+.....  |  X....  |  X....
+          -----
+
+6-round linear trail of total weight 38
+* Profile related to χ:
+Propagation weights:    4   4  10  12   4   4
+Active rows:            2   2   4   4   2   2
+* Profile related to θ:
+Gaps:      2   0   1   0   1   0
+Kernel:    N   k   N   N   N   k
+Previous round would have weight at least 10
+Round 0 (weight 4) after previous χ, then before θ of gap 2, then before χ (2 active rows):
+.XXXX  |  X.XXX  |  .....
+XX..X  |  X..XX  |  ..X..
+X.XXX  |  ..XXX  |  X.+..
+XXXX.  |  X.XXX  |  .....
+XX..X  |  X.XXX  |  .....
+          ---OO
+Round 1 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+.....  |  .....  |  .....
+..X..  |  .....  |  .....
+X.+..  |  X.+..  |  X.+..
+.....  |  .....  |  .....
+.....  |  X....  |  X....
+          -----
+Round 2 (weight 10) after previous χ, then before θ of gap 1, then before χ (4 active rows):
+.....  |  .....  |  X...X
+.....  |  .....  |  X...X
+X.X..  |  ..X..  |  X.X.X
+.....  |  .....  |  X...X
+X....  |  X...X  |  .....
+          O-O-O
+Round 3 (weight 12) after previous χ, then before θ of gap 0, then before χ (4 active rows):
+....X  |  XXX..  |  XXX..
+....X  |  .....  |  .....
+..X..  |  ..X.X  |  ..X.X
+XXX.X  |  ...X.  |  ...X.
+.....  |  ..X..  |  ..X..
+          OOOOO
+Round 4 (weight 4) after previous χ, then before θ of gap 1, then before χ (2 active rows):
+XX...  |  .X.X.  |  ..XX.
+.....  |  X.X..  |  XX...
+.XX..  |  .XX..  |  ..+..
+X..XX  |  .XX..  |  .....
+..XXX  |  .XX..  |  .....
+          O--O-
+Round 5 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+..X..  |  .....  |  .....
+X....  |  .....  |  .....
+..+..  |  ..+X.  |  ..+X.
+.....  |  .....  |  .....
+.....  |  ...X.  |  ...X.
+          -----
+
+7-round linear trail of total weight 44
+* Profile related to χ:
+Propagation weights:    4   6   8   8  10   4   4
+Active rows:            2   3   4   3   4   2   2
+* Profile related to θ:
+Gaps:      2   0   0   0   0   1   0
+Kernel:    N   N   k   N   N   N   k
+Previous round would have weight at least 10
+Round 0 (weight 4) after previous χ, then before θ of gap 2, then before χ (2 active rows):
+XXXX.  |  .X..X  |  ..XX.
+XXXX.  |  .XXXX  |  .....
+.XXXX  |  XXXXX  |  X.+..
+XXX.X  |  .XXXX  |  .....
+X.XX.  |  .XXXX  |  .....
+          OO--O
+Round 1 (weight 6) after previous χ, then before θ of gap 0, then before χ (3 active rows):
+X.XX.  |  .....  |  .....
+.....  |  ....X  |  ....X
+X.X..  |  ..XX.  |  ..XX.
+.....  |  .....  |  .....
+.....  |  XX...  |  XX...
+          OOOOO
+Round 2 (weight 8) after previous χ, then before θ of gap 0, then before χ (4 active rows):
+.....  |  ..X..  |  ..X..
+.X..X  |  .....  |  .....
+..X..  |  ..X..  |  ..X..
+.....  |  ....X  |  ....X
+X....  |  ....X  |  ....X
+          -----
+Round 3 (weight 8) after previous χ, then before θ of gap 0, then before χ (3 active rows):
+..XXX  |  XX.X.  |  XX.X.
+.....  |  ...XX  |  ...XX
+..XX.  |  ..XX.  |  ..XX.
+....X  |  .....  |  .....
+....X  |  .....  |  .....
+          OOOOO
+Round 4 (weight 10) after previous χ, then before θ of gap 0, then before χ (4 active rows):
+...XX  |  X....  |  X....
+X..X.  |  .X..X  |  .X..X
+..X..  |  ..X..  |  ..X..
+.....  |  .....  |  .....
+.....  |  ...X.  |  ...X.
+          OOOOO
+Round 5 (weight 4) after previous χ, then before θ of gap 1, then before χ (2 active rows):
+XXX..  |  ..XX.  |  .....
+XX..X  |  ..XX.  |  .....
+..XX.  |  ..XX.  |  ..+..
+.....  |  ..X.X  |  ...XX
+...XX  |  .X.X.  |  .XX..
+          -O--O
+Round 6 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+.....  |  .....  |  .....
+.....  |  X....  |  X....
+..+..  |  ..+..  |  ..+..
+...X.  |  X....  |  X....
+.X...  |  .....  |  .....
+          -----
+
+8-round linear trail of total weight 50
+* Profile related to χ:
+Propagation weights:    4   4  10   6   6  10   6   4
+Active rows:            2   2   3   3   3   3   3   2
+* Profile related to θ:
+Gaps:      1   0   0   0   0   0   0   0
+Kernel:    N   k   N   k   N   k   k   k
+Previous round would have weight at least 10
+Round 0 (weight 4) after previous χ, then before θ of gap 1, then before χ (2 active rows):
+X.XX.  |  .XX.X  |  ..X..
+.X.XX  |  .X..X  |  .....
+.X+.X  |  .X+XX  |  ..+X.
+..X.X  |  .X..X  |  .....
+X.X..  |  .X..X  |  .....
+          -OOOO
+Round 1 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+..X..  |  .....  |  .....
+.....  |  ...X.  |  ...X.
+..+X.  |  ..+X.  |  ..+X.
+.....  |  .....  |  .....
+.....  |  .....  |  .....
+          -----
+Round 2 (weight 10) after previous χ, then before θ of gap 0, then before χ (3 active rows):
+.....  |  ..X.X  |  ..X.X
+...XX  |  .X.X.  |  .X.X.
+X.+XX  |  ..+..  |  ..+..
+.....  |  .....  |  .....
+.....  |  X....  |  X....
+          OOOOO
+Round 3 (weight 6) after previous χ, then before θ of gap 0, then before χ (3 active rows):
+..X..  |  .....  |  .....
+XX...  |  .....  |  .....
+..+..  |  ..+X.  |  ..+X.
+.....  |  ....X  |  ....X
+X....  |  ...XX  |  ...XX
+          -----
+Round 4 (weight 6) after previous χ, then before θ of gap 0, then before χ (3 active rows):
+.....  |  .X...  |  .X...
+.....  |  ..XX.  |  ..XX.
+X.+X.  |  ..+..  |  ..+..
+....X  |  .....  |  .....
+X..X.  |  X...X  |  X...X
+          OOOOO
+Round 5 (weight 10) after previous χ, then before θ of gap 0, then before χ (3 active rows):
+.XX..  |  ..XX.  |  ..XX.
+..X.X  |  .....  |  .....
+..+..  |  X.+X.  |  X.+X.
+.....  |  X.X..  |  X.X..
+.X..X  |  .....  |  .....
+          -----
+Round 6 (weight 6) after previous χ, then before θ of gap 0, then before χ (3 active rows):
+..X..  |  .....  |  .....
+.....  |  ...X.  |  ...X.
+..XX.  |  ..XX.  |  ..XX.
+X....  |  .....  |  .....
+.....  |  ..X..  |  ..X..
+          -----
+Round 7 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+.....  |  .....  |  .....
+...X.  |  .XX..  |  .XX..
+..X..  |  .XX..  |  .XX..
+.....  |  .....  |  .....
+..XX.  |  .....  |  .....
+          -----
+

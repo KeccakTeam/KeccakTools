@@ -190,10 +190,8 @@ void KeccakFEquations::genRoundEquations(ostream& fout, bool forSage) const
     for(unsigned int i=0; i<nrRounds; i++) {
         if (!forSage)
             fout << "// --- Round " << dec << i << endl;
-        string inputName;
-        inputName += input;
-        string outputName;
-        outputName += output;
+        string inputName(1, input);
+        string outputName(1, output);
         vector<SymbolicLane> state;
         initializeState(state, inputName);
         round(state, i);
@@ -205,52 +203,52 @@ void KeccakFEquations::genRoundEquations(ostream& fout, bool forSage) const
 
 void KeccakFEquations::genComponentEquations(ostream& fout, const string& prefixInput, const string& prefixOutput) const
 {
-    { // Theta
-        fout << "// --- Theta" << endl;
+    { // θ
+        fout << "// --- \xCE\xB8" << endl;
         vector<SymbolicLane> state;
         initializeState(state, prefixInput);
         theta(state);
         genEquations(fout, state, prefixOutput);
     }
-    { // Theta^-1
-        fout << "// --- Theta^-1" << endl;
+    { // θ^-1
+        fout << "// --- \xCE\xB8^-1" << endl;
         vector<SymbolicLane> state;
         initializeState(state, prefixInput);
         inverseTheta(state);
         genEquations(fout, state, prefixOutput);
     }
-    { // Pi then Rho
-        fout << "// --- Pi then Rho" << endl;
+    { // ρ then π
+        fout << "// --- \xCF\x81 then \xCF\x80" << endl;
         vector<SymbolicLane> state;
         initializeState(state, prefixInput);
-        pi(state);
         rho(state);
+        pi(state);
         genEquations(fout, state, prefixOutput);
     }
-    { // Rho^-1 then Pi^-1
-        fout << "// --- Rho^-1 then Pi^-1" << endl;
+    { // π^-1 then ρ^-1
+        fout << "// --- \xCF\x80^-1 then \xCF\x81^-1" << endl;
         vector<SymbolicLane> state;
         initializeState(state, prefixInput);
-        inverseRho(state);
         inversePi(state);
+        inverseRho(state);
         genEquations(fout, state, prefixOutput);
     }
-    { // Chi
-        fout << "// --- Chi" << endl;
+    { // χ
+        fout << "// --- \xCF\x87" << endl;
         vector<SymbolicLane> state;
         initializeState(state, prefixInput);
         chi(state);
         genEquations(fout, state, prefixOutput);
     }
-    { // Chi^-1
-        fout << "// --- Chi^-1" << endl;
+    { // χ^-1
+        fout << "// --- \xCF\x87^-1" << endl;
         vector<SymbolicLane> state;
         initializeState(state, prefixInput);
         inverseChi(state);
         genEquations(fout, state, prefixOutput);
     }
-    for(unsigned int i=0; i<roundConstants.size(); i++) { // Iota[i]
-        fout << "// --- Iota for round " << dec << i << endl;
+    for(unsigned int i=0; i<roundConstants.size(); i++) { // ι
+        fout << "// --- \xCE\xB9 for round " << dec << i << endl;
         vector<SymbolicLane> state;
         initializeState(state, prefixInput);
         iota(state, i);

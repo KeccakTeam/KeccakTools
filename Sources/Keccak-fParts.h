@@ -18,11 +18,11 @@ using namespace std;
 
 // -------------------------------------------------------------
 //
-// Rows and slices
+// Rows, columns, lanes and slices
 //
 // -------------------------------------------------------------
 
-/** The number of rows and columns in Keccak-f.
+/** The number of rows and columns in Keccak-<i>f</i>.
   */
 const int nrRowsAndColumns = 5;
 
@@ -30,6 +30,11 @@ const int nrRowsAndColumns = 5;
   * bits of a row, in the least significant bits of the byte.
   */
 typedef unsigned char RowValue;
+
+/** The ColumnsValue type is one byte, containing the 5
+  * bits of a column, in the least significant bits of the byte.
+  */
+typedef unsigned char ColumnValue;
 
 /** The SliceValue type is one 32-bit word, containing the 5
   * rows of a slice, each located in 5 bits of this word. The row y is
@@ -79,6 +84,31 @@ void setRow(vector<SliceValue>& slices, RowValue row, unsigned int y = 0, unsign
 /** This method constructs a slice value from 5 row values.
   */
 SliceValue getSliceValue(RowValue row0, RowValue row1, RowValue row2, RowValue row3, RowValue row4);
+
+/** This method returns the value of a given column in a slice.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  x   The x coordinate.
+  * @param  z   The z coordinate.
+  */
+ColumnValue getColumn(const vector<SliceValue>& slices, unsigned int x = 0, unsigned int z = 0);
+
+/** This method sets the value of a particular column in a vector of slices.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  column   The row value.
+  * @param  x   The x coordinate.
+  * @param  z   The z coordinate.
+  */
+void setColumn(vector<SliceValue>& slices, ColumnValue column, unsigned int x = 0, unsigned int z = 0);
+
+/** This method complements all the bits of a particular column in a vector of slices.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  x   The x coordinate.
+  * @param  z   The z coordinate.
+  */
+void invertColumn(vector<SliceValue>& slices, unsigned int x = 0, unsigned int z = 0);
 
 /** This function translates a row value along the X axis and returns the
   * translated value. Note that 0 <= @a dx < 5 is required.
@@ -150,7 +180,7 @@ void setSlice(vector<LaneValue>& lanes, SliceValue slice, unsigned int z = 0);
   * @param  lanes   The state as a vector of lanes.
   * @param  laneSize    The lane size, which is also the number of slices.
   */
-void fromLanesToSlices(vector<SliceValue>& slices, const vector<LaneValue>& lanes, unsigned int laneSize);
+void fromLanesToSlices(const vector<LaneValue>& lanes, vector<SliceValue>& slices, unsigned int laneSize);
 
  /** This method creates the value of a state represented as a vector of lanes
   * from a state represented as a vector of slices.
@@ -158,7 +188,7 @@ void fromLanesToSlices(vector<SliceValue>& slices, const vector<LaneValue>& lane
   * @param  lanes   The destination for the lanes.
   * @param  slices  The state as a vector of slices.
   */
-void fromSlicesToLanes(vector<LaneValue>& lanes, const vector<SliceValue>& slices);
+void fromSlicesToLanes(const vector<SliceValue>& slices, vector<LaneValue>& lanes);
 
 
 // -------------------------------------------------------------
@@ -166,10 +196,6 @@ void fromSlicesToLanes(vector<LaneValue>& lanes, const vector<SliceValue>& slice
 // Display
 //
 // -------------------------------------------------------------
-
-/** This method outputs to @a fout the value of the slice in a human readable way.
-  */
-void displaySlice(ostream& fout, SliceValue slice);
 
 /** This method outputs to fout the value of the state in a human readable way.
   * The slices are displayed side by side.
@@ -227,59 +253,6 @@ unsigned int getNrActiveRows(const vector<SliceValue>& slices);
 /** This method returns the number of active rows in the state given as lanes.
   */
 unsigned int getNrActiveRows(const vector<LaneValue>& lanes);
-
-
-// -------------------------------------------------------------
-//
-// Parities
-//
-// -------------------------------------------------------------
-
-/** The PackedParities type is one 64-bit word, containing up to 8 5-bit
-  * parities, coming from up to 8 slices. The parity of slice z is
-  * in the bits corresponding to (0-31)*32^z in the word.
-  * See getParitiesFromParity() and getParityFromParities() for more details.
-  */
-typedef UINT64 PackedParities;
-
-/** This function returns a PackedParities with bits set to zero, except for parity at
-  * slice z, where the value is given by the argument parity.
-  */
-inline PackedParities getParitiesFromParity(const RowValue& parity, const unsigned int& z)
-{
-    return (PackedParities)parity << (5*z);
-}
-
-/** This function returns the parity value at slice z in the given parities value.
-  */
-inline RowValue getParityFromParities(const PackedParities& parities, const unsigned int& z)
-{
-    return (parities >> (5*z)) & 0x1F;
-}
-
-/** This function computes the parity of a slice.
-  */
-RowValue getParity(SliceValue slice);
-
-/** This function computes the parities of a state, and stores them in a
-  * PackedParities.
-  */
-PackedParities getParities(const vector<SliceValue>& state);
-
-/** This function computes the parities of a state, and stores them in a
-  * vector of RowValue.
-  */
-void getParities(vector<RowValue>& parities, const vector<SliceValue>& state);
-
-/** This function computes the parities of a state, and stores them in a
-  * vector of five lanes.
-  */
-void getParities(vector<LaneValue>& parities, const vector<LaneValue>& state);
-
-/** This function converts the parities expressed as a vector of parities of each slice
-  * into a vector of parities of each sheet.
-  */
-void fromSlicesToLanesParities(vector<LaneValue>& paritiesLanes, const vector<RowValue>& paritiesSlices);
 
 
 #endif

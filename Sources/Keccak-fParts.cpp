@@ -283,13 +283,6 @@ void displayState(ostream& fout, const vector<SliceValue>& state, bool showParit
     }
 }
 
-void displaySlice(ostream& fout, SliceValue slice)
-{
-    vector<SliceValue> slices;
-    slices.push_back(slice);
-    displayState(fout, slices);
-}
-
 void displayStates(ostream& fout,
                    const vector<SliceValue>& state1, bool showParity1,
                    const vector<SliceValue>& state2, bool showParity2)
@@ -395,6 +388,28 @@ void setRow(vector<SliceValue>& slices, RowValue row, unsigned int y, unsigned i
     slices[z] = (slices[z] & (~getSliceFromRow(0x1F, y))) | getSliceFromRow(row, y);
 }
 
+ColumnValue getColumn(const vector<SliceValue>& slices, unsigned int x, unsigned int z)
+{
+    ColumnValue column = 0;
+    for(unsigned int y=0; y<5; y++)
+        column |= ((slices[z] >> KeccakF::index(x, y)) & 1) << y;
+    return column;
+}
+
+void setColumn(vector<SliceValue>& slices, ColumnValue column, unsigned int x, unsigned int z)
+{
+    const SliceValue columnMask = (1 << 0) | (1 << 5) | (1 << 10) | (1 << 15) | (1 << 20);
+    slices[z] &= ~(columnMask << x);
+    for(unsigned int y=0; y<5; y++)
+        slices[z] |= ((column >> y) & 1) << KeccakF::index(x, y);
+}
+
+void invertColumn(vector<SliceValue>& slices, unsigned int x, unsigned int z)
+{
+    const SliceValue columnMask = (1 << 0) | (1 << 5) | (1 << 10) | (1 << 15) | (1 << 20);
+    slices[z] ^= (columnMask << x);
+}
+
 SliceValue getSlice(const vector<LaneValue>& lanes, unsigned int z)
 {
     SliceValue result = 0;
@@ -409,66 +424,16 @@ void setSlice(vector<LaneValue>& lanes, SliceValue slice, unsigned int z)
         setRow(lanes, getRowFromSlice(slice, y), y, z);
 }
 
-void fromLanesToSlices(vector<SliceValue>& slices, const vector<LaneValue>& lanes, unsigned int laneSize)
+void fromLanesToSlices(const vector<LaneValue>& lanes, vector<SliceValue>& slices, unsigned int laneSize)
 {
     slices.resize(laneSize);
     for(unsigned int z=0; z<laneSize; z++)
         slices[z] = getSlice(lanes, z);
 }
 
-void fromSlicesToLanes(vector<LaneValue>& lanes, const vector<SliceValue>& slices)
+void fromSlicesToLanes(const vector<SliceValue>& slices, vector<LaneValue>& lanes)
 {
     lanes.assign(25, 0);
     for(unsigned int z=0; z<slices.size(); z++)
         setSlice(lanes, slices[z], z);
-}
-
-// -------------------------------------------------------------
-//
-// Parities
-//
-// -------------------------------------------------------------
-
-RowValue getParity(SliceValue slice)
-{
-    RowValue parity = 0;
-    for(unsigned int y=0; y<nrRowsAndColumns; y++)
-        parity ^= getRowFromSlice(slice, y);
-    return parity;
-}
-
-PackedParities getParities(const vector<SliceValue>& state)
-{
-    PackedParities parities = 0;
-    for(unsigned int z=0; z<state.size(); z++)
-        parities ^= getParitiesFromParity(getParity(state[z]), z);
-    return parities;
-}
-
-void getParities(vector<RowValue>& parities, const vector<SliceValue>& state)
-{
-    parities.resize(state.size());
-    for(unsigned int z=0; z<state.size(); z++)
-        parities[z] = getParity(state[z]);
-}
-
-void getParities(vector<LaneValue>& parities, const vector<LaneValue>& state)
-{
-    if (parities.size() != nrRowsAndColumns)
-        parities.resize(nrRowsAndColumns);
-    for(unsigned int x=0; x<nrRowsAndColumns; x++) {
-        parities[x] = state[KeccakF::index(x,0)]; 
-        for(unsigned int y=1; y<5; y++) 
-            parities[x] ^= state[KeccakF::index(x,y)];
-    }
-}
-
-void fromSlicesToLanesParities(vector<LaneValue>& paritiesLanes, const vector<RowValue>& paritiesSlices)
-{
-    paritiesLanes.assign(nrRowsAndColumns, 0);
-    for(unsigned int z=0; z<paritiesSlices.size(); z++)
-        for(unsigned int x=0; x<nrRowsAndColumns; x++) {
-            if ((paritiesSlices[z] & ((RowValue)1 << x)) != 0)
-                paritiesLanes[x] ^= (LaneValue)1 << z;
-        }
 }

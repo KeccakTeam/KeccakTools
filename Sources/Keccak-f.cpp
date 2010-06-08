@@ -60,6 +60,11 @@ unsigned int KeccakF::getWidth() const
     return width;
 }
 
+unsigned int KeccakF::getLaneSize() const
+{
+    return laneSize;
+}
+
 unsigned int KeccakF::index(int x, int y)
 {
     x %= 5;

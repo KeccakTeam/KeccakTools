@@ -30,7 +30,7 @@ public:
       *                     function. This must be a multiple of 8.
       * @param  aCapacity   The desired capacity (in bits) of the Keccak sponge 
       *                     function. The sum of the rate and capacity must
-      *                     be equal to the width of one of the Keccak-f 
+      *                     be equal to the width of one of the Keccak-<i>f</i> 
       *                     permutations.
       * @param  aDiversifier    The desired diversifier. This can be any 
       *                     value between 0 and 255.
