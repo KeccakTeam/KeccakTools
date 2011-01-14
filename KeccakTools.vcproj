@@ -171,6 +171,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Sources\duplex.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Sources\genKATShortMsg.cpp"
 				>
 			</File>
@@ -227,6 +231,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sources\padding.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Sources\sponge.cpp"
 				>
 			</File>
@@ -240,6 +248,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\Sources\duplex.h"
+				>
+			</File>
 			<File
 				RelativePath=".\Sources\Keccak-f.h"
 				>
@@ -286,6 +298,10 @@
 			</File>
 			<File
 				RelativePath=".\Sources\Keccak.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sources\padding.h"
 				>
 			</File>
 			<File

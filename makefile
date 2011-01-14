@@ -1,6 +1,7 @@
 all: KeccakTools
 
 SOURCES = \
+	Sources/duplex.cpp \
     Sources/genKATShortMsg.cpp \
     Sources/Keccak.cpp \
     Sources/Keccak-f.cpp \
@@ -15,10 +16,12 @@ SOURCES = \
     Sources/Keccak-fPropagation.cpp \
     Sources/Keccak-fTrails.cpp \
     Sources/main.cpp \
+	Sources/padding.cpp \
     Sources/sponge.cpp \
     Sources/transformations.cpp
 
 HEADERS = \
+	Sources/duplex.h \
     Sources/Keccak.h \
     Sources/Keccak-f.h \
     Sources/Keccak-f25LUT.h \
@@ -31,6 +34,7 @@ HEADERS = \
     Sources/Keccak-fParts.h \
     Sources/Keccak-fPropagation.h \
     Sources/Keccak-fTrails.h \
+	Sources/padding.h \
     Sources/sponge.h \
     Sources/types.h \
     Sources/transformations.h

@@ -1,18 +1,21 @@
 /*
-Tools for the Keccak sponge function family.
-Authors: Guido Bertoni, Joan Daemen, Michaël Peeters and Gilles Van Assche
+The Keccak sponge function, designed by Guido Bertoni, Joan Daemen,
+Michaël Peeters and Gilles Van Assche. For more information, feedback or
+questions, please refer to our website: http://keccak.noekeon.org/
 
-This code is hereby put in the public domain. It is given as is, 
-without any guarantee.
+Implementation by the designers,
+hereby denoted as "the implementer".
 
-For more information, feedback or questions, please refer to our website:
-http://keccak.noekeon.org/
+To the extent possible under law, the implementer has waived all copyright
+and related or neighboring rights to the source code in this file.
+http://creativecommons.org/publicdomain/zero/1.0/
 */
 
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include "duplex.h"
 #include "Keccak.h"
 #include "Keccak-f25LUT.h"
 #include "Keccak-fCodeGen.h"
@@ -50,23 +53,29 @@ void testKeccakF()
     cout << endl;
 }
 
-void testKeccak(const char *message, unsigned int length)
+void display(const UINT8 *data, unsigned int length)
 {
-    Keccak keccak;
-    keccak.absorb((UINT8*)message, length);
-    keccak.pad();
-    UINT8 squeezed[512];
-    keccak.squeeze(squeezed, 4096);
-    cout << "Message of length " << dec << length << endl;
-    for(unsigned int i=0; i<512; i++) {
+    for(unsigned int i=0; i<length; i++) {
         cout.width(2);
         cout.fill('0');
-        cout << hex << (int)squeezed[i] << " ";
+        cout << hex << (int)data[i] << " ";
     }
     cout << endl;
 }
 
-void testKeccak()
+void testKeccakSponge(const char *message, unsigned int length)
+{
+    Keccak keccak;
+    cout << keccak << endl;
+
+    keccak.absorb((UINT8*)message, length);
+    UINT8 squeezed[512];
+    keccak.squeeze(squeezed, 4096);
+    cout << "Message of length " << dec << length << endl;
+    display(squeezed, 512);
+}
+
+void testKeccakSponge()
 {
     // Test messages from ShortMsgKAT.txt
     const char *message1 = "\x53\x58\x7B\x19"; // last byte aligned on LSB
@@ -90,8 +99,27 @@ void testKeccak()
         "\xB4\xCD\xE5\xD0\x32\xE9\x2A\xB8\x9F\x0A\xE1";
     unsigned int message2Length = 2008;
 
-    testKeccak(message1, message1Length);
-    testKeccak(message2, message2Length);
+    testKeccakSponge(message1, message1Length);
+    testKeccakSponge(message2, message2Length);
+}
+
+void testKeccakDuplex()
+{
+    KeccakF keccakF(1600);
+    MultiRatePadding pad;
+    Duplex duplex(&keccakF, &pad, 1026);
+    UINT8 output[128];
+
+    cout << duplex << endl;
+
+    duplex.duplexing((const UINT8*)"", 0, output, 1024);
+    cout << "First output: "; display(output, 128);
+    duplex.duplexing((const UINT8*)"\x00", 1, output, 1024);
+    cout << "Second output: "; display(output, 128);
+    duplex.duplexing((const UINT8*)"\x03", 2, output, 1024);
+    cout << "Third output: "; display(output, 128);
+    duplex.duplexing((const UINT8*)"\x06", 3, output, 1024);
+    cout << "Fourth output: "; display(output, 128);
 }
 
 void generateEquations()
@@ -291,7 +319,8 @@ int main(int argc, char *argv[])
     try {
         //TODO: uncomment the desired function
         //testKeccakF();
-        //testKeccak();
+        //testKeccakSponge();
+        //testKeccakDuplex();
         //genKATShortMsg_main();
         //generateEquations();
         //generateCode();

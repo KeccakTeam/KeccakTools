@@ -1,12 +1,16 @@
 /*
-Tools for the Keccak sponge function family.
-Authors: Guido Bertoni, Joan Daemen, Michaël Peeters and Gilles Van Assche
+KeccakTools
 
-This code is hereby put in the public domain. It is given as is, 
-without any guarantee.
+The Keccak sponge function, designed by Guido Bertoni, Joan Daemen,
+Michaël Peeters and Gilles Van Assche. For more information, feedback or
+questions, please refer to our website: http://keccak.noekeon.org/
 
-For more information, feedback or questions, please refer to our website:
-http://keccak.noekeon.org/
+Implementation by the designers,
+hereby denoted as "the implementer".
+
+To the extent possible under law, the implementer has waived all copyright
+and related or neighboring rights to the source code in this file.
+http://creativecommons.org/publicdomain/zero/1.0/
 */
 
 #include <sstream>
@@ -21,15 +25,17 @@ SpongeException::SpongeException(const string& aReason)
 }
 
 
-Sponge::Sponge(Transformation *aF, unsigned int aCapacity)
-    : f(aF), capacity(aCapacity), squeezing(false), validInput(false), bitsInCurrentBlock(0)
+Sponge::Sponge(const Transformation *aF, const PaddingRule *aPad, unsigned int aRate)
+    : f(aF), pad(aPad), rate(aRate), squeezing(false), absorbQueue(rate)
 {
     unsigned int width = f->getWidth();
-    if (capacity >= width)
-        throw SpongeException("The requested capacity is too large when using this function.");
-    rate = width-capacity;
-    if ((rate % 8) != 0)
-        throw SpongeException("The rate must be a multiple of 8.");
+    if (rate <= 0)
+        throw SpongeException("The requested rate must be strictly positive.");
+    if (rate > width)
+        throw SpongeException("The requested rate is too large when using this function.");
+    if (!pad->isRateValid(rate))
+        throw SpongeException("The requested rate is incompatible with the padding rule.");
+    capacity = width-rate;
     state.reset(new UINT8[(width+7)/8]);
     for(unsigned int i=0; i<(width+7)/8; i++)
         state.get()[i] = 0;
@@ -45,124 +51,101 @@ unsigned int Sponge::getRate()
     return rate;
 }
 
+void Sponge::reset()
+{
+    squeezing = false;
+    unsigned int width = f->getWidth();
+    for(unsigned int i=0; i<(width+7)/8; i++)
+        state.get()[i] = 0;
+    absorbQueue.clear();
+    squeezeBuffer.clear();
+}
+
 void Sponge::absorb(const UINT8 *input, unsigned int lengthInBits)
 {
-    if ((bitsInCurrentBlock % 8) != 0)
-        throw SpongeException("The length of the input must be a multiple of 8, except for the last call to absorb().");
+    absorbQueue.append(input, lengthInBits);
     if (squeezing)
         throw SpongeException("The absorbing phase is over.");
     unsigned int i = 0;
-    while(i < lengthInBits) {
-        unsigned int partialBlock = lengthInBits - i;
-        if (partialBlock+bitsInCurrentBlock > rate)
-            partialBlock = rate-bitsInCurrentBlock;
-        for(unsigned int j=0; j<partialBlock; j+=8)
-            currentBlock.push_back(input[(i+j)/8]);
-        bitsInCurrentBlock += partialBlock;
-        if (bitsInCurrentBlock == rate)
-            absorbCurrentBlock();
-        i += partialBlock;
+    while(absorbQueue.firstBlockIsWhole()) {
+        absorbBlock(absorbQueue.firstBlock());
+        absorbQueue.removeFirstBlock();
     }
 }
 
-void Sponge::padCurrentBlock(unsigned int desiredLengthFactor)
+void Sponge::absorbBlock(const vector<UINT8>& block)
 {
-    if (desiredLengthFactor == 0)
-        throw SpongeException("The desired length factor must be greater than zero.");
-    if ((desiredLengthFactor % 8) != 0)
-        throw SpongeException("The desired length factor must be a multiple of 8.");
-    if ((rate % desiredLengthFactor) != 0)
-        throw SpongeException("The desired length factor must divide the rate.");
-    if ((bitsInCurrentBlock % 8) != 0) {
-        // Here the bits are numbered from 0=LSB to 7=MSB
-        UINT8 padByte = 1 << (bitsInCurrentBlock % 8);
-        currentBlock.back() |= padByte;
-        bitsInCurrentBlock++;
-        if ((bitsInCurrentBlock % 8) != 0) {
-            UINT8 maskByte = (UINT8)0xFF << (bitsInCurrentBlock % 8);
-            currentBlock.back() &= ~maskByte;
-            bitsInCurrentBlock += 8-(bitsInCurrentBlock % 8);
-        }
-    }
-    else {
-        currentBlock.push_back(0x01);
-        bitsInCurrentBlock += 8;
-    }
-    while((bitsInCurrentBlock % desiredLengthFactor) != 0) {
-        currentBlock.push_back(0x00);
-        bitsInCurrentBlock += 8;
-    }
-    if (bitsInCurrentBlock == rate)
-        absorbCurrentBlock();
-}
-
-void Sponge::pad()
-{
-    padCurrentBlock(rate);
+    for(vector<UINT8>::size_type i=0; i<block.size(); ++i)
+        state.get()[i] ^= block[i];
+    (*f)(state.get());
 }
 
 void Sponge::squeeze(UINT8 *output, unsigned int desiredLengthInBits)
 {
-    if ((desiredLengthInBits % 8) != 0)
-        throw SpongeException("The desired output length must be a multiple of 8.");
     if (!squeezing)
         flushAndSwitchToSqueezingPhase();
-    unsigned int i = 0;
-    while(i < desiredLengthInBits) {
-        if (bitsInCurrentBlock == 0)
-            squeezeIntoCurrentBlock();
-        unsigned int partialBlock = desiredLengthInBits-i;
-        if (partialBlock > bitsInCurrentBlock)
-            partialBlock = bitsInCurrentBlock;
-        for(unsigned int j=0; j<partialBlock; j+=8) {
-            output[(i+j)/8] = currentBlock.front();
-            currentBlock.pop_front();
+    if ((rate % 8) == 0) {
+        if ((desiredLengthInBits % 8) != 0)
+            throw SpongeException("The desired output length must be a multiple of 8.");
+        unsigned int desiredLengthInBytes = desiredLengthInBits / 8;
+        while(desiredLengthInBytes > 0) {
+            if (squeezeBuffer.size() == 0)
+                squeezeIntoBuffer();
+            while((desiredLengthInBytes > 0) && (squeezeBuffer.size() > 0)) {
+                (*output) = squeezeBuffer.front();
+                output++;
+                desiredLengthInBytes--;
+                squeezeBuffer.pop_front();
+            }
         }
-        bitsInCurrentBlock -= partialBlock;
-        i += partialBlock;
+    }
+    else {
+        if (desiredLengthInBits != rate)
+            throw SpongeException("The desired output length must be equal to the rate.");
+        if (squeezeBuffer.size() == 0)
+            squeezeIntoBuffer();
+        while(squeezeBuffer.size() > 0) {
+            (*output) = squeezeBuffer.front();
+            output++;
+            squeezeBuffer.pop_front();
+        }
     }
 }
 
-void Sponge::absorbCurrentBlock()
+void Sponge::squeezeIntoBuffer()
 {
-    // bitsInCurrentBlock is assumed to be equal to rate
-    for(vector<UINT8>::size_type i=0; i<currentBlock.size(); ++i)
-        state.get()[i] ^= currentBlock[i];
-    validInput = false;
-    for(vector<UINT8>::size_type i=0; i<currentBlock.size(); ++i)
-        if (currentBlock[i] != 0) {
-            validInput = true;
-            break;
-        }
-    currentBlock.clear();
-    bitsInCurrentBlock = 0;
     (*f)(state.get());
+    fromStateToSqueezeBuffer();
 }
 
-void Sponge::squeezeIntoCurrentBlock()
+void Sponge::fromStateToSqueezeBuffer()
 {
-    // bitsInCurrentBlock is assumed to be zero
     for(unsigned int i=0; i<rate/8; ++i)
-        currentBlock.push_back(state.get()[i]);
-    bitsInCurrentBlock = rate;
-    (*f)(state.get());
+        squeezeBuffer.push_back(state.get()[i]);
+    if ((rate % 8) != 0) {
+        UINT8 lastByte = (state.get())[rate/8];
+        UINT8 mask = (1 << (rate % 8)) - 1;
+        squeezeBuffer.push_back(lastByte & mask);
+    }
 }
 
 void Sponge::flushAndSwitchToSqueezingPhase()
 {
-    if (bitsInCurrentBlock == rate)
-        absorbCurrentBlock();
-    if (bitsInCurrentBlock > 0)
-        throw SpongeException("The input must contain a whole number of blocks.");
-    if (!validInput)
-        throw SpongeException("The input is not a valid sponge input.");
+    pad->pad(rate, absorbQueue);
+    while(absorbQueue.firstBlockIsWhole()) {
+        absorbBlock(absorbQueue.firstBlock());
+        absorbQueue.removeFirstBlock();
+    }
     squeezing = true;
+    fromStateToSqueezeBuffer();
 }
 
 string Sponge::getDescription() const
 {
     stringstream a;
-    a << "Sponge(r=" << dec << rate << ", c=" << capacity << ") using " << (*f);
+    a << "Sponge[f=" << (*f) << ", pad=" << (*pad)
+        << ", r=" << dec << rate 
+        << ", c=" << capacity << "]";
     return a.str();
 }
 
