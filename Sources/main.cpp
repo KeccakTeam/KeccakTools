@@ -17,6 +17,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include <sstream>
 #include "duplex.h"
 #include "Keccak.h"
+#include "KeccakCrunchyContest.h"
 #include "Keccak-f25LUT.h"
 #include "Keccak-fCodeGen.h"
 #include "Keccak-fDCEquations.h"
@@ -330,6 +331,7 @@ int main(int argc, char *argv[])
         //extendTrailAtTheEnd();
         //extendTrailAtTheBeginning();
         //generateDCTrailEquations();
+        //verifyChallenges();
     }
     catch(SpongeException e) {
         cout << e.reason << endl;

@@ -217,6 +217,20 @@ public:
       * @param   out    The output state value returned as a vector of slices.
       */
     void reverseLambdaBeforeTheta(const vector<SliceValue>& in, vector<SliceValue>& out) const;
+    /** This method applies θ in the "direct" direction:
+      * - DC: θ;
+      * - LC: θ<sup>t</sup>.
+      * @param   in     The input state value given as a vector of slices.
+      * @param   out    The output state value returned as a vector of slices.
+      */
+    void directTheta(const vector<SliceValue>& in, vector<SliceValue>& out) const;
+    /** This method applies θ in the "reverse" direction:
+      * - DC: θ<sup>-1</sup>;
+      * - LC: θ<sup>-1t</sup>.
+      * @param   in     The input state value given as a vector of slices.
+      * @param   out    The output state value returned as a vector of slices.
+      */
+    void reverseTheta(const vector<SliceValue>& in, vector<SliceValue>& out) const;
     /** This method applies the part of λ after θ in the "direct" direction:
       * - DC: ρ then π;
       * - LC: identity.

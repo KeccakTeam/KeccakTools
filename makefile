@@ -4,6 +4,7 @@ SOURCES = \
 	Sources/duplex.cpp \
     Sources/genKATShortMsg.cpp \
     Sources/Keccak.cpp \
+    Sources/KeccakCrunchyContest.cpp \
     Sources/Keccak-f.cpp \
     Sources/Keccak-f25LUT.cpp \
     Sources/Keccak-fAffineBases.cpp \
@@ -23,6 +24,7 @@ SOURCES = \
 HEADERS = \
 	Sources/duplex.h \
     Sources/Keccak.h \
+    Sources/KeccakCrunchyContest.h \
     Sources/Keccak-f.h \
     Sources/Keccak-f25LUT.h \
     Sources/Keccak-fAffineBases.h \

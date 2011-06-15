@@ -308,6 +308,48 @@ void KeccakFPropagation::reverseLambdaBeforeTheta(const vector<SliceValue>& in, 
     parent.lambdaAfterTheta(in, out, reverseLambdaMode);
 }
 
+void KeccakFPropagation::directTheta(const vector<SliceValue>& in, vector<SliceValue>& out) const
+{
+    vector<LaneValue> lanes;
+    fromSlicesToLanes(in, lanes);
+    if (lambdaMode == KeccakFDCLC::Straight) {
+        parent.theta(lanes);
+    }
+    else if (lambdaMode == KeccakFDCLC::Inverse) {
+        parent.inverseTheta(lanes);
+    }
+    else if (lambdaMode == KeccakFDCLC::Transpose) {
+        parent.thetaTransposed(lanes);
+    }
+    else if (lambdaMode == KeccakFDCLC::Dual) {
+        parent.thetaTransEnvelope(lanes);
+        parent.inverseTheta(lanes);
+        parent.thetaTransEnvelope(lanes);
+    }
+    fromLanesToSlices(lanes, out, in.size());
+}
+
+void KeccakFPropagation::reverseTheta(const vector<SliceValue>& in, vector<SliceValue>& out) const
+{
+    vector<LaneValue> lanes;
+    fromSlicesToLanes(in, lanes);
+    if (reverseLambdaMode == KeccakFDCLC::Straight) {
+        parent.theta(lanes);
+    }
+    else if (reverseLambdaMode == KeccakFDCLC::Inverse) {
+        parent.inverseTheta(lanes);
+    }
+    else if (reverseLambdaMode == KeccakFDCLC::Transpose) {
+        parent.thetaTransposed(lanes);
+    }
+    else if (reverseLambdaMode == KeccakFDCLC::Dual) {
+        parent.thetaTransEnvelope(lanes);
+        parent.inverseTheta(lanes);
+        parent.thetaTransEnvelope(lanes);
+    }
+    fromLanesToSlices(lanes, out, in.size());
+}
+
 void KeccakFPropagation::directLambdaAfterTheta(const vector<SliceValue>& in, vector<SliceValue>& out) const
 {
     parent.lambdaAfterTheta(in, out, lambdaMode);

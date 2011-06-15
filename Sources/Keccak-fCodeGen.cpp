@@ -415,7 +415,7 @@ void KeccakFCodeGen::genMacroFile(ostream& fout, bool laneComplementing) const
     genCodeForPrepareTheta(fout);
     if (laneComplementing) {
         const SliceValue inChiMask = 0x9d14ad;
-        const SliceValue outChiMask = 0x121106; // see Keccak main document on lane complementing
+        const SliceValue outChiMask = 0x121106; // see "Keccak implementation overview", Section "The lane complementing transform"
         fout << "#ifdef UseBebigokimisa" << endl;
         genCodeForRound(fout, true, inChiMask, outChiMask,
             "A##", "B", "C", "D", "E##", 

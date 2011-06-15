@@ -36,3 +36,22 @@ string Keccak::getDescription() const
     a << "Keccak[r=" << dec << rate << ", c=" << dec << capacity << "]";
     return a.str();
 }
+
+ReducedRoundKeccak::ReducedRoundKeccak(unsigned int aRate, unsigned int aCapacity, unsigned int aNrRounds)
+    : Sponge(new KeccakF(aRate+aCapacity, aNrRounds), new MultiRatePadding(), aRate),
+    nrRounds(aNrRounds)
+{
+}
+
+ReducedRoundKeccak::~ReducedRoundKeccak()
+{
+    delete f;
+    delete pad;
+}
+
+string ReducedRoundKeccak::getDescription() const
+{
+    stringstream a;
+    a << "Keccak[r=" << dec << rate << ", c=" << dec << capacity << ", rounds=" << dec << nrRounds << "]";
+    return a.str();
+}

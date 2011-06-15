@@ -227,6 +227,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sources\KeccakCrunchyContest.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Sources\main.cpp"
 				>
 			</File>
@@ -298,6 +302,10 @@
 			</File>
 			<File
 				RelativePath=".\Sources\Keccak.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sources\KeccakCrunchyContest.h"
 				>
 			</File>
 			<File

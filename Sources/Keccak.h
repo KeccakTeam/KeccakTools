@@ -46,4 +46,34 @@ public:
     string getDescription() const;
 };
 
+/**
+  * Class that implements the (potentially) reduced-round Keccak sponge function family.
+  */
+class ReducedRoundKeccak : public Sponge {
+protected:
+    unsigned int nrRounds;
+public:
+    /**
+      * The constructor. It dynamically allocates a KeccakF permutation.
+      *
+      * @param  aRate       The desired rate (in bits) of the Keccak sponge 
+      *                     function. This must be a multiple of 8.
+      * @param  aCapacity   The desired capacity (in bits) of the Keccak sponge 
+      *                     function. The sum of the rate and capacity must
+      *                     be equal to the width of one of the Keccak-<i>f</i> 
+      *                     permutations.
+      * @param  aNrRounds     The desired number of rounds used in Keccak-<i>f</i>.
+      */
+    ReducedRoundKeccak(unsigned int aRate, unsigned int aCapacity, unsigned int aNrRounds);
+    /**
+      * The destructor. It frees the allocated KeccakF permutation.
+      */
+    virtual ~ReducedRoundKeccak();
+    /**
+      * Method that returns a string describing the instance of the Keccak sponge 
+      * function.
+      */
+    string getDescription() const;
+};
+
 #endif
