@@ -26,7 +26,13 @@ questions, please refer to our website: http://keccak.noekeon.org/
  * - the generation of GF(2) equations of the round functions and step mappings in the 
  *   Keccak-<i>f</i> permutations and their inverses;
  * - the generation of optimized C code for the Keccak-<i>f</i> round functions, 
- *   including lane complementing and bit interleaving techniques;
+ *   including several implementation techniques described in our document 
+ *   <i>Keccak implementation overview</i>:
+ *      - bit interleaving,
+ *      - lane complementing,
+ *      - plane-per-plane processing,
+ *      - early parity,
+ *      - in-place processing;
  * - the implementation of the sponge construction using any transformation or permutation, 
  *   and of the Keccak sponge function family;
  * - the processing of linear and differential <em>trails</em>:
@@ -49,5 +55,5 @@ questions, please refer to our website: http://keccak.noekeon.org/
  * and related or neighboring rights to KeccakTools.
  * http://creativecommons.org/publicdomain/zero/1.0/
  *
- * <em>KeccakTools <b>version 3.1</b>, June 2011.</em>
+ * <em>KeccakTools <b>version 3.2</b>, September 2011.</em>
  */

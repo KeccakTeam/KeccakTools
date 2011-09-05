@@ -40,6 +40,10 @@ protected:
       * or using regular operators (if false). By default, it is false.
       */
     bool outputMacros;
+    /** Tells whether the variables should be written with subscripts (if true)
+      * or using names (if false). By default, it is false.
+      */
+    bool outputSubscripts;
     /** Tells which type of scheduling is used in the generation of the code.
       * It must be 1 or 2. By default, it is 1.
       */
@@ -64,6 +68,14 @@ public:
       *                         if false, operators are output.
       */
     void setOutputMacros(bool anOutputMacros);
+    /**
+      * Method to set whether the words should be written with
+      * names or subscripts.
+      *
+      * @param  anOutputSubscripts  If true, subscripts are output; 
+      *                         if false, names are output.
+      */
+    void setOutputSubscripts(bool anOutputSubscripts);
     /**
       * Method to set whether the schedule type.
       * It must be 1 or 2.
@@ -93,22 +105,16 @@ public:
       */
     void genDeclarations(ostream& fout) const;
     /**
-      * Method that generates C code to compute one round.
-      * The produced code assumes that the state is stored in the variables
-      * starting with letter A. It also assumes that the variables starting with
-      * D are the lanes that will be XORed into the state to perform θ.
-      * The generated code then XORs the D's into the A's for θ, moves
-      * the lanes and rotates them into the B's to perform ρ and π.
-      * The evaluation of χ is done from the B's into the variables starting
-      * with E. As χ is computed, the generated code optionally also computes
-      * sheet parities into 5 variables starting with C.
-      * The generated code also assumes that the lanes are complemented
+      * Method that generates C code to compute one round, plane per plane.
+      * See “Keccak implementation overview”, Section “Plane-per-plane processing”
+      * for more information.
+      * The generated code assumes that the lanes are complemented
       * according to patterns @a inChiMask (after the linear steps, before χ)
       * and @a outChiMask (after χ, before θ).
       *
       * @param  fout    The output stream where the code is generated.
-      * @param prepareTheta A Boolean value telling whether the sheet
-      *                 parities are to be computed into the C's.
+      * @param earlyParity  A Boolean value telling whether the sheet
+      *                 parities are to be computed into the C's while E is computed.
       * @param  inChiMask   The lane complementing pattern at the input of χ
       *                 (or after ρ and π).
       * @param  outChiMask  The lane complementing pattern at the output of χ
@@ -120,7 +126,7 @@ public:
       * @param  E       The string with the variable name for E.
       * @param  header  A string to output before the generated code.
       */
-    void genCodeForRound(ostream& fout, bool prepareTheta, SliceValue inChiMask=0, SliceValue outChiMask=0, 
+    void genCodePlanePerPlane(ostream& fout, bool earlyParity, SliceValue inChiMask=0, SliceValue outChiMask=0, 
         string A = "A", string B = "B", string C = "C", string D = "D", string E = "E", string header = "") const;
     /**
       * Method that generates C code to compute the sheet parities 
@@ -176,10 +182,35 @@ public:
       *                 straightforward code.
       */
     void genMacroFile(ostream& fout, bool laneComplementing=false) const;
+    /**
+      * Method that generates C code to compute four rounds in place.
+      * See “Keccak implementation overview”, Section “Efficient in-place implementations”
+      * for more information.
+      * The generated code assumes that the lanes are complemented
+      * according to patterns @a inChiMask (after the linear steps, before χ)
+      * and @a outChiMask (after χ, before θ).
+      *
+      * @param  fout    The output stream where the code is generated.
+      * @param earlyParity  A Boolean value telling whether the sheet
+      *                 parities are to be computed into the C's as the output is computed.
+      *                 If false, the parities are computed at the beginning of each round.
+      * @param  inChiMask   The lane complementing pattern at the input of χ
+      *                 (or after ρ and π).
+      * @param  outChiMask  The lane complementing pattern at the output of χ
+      *                 (or before θ).
+      * @param  A       The string with the variable name for A.
+      * @param  B       The string with the variable name for B.
+      * @param  C       The string with the variable name for C.
+      * @param  D       The string with the variable name for D.
+      * @param  header  A string to output before the generated code.
+      */
+    void genCodeInPlace(ostream& fout, bool earlyParity, SliceValue inChiMask=0, SliceValue outChiMask=0, 
+        string A = "A", string B = "B", string C = "C", string D = "D", string header = "") const;
     virtual string getName() const;
 protected:
     string buildWordName(const string& prefixSymbol, unsigned int x, unsigned int y, unsigned int z) const;
     string buildWordName(const string& prefixSymbol, unsigned int x, unsigned int z) const;
+    string buildWordName(const string& prefixSymbol, unsigned int x) const;
     void genDeclarationsLanes(ostream& fout, const string& prefixSymbol) const;
     void genDeclarationsSheets(ostream& fout, const string& prefixSymbol) const;
     string strANDORnot(const string& A, const string& B, bool LC1, bool LC2, bool LOR) const;
