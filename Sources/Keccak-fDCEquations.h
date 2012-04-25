@@ -28,7 +28,7 @@ public:
     /** This constructor initializes the Keccak-<i>f</i> instance
       * with the given width, see KeccakF::KeccakF().
       */
-    KeccakFDCEquations(unsigned int aWidth);
+    KeccakFDCEquations(unsigned int aWidth, unsigned int aNrRounds = 0);
     /** This method produces a differential trail from a pair of inputs.
       * The state values are given before θ, as in the normal order of
       * the round function.

@@ -15,7 +15,7 @@ questions, please refer to our website: http://keccak.noekeon.org/
  * @mainpage
  * <b>KeccakTools</b> is a set of C++ classes that can help analyze the Keccak 
  * sponge function family, designed by Guido Bertoni, Joan Daemen, Michaël 
- * Peeters and Gilles Van Assche. For more information, please refer to our 
+ * Peeters and Gilles Van Assche. For more information, please refer to our 
  * website: http://keccak.noekeon.org/
  *
  * KeccakTools provides the following features:
@@ -35,19 +35,38 @@ questions, please refer to our website: http://keccak.noekeon.org/
  *      - in-place processing;
  * - the implementation of the sponge construction using any transformation or permutation, 
  *   and of the Keccak sponge function family;
- * - the processing of linear and differential <em>trails</em>:
- *		- the representation and serialization of linear and differential trails;
- *		- for χ, the affine representation of
- *			- the output differences compatible with a given input difference, and
- *			- the input masks compatible with a given output mask;
- *		- for the round function, the iteration through all
- *			- the output differences compatible with a given input difference,
- *			- the input differences compatible with a given output difference (possibly up to a specified weight),
- *			- the input masks compatible with a given output mask,
- *			- the output masks compatible with a given input mask (possibly up to a specified weight);
- *		- the generation of the conditions, expressed as equations in GF(2), for a pair to follow a given differential trail.
+ * - many classes and methods to assist differential and linear cryptanalysis (DC, LC).
+ * 
+ * Regarding DC and LC, KeccakTools supports the processing of linear and 
+ * differential <em>trails</em>. This includes:
+ * - for χ, the representation as an affine space of
+ *      - the output differences compatible with a given input difference, and
+ *      - the input masks compatible with a given output mask;
+ * - for θ:
+ *      - the representation of column parities in runs;
+ *      - lower bounding the weight of any 2-round trail core with a given parity;
+ *      - the exhaustive generation of 2-round trail cores with a given parity;
+ * - for the round function, the iteration through all
+ *      - the output differences compatible with a given input difference,
+ *      - the input differences compatible with a given output difference (possibly up to a specified weight),
+ *      - the input masks compatible with a given output mask,
+ *      - the output masks compatible with a given input mask (possibly up to a specified weight);
+ * - the representation and serialization of linear and differential trails;
+ *      - including trail prefixes and trail cores;
+ * - the generation of the conditions, expressed as equations(<sup>1</sup>) in GF(2), for a pair to follow a given differential trail;
+ * - the exhaustive forward and backward extension of trails up to a given weight and given number of rounds;
+ * - the exhaustive generation of 2-round trail cores with a small number of active rows;
+ * - the exhaustive generation of 3-round trail cores in the kernel up to a given weight:
+ *      - the generation of knots and chains between knots;
+ *      - the generation of vortices and their combination with knots and chains;
+ *      - the implementation of a lower bound on the weight while adding knots, chains and vortices to limit the search.
  *
- * Note that the equations can be generated in a format compatible
+ * Related to the DC and LC classes, the reader can refer to the following documents for more detailed explanations:
+ * - Bertoni et al., <em>The Keccak reference</em>, available from <a href="http://keccak.noekeon.org/">our website</a>;
+ * - Daemen and Van Assche, <em>Differential propagation analysis of Keccak</em>, FSE 2012, 
+ *  available as <a href="http://eprint.iacr.org/2012/163">IACR ePrint 2012/163</a>.
+ * 
+ * (<sup>1</sup>) Note that the equations can be generated in a format compatible
  * with <a href="http://www.sagemath.org">SAGE</a>.
  *
  * Implementation by the designers, hereby denoted as "the implementer".
@@ -55,5 +74,5 @@ questions, please refer to our website: http://keccak.noekeon.org/
  * and related or neighboring rights to KeccakTools.
  * http://creativecommons.org/publicdomain/zero/1.0/
  *
- * <em>KeccakTools <b>version 3.2</b>, September 2011.</em>
+ * <em>KeccakTools <b>version 3.3</b>, April 2012.</em>
  */

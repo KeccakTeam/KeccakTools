@@ -15,8 +15,8 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 #include "Keccak-fDCEquations.h"
 
-KeccakFDCEquations::KeccakFDCEquations(unsigned int aWidth)
-    : KeccakFDCLC(aWidth)
+KeccakFDCEquations::KeccakFDCEquations(unsigned int aWidth, unsigned int aNrRounds)
+    : KeccakFDCLC(aWidth, aNrRounds)
 {
 }
 
@@ -29,7 +29,7 @@ void KeccakFDCEquations::buildDCTrailFromPair(vector<SliceValue>& a1, vector<Sli
     vector<LaneValue> state2;
     fromSlicesToLanes(a2, state2);
 
-    for(unsigned int i=0; i<nrRounds+1; i++) {
+    for(unsigned int i=0; i<nrRounds; i++) {
         lambda(state1, KeccakFDCLC::Straight);
         lambda(state2, KeccakFDCLC::Straight);
 
@@ -46,6 +46,10 @@ void KeccakFDCEquations::buildDCTrailFromPair(vector<SliceValue>& a1, vector<Sli
         if (i == (nrRounds-1)) {
             fromLanesToSlices(state1, a1);
             fromLanesToSlices(state2, a2);
+            for(unsigned int z=0; z<laneSize; z++)
+                aDiff[z] = a1[z]^a2[z];
+            trail.stateAfterLastChiSpecified = true;
+            trail.stateAfterLastChi = aDiff;
         }
     }
 }
@@ -107,14 +111,17 @@ void KeccakFDCEquations::genDCEquations(ostream& fout, const Trail& trail, bool 
 {
     char input = 'A';
     char output = 'B';
-    for(unsigned int r=0; r<trail.states.size()-1; r++) {
+    for(unsigned int r=0; r<trail.states.size(); r++) {
         string inputName(1, input);
         string outputName(1, output);
 
         fout << "// Round " << dec << r << endl;
         fout << "// Conditions at input of \xCF\x87" << endl;
         vector<SliceValue> stateAfterChi;
-        lambda(trail.states[r+1], stateAfterChi, KeccakFDCLC::Inverse);
+        if (r == trail.states.size()-1)
+            stateAfterChi = trail.stateAfterLastChi;
+        else
+            lambda(trail.states[r+1], stateAfterChi, KeccakFDCLC::Inverse);
         vector<SymbolicLane> variables;
         KeccakFEquations::initializeState(variables, inputName, laneSize);
         vector<SymbolicBit> relations;

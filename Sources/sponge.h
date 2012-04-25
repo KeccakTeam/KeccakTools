@@ -108,6 +108,21 @@ public:
       */
     void absorb(const UINT8 *input, unsigned int lengthInBits);
     /**
+      * Method that absorbs data. The data is given as a sequence of bytes.
+      * Within each byte, the bits are understood to be ordered from the
+      * least significant bit to the most significant bit.
+      *
+      * @pre This function must be used in the absorbing phase only.
+      *
+      * @param  input       The data to absorb. When lengthInBits is not
+      *                     a multiple of 8, the last bits of data must be
+      *                     in the least significant bits of the last byte.
+      * @param  lengthInBits    The length in bits of the data provided in
+      *                     input. When lengthInBits is not a multiple
+      *                     of 8, this function can no longer be used.
+      */
+    void absorb(const vector<UINT8>& input, unsigned int lengthInBits);
+    /**
       * Method to extract data from the squeezing phase. If in the 
       * absorbing phase, this function also switches to the squeezing phase.
       *
@@ -118,6 +133,17 @@ public:
       *                     Otherwise, @a desiredOutputLength must be equal to the rate.
       */
     void squeeze(UINT8 *output, unsigned int desiredLengthInBits);
+    /**
+      * Method to extract data from the squeezing phase. If in the 
+      * absorbing phase, this function also switches to the squeezing phase.
+      *
+      * @param  output      The buffer where to store the squeezed data.
+      * @param  desiredLengthInBits     The length in bits of the output.
+      *                     If the rate of the sponge is a multiple of 8, 
+      *                     @a desiredOutputLength must be a multiple of 8.
+      *                     Otherwise, @a desiredOutputLength must be equal to the rate.
+      */
+    void squeeze(vector<UINT8>& output, unsigned int desiredLengthInBits);
     /**
       * Method that returns the capacity of the sponge function.
       */

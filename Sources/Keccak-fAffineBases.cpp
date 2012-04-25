@@ -18,6 +18,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include <math.h>
 #include <set>
 #include "Keccak-fAffineBases.h"
+#include "Keccak-fDisplay.h"
 
 using namespace std;
 
@@ -38,6 +39,116 @@ void AffineSpaceOfRows::display(ostream& fout) const
             fout << ", ";
     }
     fout << ">" << endl;
+}
+
+// -------------------------------------------------------------
+//
+// AffineSpaceOfSlices
+//
+// -------------------------------------------------------------
+
+AffineSpaceOfSlices::AffineSpaceOfSlices(vector<SliceValue>& aGenerators, vector<RowValue>& aGeneratorParities, SliceValue aOffset, RowValue aOffsetParity)
+    : offset(aOffset), 
+    offsetParity(aOffsetParity)
+{
+    setGenerators(aGenerators, aGeneratorParities);
+}
+
+void AffineSpaceOfSlices::setGenerators(vector<SliceValue>& aGenerators, vector<RowValue>& aGeneratorParities)
+{
+    // Copy the generators into originalGenerators;
+    originalGenerators = aGenerators;
+
+    // Upper-triangularize the parities
+    for(unsigned int x=0; x<nrRowsAndColumns; x++) {
+        // Look for a generator with a parity 1 at position x
+        RowValue selectX = 1 << x;
+        bool found = false;
+        SliceValue foundSlice;
+        RowValue foundParity;
+        for(unsigned int i=0; i<aGenerators.size(); i++) {
+            if ((aGeneratorParities[i] & selectX) != 0) {
+                foundSlice = aGenerators[i];
+                offsetGenerators.push_back(foundSlice);
+                foundParity = aGeneratorParities[i];
+                offsetParities.push_back(foundParity);
+                found = true;
+                break;
+            }
+        }
+        // If found, cancel all parities at position x for the other aGenerators
+        if (found) {
+            for(unsigned int i=0; i<aGenerators.size(); i++) {
+                if ((aGeneratorParities[i] & selectX) != 0) {
+                    aGenerators[i] ^= foundSlice;
+                    aGeneratorParities[i] ^= foundParity;
+                }
+            }
+        }
+    }
+    // The remaining aGenerators have zero parity
+    for(unsigned int i=0; i<aGenerators.size(); i++)
+        if (aGenerators[i] != 0)
+            kernelGenerators.push_back(aGenerators[i]);
+}
+
+void AffineSpaceOfSlices::display(ostream& fout) const
+{
+    fout << "Offset = " << endl;
+    displaySlice(fout, offset);
+    fout << endl;
+
+    if (originalGenerators.size() == 0)
+        fout << "No generators" << endl;
+    else {
+        fout << dec << originalGenerators.size() << " generators:" << endl;
+        for(unsigned int i=0; i<originalGenerators.size(); i++) {
+            displaySlice(fout, originalGenerators[i]);
+            fout << endl;
+        }
+        if (offsetGenerators.size() == 0)
+            fout << "No parity-offset generators" << endl;
+        else {
+            fout << dec << offsetGenerators.size() << " parity-offset generators:" << endl;
+            for(unsigned int i=0; i<offsetGenerators.size(); i++) {
+                displaySlice(fout, offsetGenerators[i]);
+                fout << endl;
+            }
+        }
+        if (kernelGenerators.size() == 0)
+            fout << "No parity-kernel generators" << endl;
+        else {
+            fout << dec << kernelGenerators.size() << " parity-kernel generators:" << endl;
+            for(unsigned int i=0; i<kernelGenerators.size(); i++) {
+                displaySlice(fout, kernelGenerators[i]);
+                fout << endl;
+            }
+        }
+    }
+}
+
+bool AffineSpaceOfSlices::getOffsetWithGivenParity(RowValue parity, SliceValue& output) const
+{
+    output = offset;
+    RowValue outputParity = offsetParity;
+    RowValue correctionParity = parity^offsetParity;
+
+    unsigned int i = 0;
+
+    for(unsigned int x=0; x<nrRowsAndColumns; x++) {
+        RowValue mask = (1<<(x+1))-1;
+        if ((correctionParity & (1<<x)) != 0) {
+            while((i<offsetParities.size()) && ((offsetParities[i] & mask) != (1<<x)))
+                i++;
+            if (i<offsetParities.size()) {
+                output ^= offsetGenerators[i];
+                correctionParity ^= offsetParities[i];
+            }
+            else
+                return false;
+        }
+    }
+    return (correctionParity == 0);
 }
 
 // -------------------------------------------------------------

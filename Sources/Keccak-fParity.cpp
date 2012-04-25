@@ -85,3 +85,73 @@ void fromSheetsToSlicesParity(const vector<LaneValue>& paritySheet, vector<RowVa
         }
     }
 }
+
+string getDisplayOfParity(RowValue C, RowValue D)
+{
+    string result;
+    const int offset = 2;
+    for(unsigned int sx=0; sx<5; sx++) {
+        unsigned int x = KeccakF::index(sx-offset);
+        bool affected = (D & (1 << x)) != 0;
+        bool odd = (C & (1 << x)) != 0;
+        if (affected)
+            if (odd)
+                result += "!";
+            else
+                result += "|";
+        else
+            if (odd)
+                result += ".";
+            else
+                result += "-";
+    }
+    return result;
+}
+
+void displayParity(ostream& fout, RowValue C, RowValue D)
+{
+    fout << getDisplayOfParity(C, D) << endl;
+}
+
+void displayParity(ostream& fout, const vector<RowValue>& C, const vector<RowValue>& D)
+{
+    unsigned int z = 0;
+    unsigned int laneSize = C.size();
+    while(z < laneSize) {
+        unsigned int zeroes = 0;
+        while((z < laneSize) && (C[z] == 0) && (D[z] == 0)) {
+            z++;
+            zeroes++;
+        }
+        if (zeroes >= 2)
+            fout << "  z^" << dec << zeroes << endl;
+        else {
+            for(unsigned int iz=z-zeroes; iz<z; iz++)
+                displayParity(fout, C[iz], D[iz]);
+        }
+        if (z < laneSize) {
+            displayParity(fout, C[z], D[z]);
+            z++;
+        }
+    }
+}
+
+void writeParity(ostream& out, const vector<RowValue>& C)
+{
+    out << hex << C.size() << " ";
+    for(unsigned int z=0; z<C.size(); z++)
+        out << hex << (int)C[z] << " ";
+    out << endl;
+}
+
+void readParity(istream& in, vector<RowValue>& C)
+{
+    unsigned int laneSize;
+    in >> hex >> laneSize;
+    C.resize(laneSize);
+    for(unsigned int z=0; z<C.size(); z++) {
+        int data;
+        in >> hex >> data;
+        C[z] = data;
+    }
+}

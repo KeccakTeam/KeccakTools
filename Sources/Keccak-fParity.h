@@ -105,4 +105,23 @@ void fromSlicesToSheetsParity(const vector<RowValue>& paritySlices, vector<LaneV
   */
 void fromSheetsToSlicesParity(const vector<LaneValue>& paritySheets, vector<RowValue>& paritySlices);
 
+/** Displays the parity and the θ-effect on an ostream.
+ *  @param  fout    The stream to display to.
+ *  @param  C   The parity as a vector of rows.
+ *  @param  D   The θ-effect as a vector of rows.
+ */
+void displayParity(ostream& fout, const vector<RowValue>& C, const vector<RowValue>& D);
+
+/** Writes the parity to a stream or a file.
+ *  @param  fout    The stream to write to.
+ *  @param  C   The parity as a vector of rows.
+ */
+void writeParity(ostream& out, const vector<RowValue>& C);
+
+/** Reads the parity from a stream or a file.
+ *  @param  fout    The stream to read from.
+ *  @param  C   The read parity as a vector of rows.
+ */
+void readParity(istream& in, vector<RowValue>& C);
+
 #endif

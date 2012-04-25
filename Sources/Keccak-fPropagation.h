@@ -20,7 +20,6 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include "Keccak-fAffineBases.h"
 #include "Keccak-fDCLC.h"
 #include "Keccak-fParts.h"
-
 using namespace std;
 
 class ReverseStateIterator;
@@ -53,9 +52,9 @@ public:
       * but in the form of an affine space representation.
       */
     vector<AffineSpaceOfRows> affinePerInput;
-	/** This is a link to the 'parent' KeccakFDCLC class.
+    /** This is a link to the 'parent' KeccakFDCLC class.
       */
-	const KeccakFDCLC& parent;
+    const KeccakFDCLC& parent;
     /** This attribute contains the lane size (a copy of parent.laneSize).
       */
     unsigned int laneSize;
@@ -82,7 +81,7 @@ private:
       * with output y. This can be found in chiCompatibilityTable[x+32*y].
       * See also isChiCompatible().
       */
-	vector<bool> chiCompatibilityTable;
+    vector<bool> chiCompatibilityTable;
 public:
     /** This type allows one to specify the type of propagation: differential (DC) or linear (LC). */
     enum DCorLC { DC = 0, LC };
@@ -106,6 +105,11 @@ public:
       * @return The propagation weight of the given slice.
       */
     inline unsigned int getWeight(const SliceValue& slice) const { return weightPerSlice[slice]; }
+    /** This method returns the propagation weight of a row.
+      * @param   row    The value of a slice.
+      * @return The propagation weight of the given row.
+      */
+    inline unsigned int getWeightRow(const RowValue& row) const { return getWeight(getSliceFromRow(row, 0)); }
     /** This method returns the propagation weight of a state.
       * @param   state  The value of a state given as a vector of slices.
       * @return The propagation weight of the given state.
@@ -116,6 +120,11 @@ public:
       * @return The minimum weight of the given slice.
       */
     inline unsigned int getMinReverseWeight(const SliceValue& slice) const { return minReverseWeightPerSlice[slice]; }
+    /** This method returns the minimum reverse weight of a slice.
+      * @param   slice  The value of a slice.
+      * @return The minimum weight of the given slice.
+      */
+    inline unsigned int getMinReverseWeightRow(const RowValue& row) const { return getMinReverseWeight(getSliceFromRow(row, 0)); }
     /** This method returns the minimum reverse weight of a state.
       * @param   state  The value of a state given as a vector of slices.
       * @return The minimum reverse weight of the given state.
@@ -130,18 +139,114 @@ public:
       * @return The minimum reverse weight.
       */
     unsigned int getMinReverseWeightAfterLambda(const vector<SliceValue>& state) const;
-    /** This method multiplies the vector (dx, dy)<sup>t</sup> by the matrix π or π<sup>-1</sup>
+    /** This method multiplies the vector (dx, dy)<sup>T</sup> by the matrix π or π<sup>-1</sup>
       * to the left:
-      * - for DC, π is used; 
+      * - for DC, π is used;
       * - for LC, π<sup>-1</sup> is used.
+      * @param  dx  The x coordinate to update.
+      * @param  dy  The y coordinate to update.
       */
     void directPi(unsigned int& dx, unsigned int& dy) const;
-    /** This method multiplies the vector (dx, dy)<sup>t</sup> by the matrix π or π<sup>-1</sup> 
+    /** This method multiplies the vector (dx, dy)<sup>T</sup> by the matrix π or π<sup>-1</sup> 
       * to the left:
-      * - for DC, π<sup>-1</sup> is used; 
+      * - for DC, π<sup>-1</sup> is used;
       * - for LC, π is used.
+      * @param  dx  The x coordinate to update.
+      * @param  dy  The y coordinate to update.
       */
     void reversePi(unsigned int& dx, unsigned int& dy) const;
+    /** This method moves the given bit position through ρ and π in the direct direction:
+      * - for DC, this computes π(ρ(x, y, z));
+      * - for LC, this computes ρ<sup>-1</sup>(π<sup>-1</sup>(x, y, z)).
+      * @param  point   The coordinates (x, y, z) to update.
+      */
+    void directRhoPi(BitPosition& point) const;
+    /** This method moves the given bit position through ρ and π in the reverse direction:
+      * - for DC, this computes ρ<sup>-1</sup>(π<sup>-1</sup>(x, y, z));
+      * - for LC, this computes π(ρ(x, y, z)).
+      * @param  point   The coordinates (x, y, z) to update.
+      */
+    void reverseRhoPi(BitPosition& point) const;
+    /** This method moves the given bit position through the operations after θ in the direct direction:
+      * - for DC, this computes π(ρ(x, y, z));
+      * - for LC, this leaves the given bit position unchanged.
+      * @param  point   The coordinates (x, y, z) to update.
+      */
+    void directRhoPiAfterTheta(BitPosition& point) const;
+    /** This method moves the given bit position through the operations before θ in the reverse direction:
+      * - for DC, this leaves the given bit position unchanged;
+      * - for LC, this computes π(ρ(x, y, z)).
+      * @param  point   The coordinates (x, y, z) to update.
+      */
+    void reverseRhoPiBeforeTheta(BitPosition& point) const;
+    /** This method computes a lower bound on the propagation weight 
+      * for any state having the given the Hamming weight.
+      * The formula is given in Section 3.1 of "The Keccak reference".
+      * @param  hammingWeight   The Hamming weight.
+      * @return The computed lower bound.
+      */
+    unsigned int getLowerBoundOnWeightGivenHammingWeight(unsigned int hammingWeight) const;
+    /** This method computes a lower bound on the propagation weight 
+      * for any state with given lower bounds on its Hamming weight and number of active rows.
+      * The formulas are as follows. Let <i>l</i> be the resulting lower bound,
+      * <i>n</i> be the number of active rows and <i>h</i> be the Hamming weight.
+      * - For DC:
+      *     - if (<i>n</i> ≥ <i>h</i>): <i>l</i> = 2<i>n</i>;
+      *     - else if (5<i>n</i> ≤ <i>h</i>): refer to getLowerBoundOnWeightGivenHammingWeight();
+      *     - else <i>l</i> = ceil((3<i>n</i> + <i>h</i>)/2).
+      * - For LC:
+      *     - if (2<i>n</i> ≥ <i>h</i>): <i>l</i> = 2<i>n</i>;
+      *     - else if (5<i>n</i> ≤ <i>h</i>): refer to getLowerBoundOnWeightGivenHammingWeight();
+      *     - else <i>l</i> = 2×ceil((<i>n</i> + <i>h</i>)/3).
+      * @param  hammingWeight   Lower bound on the Hamming weight.
+      * @param  nrActiveRows    Lower bound on the number of active rows.
+      * @return The computed lower bound.
+      */
+    unsigned int getLowerBoundOnWeightGivenHammingWeightAndNrActiveRows(unsigned int hammingWeight, unsigned int nrOfActiveRows) const;
+    /** This method computes a lower bound on the minimum reverse weight 
+      * for any state having the given Hamming weight.
+      * The formula is given in Section 3.1 of "The Keccak reference".
+      * @param  hammingWeight   The Hamming weight.
+      * @return The computed lower bound.
+      */
+    unsigned int getLowerBoundOnReverseWeightGivenHammingWeight(unsigned int hammingWeight) const;
+    /** This method computes a lower bound on the minimum reverse weight 
+      * for any state with given lower bounds on its Hamming weight and number of active rows.
+      * The formulas are as follows. Let <i>l</i> be the resulting lower bound,
+      * <i>n</i> be the number of active rows and <i>h</i> be the Hamming weight.
+      * - For DC:
+      *     - if (3<i>n</i> ≥ <i>h</i>): <i>l</i> = 2<i>n</i>;
+      *     - else if (5<i>n</i> ≤ <i>h</i>): refer to getLowerBoundOnReverseWeightGivenHammingWeight();
+      *     - else <i>l</i> = ceil((<i>n</i> + <i>h</i>)/2).
+      * - For LC:
+      *     - if (4<i>n</i> ≥ <i>h</i>): <i>l</i> = 2<i>n</i>;
+      *     - else refer to getLowerBoundOnReverseWeightGivenHammingWeight().
+      * @param  hammingWeight   Lower bound on the Hamming weight.
+      * @param  nrActiveRows    Lower bound on the number of active rows.
+      * @return The computed lower bound.
+      */
+    unsigned int getLowerBoundOnReverseWeightGivenHammingWeightAndNrActiveRows(unsigned int hammingWeight, unsigned int nrActiveRows) const;
+    /** This method returns a slice value that has the bits set that are active in all slice values that satisfy the two following conditions:
+      * - they are compatible through χ with the slice value in parameter;
+      * - they are in the kernel.
+      * @note   Actually, the LC variant is not really useful here.
+      * @param   sliceBeforeChi      Slice value before χ.
+      */
+    SliceValue getMinimumInKernelSliceAfterChi(const SliceValue& sliceBeforeChi) const;
+    /** This method returns a slice value that has the bits set that are active in all slice values that satisfy the two following conditions:
+      * - they are compatible through χ<sup>-1</sup> with the slice value in parameter;
+      * - they are in the kernel.
+      * @note   Actually, the DC variant is not really useful here.
+      * @param   sliceAfterChi      Slice value before χ.
+      */
+    SliceValue getMinimumInKernelSliceBeforeChi(const SliceValue& sliceAfterChi) const;
+    /** This method builds an affine set of slices from a given slice pattern.
+      * The produced base defines the slices just after χ (so before λ).
+      * The parities considered are also those of the slices after χ.
+      * @param  slice   The slice before χ to propagate.
+      * @return The affine space as a AffineSpaceOfSlices object.
+      */
+    AffineSpaceOfSlices buildSliceBase(SliceValue slice) const;
     /** This method builds an affine set of states corresponding to the propagation
       * of a given input state through χ and λ.
       * The affine space produced thus covers the propagation through a whole round.
@@ -185,20 +290,20 @@ public:
       * @return It returns true iff the given trails can be chained.
       */
     bool isRoundCompatible(const Trail& first, const Trail& second) const;
-    /** This method returns true iff θ (or θ<sup>t</sup>) is the first step of the linear step between two χ's.
-      * @return It returns true iff θ (or θ<sup>t</sup>) is the first step of the linear step between two χ's.
+    /** This method returns true iff θ (or θ<sup>T</sup>) is the first step of the linear step between two χ's.
+      * @return It returns true iff θ (or θ<sup>T</sup>) is the first step of the linear step between two χ's.
       */
     bool isThetaJustAfterChi() const;
     /** This method applies λ in the "direct" direction:
       * - DC: θ then ρ then π;
-      * - LC: π<sup>-1</sup> then ρ<sup>-1</sup> then θ<sup>t</sup>.
+      * - LC: π<sup>-1</sup> then ρ<sup>-1</sup> then θ<sup>T</sup>.
       * @param   in     The input state value given as a vector of slices.
       * @param   out    The output state value returned as a vector of slices.
       */
     void directLambda(const vector<SliceValue>& in, vector<SliceValue>& out) const;
     /** This method applies λ in the "reverse" direction:
       * - DC: π<sup>-1</sup> then ρ<sup>-1</sup> then θ<sup>-1</sup>;
-      * - LC: θ<sup>-1t</sup> then ρ then π.
+      * - LC: θ<sup>-1T</sup> then ρ then π.
       * @param   in     The input state value given as a vector of slices.
       * @param   out    The output state value returned as a vector of slices.
       */
@@ -219,14 +324,14 @@ public:
     void reverseLambdaBeforeTheta(const vector<SliceValue>& in, vector<SliceValue>& out) const;
     /** This method applies θ in the "direct" direction:
       * - DC: θ;
-      * - LC: θ<sup>t</sup>.
+      * - LC: θ<sup>T</sup>.
       * @param   in     The input state value given as a vector of slices.
       * @param   out    The output state value returned as a vector of slices.
       */
     void directTheta(const vector<SliceValue>& in, vector<SliceValue>& out) const;
     /** This method applies θ in the "reverse" direction:
       * - DC: θ<sup>-1</sup>;
-      * - LC: θ<sup>-1t</sup>.
+      * - LC: θ<sup>-1T</sup>.
       * @param   in     The input state value given as a vector of slices.
       * @param   out    The output state value returned as a vector of slices.
       */
@@ -245,6 +350,35 @@ public:
       * @param   out    The output state value returned as a vector of slices.
       */
     void reverseLambdaAfterTheta(const vector<SliceValue>& in, vector<SliceValue>& out) const;
+    /** This function computes the θ-effect from the parity, in the "direct" direction:
+      * - DC: the θ-effect;
+      * - LC: the θ<sup>T</sup>-effect.
+      * @param  C   The parity as a vector of lanes.
+      * @param  D   The resulting θ-effect.
+      */
+    void directThetaEffectFromParities(const vector<LaneValue>& C, vector<LaneValue>& D) const;
+    /** This function computes the θ-effect from the parity, in the "direct" direction:
+      * - DC: the θ-effect;
+      * - LC: the θ<sup>T</sup>-effect.
+      * @param  C   The parity as a vector of rows.
+      * @param  D   The resulting θ-effect.
+      */
+    void directThetaEffectFromParities(const vector<RowValue>& C, vector<RowValue>& D) const;
+    /** This function converts the t coordinate into (x,z) coordinates.
+      * - DC: (x,z)=(-2t,t)
+      * - LC: (x,z)=(2t,-t)
+      * @param  t   The t coordinate.
+      * @param  x   The resulting x coordinate.
+      * @param  z   The resulting z coordinate.
+      */
+    void getXandZfromT(unsigned int t, unsigned int& x, unsigned int& z) const;
+    /** This function translates a point expressed in the t coordinate along the x axis.
+      * - DC: x goes to x+1 (e.g., t←t+192 if lane size is 64)
+      * - LC: x goes to x-1 (e.g., t←t+192 if lane size is 64)
+      * @param  t   The t coordinate of the point to translate.
+      * @return The t coordinate after translation.
+      */
+    unsigned int translateAlongXinT(unsigned int t) const;
     /** This methods reads all the trails in a file, checks their consistency
       * and then produces a report in the given output stream.
       * See also Trail::produceHumanReadableFile().
@@ -257,6 +391,16 @@ public:
       * @return The number of trails read and checked.
       */
     UINT64 displayTrailsAndCheck(const string& fileNameIn, ostream& fout, unsigned int maxWeight = 0) const;
+    /** Displays the parity pattern and its effect on an ostream.
+     *  @param  fout    The stream to display to.
+     *  @param C    The parity as a vector of rows.
+     */
+    void displayParity(ostream& fout, const vector<RowValue>& C) const;
+    /** Displays the parity pattern and its effect on an ostream.
+     *  @param  fout    The stream to display to.
+     *  @param p    The parity, packed.
+     */
+    void displayParity(ostream& fout, PackedParity p) const;
     /** This method builds a file name by prepending "DC" or "LC" as a prefix 
       * and appending a given suffix to the name produced by 
       * KeccakFDCLC::getName().
@@ -279,7 +423,7 @@ private:
     /** This method initializes weightPerSlice.
       */
     void initializeWeight();
-	/** This method initializes minReverseWeightPerSlice.
+    /** This method initializes minReverseWeightPerSlice.
       */
     void initializeMinReverseWeight();
     /** This method initializes chiCompatibilityTable.
@@ -305,16 +449,24 @@ private:
     bool end;
 public:
     /** This constructor initializes the iterator based on a state value after χ,
+      * the KeccakFPropagation instance, which determines the compatible states.
+      * With this constructor, the iterator runs through all the possible states
+      * regardless of their weight.
+      * @param   stateAfterChi  The state value after χ as a vector of slices.
+      * @param   DCorLC         A reference to the KeccakFPropagation instance that
+      *                         determines the type of propagation.
+      */
+    ReverseStateIterator(const vector<SliceValue>& stateAfterChi, const KeccakFPropagation& DCorLC);
+    /** This constructor initializes the iterator based on a state value after χ,
       * the KeccakFPropagation instance, which determines the compatible states,
-      * and an optional maximum of the propagation weight.
+      * and a maximum of the propagation weight.
       * @param   stateAfterChi  The state value after χ as a vector of slices.
       * @param   DCorLC         A reference to the KeccakFPropagation instance that
       *                         determines the type of propagation.
       * @param   aMaxWeight     The iterator will run through the states whose propagation
       *                         weight is not higher than this parameter. 
-      *                         If 0, the iterator runs through all the possible states.
       */
-    ReverseStateIterator(const vector<SliceValue>& stateAfterChi, const KeccakFPropagation& DCorLC, unsigned int aMaxWeight = 0);
+    ReverseStateIterator(const vector<SliceValue>& stateAfterChi, const KeccakFPropagation& DCorLC, unsigned int aMaxWeight);
     /** This method tells whether the iterator has reached the end of the possible states.
       * @return It returns true iff there are no more states to run through.
       */
@@ -334,6 +486,7 @@ public:
       */
     unsigned int getCurrentWeight() const;
 private:
+    void initialize(const vector<SliceValue>& stateAfterChi, const KeccakFPropagation& DCorLC);
     void next();
 };
 

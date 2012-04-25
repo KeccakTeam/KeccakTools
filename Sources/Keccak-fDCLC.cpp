@@ -402,7 +402,10 @@ void KeccakFDCLC::checkDCTrail(const Trail& trail, KeccakFPropagation *DC) const
 {
     // Check weights
     unsigned int totalWeight = 0;
-    for(unsigned int i=0; i<trail.weights.size(); i++) {
+    unsigned int offsetIndex = (trail.firstStateSpecified ? 0 : 1);
+    if ((!trail.firstStateSpecified) && (trail.weights.size() >= 1))
+        totalWeight += trail.weights[0];
+    for(unsigned int i=offsetIndex; i<trail.weights.size(); i++) {
         unsigned int weight = 0;
         for(unsigned int z=0; z<laneSize; z++)
             for(unsigned int y=0; y<nrRowsAndColumns; y++)
@@ -421,7 +424,7 @@ void KeccakFDCLC::checkDCTrail(const Trail& trail, KeccakFPropagation *DC) const
     }
     
     // Check compatibility between consecutive states
-    for(unsigned int i=1; i<trail.states.size(); i++) {
+    for(unsigned int i=1+offsetIndex; i<trail.states.size(); i++) {
         vector<SliceValue> stateAfterChi;
         lambda(trail.states[i], stateAfterChi, Inverse);
         for(unsigned int z=0; z<laneSize; z++)
@@ -434,13 +437,27 @@ void KeccakFDCLC::checkDCTrail(const Trail& trail, KeccakFPropagation *DC) const
                 }
             }
     }
+    if (trail.stateAfterLastChiSpecified) {
+        for(unsigned int z=0; z<laneSize; z++)
+            for(unsigned int y=0; y<nrRowsAndColumns; y++) {
+                const vector<RowValue>& values = diffChi[getRowFromSlice(trail.states.back()[z], y)].values;
+                if (find(values.begin(), values.end(), getRowFromSlice(trail.stateAfterLastChi[z], y)) == values.end()) {
+                    if (DC) trail.display(*DC, cerr);
+                    cerr << "The state after the last \xCF\x87 is incompatible with that of the last round." << endl;
+                    throw KeccakException("Incompatible states found in the trail.");
+                }
+            }
+    }
 }
 
 void KeccakFDCLC::checkLCTrail(const Trail& trail, KeccakFPropagation *LC) const
 {
     // Check weights
     unsigned int totalWeight = 0;
-    for(unsigned int i=0; i<trail.weights.size(); i++) {
+    unsigned int offsetIndex = (trail.firstStateSpecified ? 0 : 1);
+    if ((!trail.firstStateSpecified) && (trail.weights.size() >= 1))
+        totalWeight += trail.weights[0];
+    for(unsigned int i=offsetIndex; i<trail.weights.size(); i++) {
         unsigned int weight = 0;
         for(unsigned int z=0; z<laneSize; z++)
             for(unsigned int y=0; y<nrRowsAndColumns; y++)
@@ -459,7 +476,7 @@ void KeccakFDCLC::checkLCTrail(const Trail& trail, KeccakFPropagation *LC) const
     }
     
     // Check compatibility between consecutive states
-    for(unsigned int i=1; i<trail.states.size(); i++) {
+    for(unsigned int i=1+offsetIndex; i<trail.states.size(); i++) {
         vector<SliceValue> stateAfterChi;
         lambda(trail.states[i], stateAfterChi, Dual);
         for(unsigned int z=0; z<laneSize; z++)
@@ -468,6 +485,17 @@ void KeccakFDCLC::checkLCTrail(const Trail& trail, KeccakFPropagation *LC) const
                 if (find(values.begin(), values.end(), getRowFromSlice(stateAfterChi[z], y)) == values.end()) {
                     if (LC) trail.display(*LC, cerr);
                     cerr << "The state at round " << dec << i-1 << " is incompatible with that at round " << dec << i << "." << endl;
+                    throw KeccakException("Incompatible states found in the trail.");
+                }
+            }
+    }
+    if (trail.stateAfterLastChiSpecified) {
+        for(unsigned int z=0; z<laneSize; z++)
+            for(unsigned int y=0; y<nrRowsAndColumns; y++) {
+                const vector<RowValue>& values = corrInvChi[getRowFromSlice(trail.states.back()[z], y)].values;
+                if (find(values.begin(), values.end(), getRowFromSlice(trail.stateAfterLastChi[z], y)) == values.end()) {
+                    if (LC) trail.display(*LC, cerr);
+                    cerr << "The state after the last \xCF\x87 is incompatible with that of the last round." << endl;
                     throw KeccakException("Incompatible states found in the trail.");
                 }
             }

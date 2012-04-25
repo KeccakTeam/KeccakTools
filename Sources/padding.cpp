@@ -135,12 +135,22 @@ void MessageQueue::appendZeroes(unsigned int count)
 
 void MessageQueue::append(const UINT8 *input, unsigned int lengthInBits)
 {
+    unsigned int lengthInBytes = (lengthInBits+7)/8;
+    vector<UINT8> inputAsVector(input, input+lengthInBytes);
+    append(inputAsVector, lengthInBits);
+}
+
+void MessageQueue::append(const vector<UINT8>& input, unsigned int lengthInBits)
+{
+    if (lengthInBits == 0)
+        return;
+    vector<UINT8>::const_iterator i = input.begin();
     while(lengthInBits >= 8) {
-        appendByte(*input);
-        input++;
+        appendByte(*i);
+        ++i;
         lengthInBits -= 8;
     }
-    UINT8 lastByte = *input;
+    UINT8 lastByte = *i;
     for(unsigned int i=0; i<lengthInBits; i++) {
         appendBit(lastByte % 2);
         lastByte = lastByte / 2;

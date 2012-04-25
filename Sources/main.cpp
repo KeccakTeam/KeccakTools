@@ -15,6 +15,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string.h>
 #include "duplex.h"
 #include "Keccak.h"
 #include "KeccakCrunchyContest.h"
@@ -24,10 +25,13 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include "Keccak-fDCLC.h"
 #include "Keccak-fEquations.h"
 #include "Keccak-fPropagation.h"
+#include "Keccak-fTrailExtension.h"
 #include "Keccak-fTrails.h"
 
 using namespace std;
 
+/** Example function that uses the Keccak-f[1600] permutation and its inverse.
+  */
 void testKeccakF()
 {
     KeccakF keccakF(1600);
@@ -64,6 +68,8 @@ void display(const UINT8 *data, unsigned int length)
     cout << endl;
 }
 
+/** Example function that uses the Keccak[] sponge function.
+  */
 void testKeccakSponge(const char *message, unsigned int length)
 {
     Keccak keccak;
@@ -76,6 +82,8 @@ void testKeccakSponge(const char *message, unsigned int length)
     display(squeezed, 512);
 }
 
+/** Example function that uses the Keccak[] sponge function.
+  */
 void testKeccakSponge()
 {
     // Test messages from ShortMsgKAT.txt
@@ -104,6 +112,8 @@ void testKeccakSponge()
     testKeccakSponge(message2, message2Length);
 }
 
+/** Example function that uses the Keccak[r=1026, c=574] duplex object.
+  */
 void testKeccakDuplex()
 {
     KeccakF keccakF(1600);
@@ -123,6 +133,9 @@ void testKeccakDuplex()
     cout << "Fourth output: "; display(output, 128);
 }
 
+/** Example function that generates the round equations for Keccak-f[25]
+  * to Keccak-f[1600].
+  */
 void generateEquations()
 {
     for(unsigned int b=25; b<=1600; b*=2) {
@@ -142,6 +155,8 @@ void generateEquations()
     }
 }
 
+/** Example function that generate C code to implement Keccak-f[1600].
+  */
 void generateCode()
 {
     {
@@ -171,6 +186,8 @@ void generateCode()
     }
 }
 
+/** Example function that uses the Keccak-f[25] look-up tables.
+  */
 void testKeccakF25LUT()
 {
     KeccakF25LUT keccakF25;
@@ -186,6 +203,8 @@ void testKeccakF25LUT()
 
 void genKATShortMsg_main();
 
+/** Example function that displays DC/LC propagation on rows.
+  */
 void testKeccakFDCLC()
 {
     KeccakFDCLC keccakFDCLC(200);
@@ -197,23 +216,29 @@ void testKeccakFDCLC()
     keccakFDCLC.displayAll(fout, &DC, &LC);
 }
 
+/** Example function that produces the text files 
+  * in <code>Example trails</code>.
+  */
 void displayTrails()
 {
     for(unsigned int width=25; width<=200; width*=2) {
         KeccakFDCLC keccakFDCLC(width);
         {
             KeccakFPropagation DC(keccakFDCLC, KeccakFPropagation::DC);
-            string fileName = DC.buildFileName("-trails");
+            string fileName = DC.buildFileName("-trailcores");
             Trail::produceHumanReadableFile(DC, fileName);
         }
         {
             KeccakFPropagation LC(keccakFDCLC, KeccakFPropagation::LC);
-            string fileName = LC.buildFileName("-trails");
+            string fileName = LC.buildFileName("-trailcores");
             Trail::produceHumanReadableFile(LC, fileName);
         }
     }
 }
 
+/** Example function that uses the affine base representation 
+  * to extend a trail forward.
+  */
 void extendTrailAtTheEnd()
 {
     KeccakFDCLC keccakFDCLC(200);
@@ -262,6 +287,8 @@ void extendTrailAtTheEnd()
     }
 }
 
+/** Example function that extends a trail backward.
+  */
 void extendTrailAtTheBeginning()
 {
     KeccakFDCLC keccakFDCLC(100);
@@ -295,6 +322,9 @@ void extendTrailAtTheBeginning()
     }
 }
 
+/** Example function that generates equations in GF(2) for a pair to follow
+  * a given differential trail.
+  */
 void generateDCTrailEquations()
 {
     KeccakFDCEquations keccakFDCEq(50);
@@ -315,6 +345,151 @@ void generateDCTrailEquations()
     }
 }
 
+/** Example function that generates a trail from a pair of inputs.
+  * In this example, we use the messages found by I. Dinur, O. Dunkelman 
+  * and A. Shamir to produce a collision on Keccak[r=1088, c=512] reduced
+  * to 4 rounds.
+  */
+void generateTrailFromDinurDunkelmanShamirCollision()
+{
+    const UINT8 M1[] = 
+        "\x32\x1c\xf3\xc4\x6d\xae\x59\x4c\xf4\xf0\x19\x5d\x4b\xe4\xc4\x25"
+        "\x32\x30\x85\xd8\xf2\x12\x5e\x8d\xe2\x6e\x6e\xbb\x1e\x3b\xc3\x27"
+        "\x58\x10\x09\x6c\xd5\x02\x90\xeb\x6f\xa0\xa4\x3b\xf1\xc7\x0c\x4a"
+        "\x51\x5e\xb5\xcc\x83\xd9\x0d\x8d\x43\x08\x0a\x2b\xb0\xd3\x21\x9b"
+        "\x75\x90\x67\x53\xd2\xde\x6d\x52\x44\x48\x29\x48\x2c\xed\xf4\x6f"
+        "\x15\x2c\xce\x1a\xc7\x1d\x1c\x47\x68\x85\x09\xd4\x39\xf6\xeb\xf1"
+        "\x57\xb2\xf7\xea\x87\xae\xfd\x09\xe6\x78\x88\x68\x30\xeb\x75\x48"
+        "\x80\x2d\xc3\xc9\xcb\x6f\x9e\x3c\xfa\xbc\x2a\x3c\x7b\x80\xa4\xe6"
+        "\xb8\x81\xb2\x2a\xb3\x32\x23";
+    const unsigned int M1len = 135;
+    UINT8 M2[] =
+        "\xf7\x0e\xd3\xa4\x69\x8f\xbb\x80\xdf\x48\xc0\x90\xb9\x13\x72\xeb"
+        "\x24\x04\x65\xa6\x3e\xf6\x65\x3a\x81\x88\x26\x8c\x1f\xb8\x51\xb6"
+        "\x3c\xfa\xda\xaa\xc3\xa5\x2c\xee\xc2\xea\x78\xdb\x79\xe7\xea\xc8"
+        "\x35\x9c\x2f\x44\x87\xe2\x21\x32\x5a\x7a\x01\xb3\x12\x07\x79\x90"
+        "\xdc\x8b\x1c\x1b\xa8\x10\x8b\xe0\xca\x25\x9d\x9a\xac\xaa\xe7\x1b"
+        "\x9c\x3e\x2f\x4e\xad\x7d\x71\x73\x5a\x01\x66\x55\xb9\xcf\x98\xa1"
+        "\xc2\xa8\x1c\x5a\x8a\x34\xe3\xa0\xb1\x0b\x6c\xae\xe4\xf9\x80\x39"
+        "\x91\x8b\xfa\xa4\x89\xa9\x81\x6e\xaa\xbc\xa9\x89\xf1\xf1\x2b\xe1"
+        "\x95\x95\xef\x30\x45\x8b\x2e";
+    const unsigned int M2len = 135;
+    {
+        UINT8 output[32];
+        ReducedRoundKeccak keccak(1088, 512, 4);
+        keccak.absorb(M1, M1len*8);
+        keccak.squeeze(output, 256);
+        for(unsigned int i=0; i<32; i++)
+            cout << hex << (int)output[i] << " ";
+        cout << endl;
+    }
+    {
+        UINT8 output[32];
+        ReducedRoundKeccak keccak(1088, 512, 4);
+        keccak.absorb(M2, M2len*8);
+        keccak.squeeze(output, 256);
+        for(unsigned int i=0; i<32; i++)
+            cout << hex << (int)output[i] << " ";
+        cout << endl;
+    }
+    {
+        KeccakFDCEquations keccakF(1600, 4);
+        KeccakFPropagation DC(keccakF, KeccakFPropagation::DC);
+        vector<LaneValue> m1lanes, m2lanes;
+        {
+            UINT8 temp[200];
+            memset(temp, 0, 200);
+            memcpy(temp, M1, M1len);
+            temp[M1len] = 0x81;
+            keccakF.fromBytesToLanes(temp, m1lanes);
+        }
+        {
+            UINT8 temp[200];
+            memset(temp, 0, 200);
+            memcpy(temp, M2, M2len);
+            temp[M2len] = 0x81;
+            keccakF.fromBytesToLanes(temp, m2lanes);
+        }
+        vector<SliceValue> m1slices, m2slices;
+        fromLanesToSlices(m1lanes, m1slices, 64);
+        fromLanesToSlices(m2lanes, m2slices, 64);
+        Trail trail;
+        keccakF.buildDCTrailFromPair(m1slices, m2slices, trail);
+        {
+            ofstream fout("DinurEtAl.trail");
+            trail.save(fout);
+        }
+        Trail::produceHumanReadableFile(DC, "DinurEtAl.trail");
+    }
+}
+
+/** Example function that takes trails from a file and extends them 
+  * forward or backward up to a given weight and given number of rounds.
+  * @param  DCLC    Whether linear or differential trails are processed.
+  * @param  width   The Keccak-f width.
+  * @param  inFileName  The name of the file containing trails.
+  * @param  nrRounds    The target number of rounds.
+  * @param  maxWeight   The maximum weight of the trails to be produced.
+  * @param  reverse If true, it does backward extension. 
+  *                 If false, it does forward extension.
+  * @param  allPrefixes If true, the backward extension of trail cores
+  *                     looks for all prefixes, not just trail cores.
+  * @param  knownSmallWeightStateFileName   Optionally, the name of the file
+  *     containing states with small weight to optimize the search. See also
+  *     KeccakFTrailExtension::knownSmallWeightStates.
+  * @param  maxSmallWeight  Up to which weight the small-weight state file
+  *     is complete.
+  */
+void extendTrails(KeccakFPropagation::DCorLC DCLC, unsigned int width, const string& inFileName, unsigned int nrRounds, int maxWeight, bool reverse, bool allPrefixes=false, const string& knownSmallWeightStateFileName="", int maxSmallWeight=0)
+{
+    try {
+        cout << "Initializing... " << flush;
+        KeccakFDCLC keccakF(width);
+        cout << endl;
+        KeccakFTrailExtension keccakFTE(keccakF, DCLC);
+        cout << keccakF << endl;
+
+        if (knownSmallWeightStateFileName != "") {
+            keccakFTE.knownSmallWeightStates = new KnownSmallWeightStates(maxSmallWeight);
+            keccakFTE.knownSmallWeightStates->loadFromFile(keccakFTE, knownSmallWeightStateFileName);
+            cout << "Using '" << knownSmallWeightStateFileName << "'" << endl;
+        }
+
+        try {
+            TrailFileIterator trailsIn(inFileName, keccakFTE);
+            cout << trailsIn << endl;
+            string outFileName = inFileName + (reverse ? string("-rev") : string("-dir"));
+            ofstream fout(outFileName.c_str());
+            TrailSaveToFile trailsOut(fout);
+            if (reverse) {
+                keccakFTE.showMinimalTrails = true;
+                keccakFTE.allPrefixes = allPrefixes;
+                keccakFTE.backwardExtendTrails(trailsIn, trailsOut, nrRounds, maxWeight);
+            }
+            else {
+                keccakFTE.showMinimalTrails = true;
+                keccakFTE.forwardExtendTrails(trailsIn, trailsOut, nrRounds, maxWeight);
+            }
+            Trail::produceHumanReadableFile(keccakFTE, outFileName);
+        }
+        catch(TrailException e) {
+            cout << e.reason << endl;
+        }
+    }
+    catch(KeccakException e) {
+        cout << e.reason << endl;
+    }
+}
+
+/** Example function that uses extendTrails().
+  */
+void extendTrails()
+{
+    extendTrails(KeccakFPropagation::DC, 1600, "DCKeccakF-1600-FSE2012-3round-trailcores", 6, 75, false);
+    extendTrails(KeccakFPropagation::DC, 1600, "DCKeccakF-1600-FSE2012-3round-trailcores", 6, 75, true);
+    extendTrails(KeccakFPropagation::LC, 1600, "LCKeccakF-1600-trailcores", 4, 100, false);
+}
+
 int main(int argc, char *argv[])
 {
     try {
@@ -332,6 +507,8 @@ int main(int argc, char *argv[])
         //extendTrailAtTheBeginning();
         //generateDCTrailEquations();
         //verifyChallenges();
+        //generateTrailFromDinurDunkelmanShamirCollision();
+        //extendTrails();
     }
     catch(SpongeException e) {
         cout << e.reason << endl;

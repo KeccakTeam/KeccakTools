@@ -210,6 +210,10 @@
 				RelativePath=".\Sources\Keccak-fParity.cpp"
 				>
 			</File>
+            <File
+                RelativePath=".\Sources\Keccak-fParityBounds.cpp"
+                >
+            </File>
 			<File
 				RelativePath=".\Sources\Keccak-fParts.cpp"
 				>
@@ -218,6 +222,34 @@
 				RelativePath=".\Sources\Keccak-fPropagation.cpp"
 				>
 			</File>
+            <File
+                RelativePath=".\Sources\Keccak-fPositions.cpp"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Keccak-fState.cpp"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Keccak-fTrailCore3Rounds.cpp"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Keccak-fTrailCoreInKernelAtC.cpp"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Keccak-fTrailCoreParity.cpp"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Keccak-fTrailCoreRows.cpp"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Keccak-fTrailExtension.cpp"
+                >
+            </File>
 			<File
 				RelativePath=".\Sources\Keccak-fTrails.cpp"
 				>
@@ -288,14 +320,46 @@
 				RelativePath=".\Sources\Keccak-fParity.h"
 				>
 			</File>
+            <File
+                RelativePath=".\Sources\Keccak-fParityBounds.h"
+                >
+            </File>
 			<File
 				RelativePath=".\Sources\Keccak-fParts.h"
 				>
 			</File>
+            <File
+                RelativePath=".\Sources\Keccak-fPositions.h"
+                >
+            </File>
 			<File
 				RelativePath=".\Sources\Keccak-fPropagation.h"
 				>
 			</File>
+            <File
+                RelativePath=".\Sources\Keccak-fState.h"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Keccak-fTrailCore3Rounds.h"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Keccak-fTrailCoreInKernelAtC.h"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Keccak-fTrailCoreParity.h"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Keccak-fTrailCoreRows.h"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Keccak-fTrailExtension.h"
+                >
+            </File>
 			<File
 				RelativePath=".\Sources\Keccak-fTrails.h"
 				>

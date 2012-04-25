@@ -96,6 +96,13 @@ public:
       * @param  lengthInBits The number of bits to append.
       */
     void append(const UINT8 *input, unsigned int lengthInBits);
+    /** Method to append a number of bits to the sequence.
+      * @param  input  Vector containing the bytes to append.
+      * If the number of bits is not a multiple of 8, the last byte contains the
+      * last few bits in its least significant bits.
+      * @param  lengthInBits The number of bits to append.
+      */
+    void append(const vector<UINT8>& input, unsigned int lengthInBits);
     /** Method that returns the size of the last block.
       * @return  The size of the last block in bits.
       */

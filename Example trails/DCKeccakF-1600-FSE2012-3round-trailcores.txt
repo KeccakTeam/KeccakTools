@@ -1,0 +1,1462 @@
+DC/LC analysis of Keccak-f[1600]
+Differential cryptanalysis
+
+63 trails of length 3 read and checked.
+Minimum weight: 32
+       1 trails of weight 32
+       1 trails of weight 35
+       7 trails of weight 36
+       9 trails of weight 39
+      45 trails of weight 40
+
+Showing the trails up to weight 40 (in no particular order).
+
+3-round differential trail core of total weight 32
+* Profile related to χ:
+Propagation weights:    4   4  24
+Active rows:                2  12
+* Profile related to θ:
+Gaps:          0   1
+Kernel:        k   N
+Round 0 would have weight at least 4
+Round 1 (weight 4, θ-gap 0) after previous χ, then before χ (2 active rows):
+    .....       |  .....   .....     
+    X....       |  .....   .....     
+z^9 ..... z^54  |  ..+..   ..... z^62
+    X....       |  ...X.   .....     
+    .....       |  .....   .X...     
+    -----     
+Round 2 (weight 24, θ-gap 1) after previous χ, then before χ (12 active rows):
+.....   .....       |     .....     ...X.    X....     .....     .....     ....X    .....      .....      .....   .....    .....   .....  
+.....   .....       |     .....     .....    .....     .....     .....     .....    ..X..      .....      .....   .....    .X...   .....  
+..+..   ..... z^62  |  zz ..... z^3 ..... zz ..... z^5 ..... z^7 X.... z^3 ..... zz ..... z^12 ....X z^13 .....   ..... zz .....   ..... z
+...X.   .....       |     .X...     .....    .....     .....     .....     .....    .....      .....      ...X.   .....    .....   ..X..  
+.....   .X...       |     .....     .....    .....     X....     .....     .....    .....      .....      .....   .X...    .....   .....  
+---O-   -O---     
+
+3-round differential trail core of total weight 39
+* Profile related to χ:
+Propagation weights:   12  12  15
+Active rows:                6   7
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    .....      .....      .....      |  X....     .....   .....     
+    .....      .....      .....      |  .....     .X...   ..X..     
+z^9 ....X z^33 X.... z^12 ..... z^7  |  X.+.. z^5 .X...   ..... z^56
+    ....X      .....      .X...      |  .....     .....   ..X..     
+    .....      X....      .X...      |  .....     .....   .....     
+    -----      -----      -----    
+Round 2 (weight 15, θ-gap 0) after previous χ, then before χ (7 active rows):
+X....     .....   .....       |       .X..X   .....   .....     .....     .....      .....   .....
+.....     .X...   X.X..       |       .....   ...X.   ..X..     .....     .....      .....   .....
+X.+.. z^5 .X...   ..... z^56  |  z^25 .....   ..... z ..... z^4 ..... z^9 ..... z^18 .....   .....
+.....     .....   X.X..       |       .....   .....   .....     .....     .....      ...X.   .....
+.....     .....   .....       |       .....   .....   .....     ..X..     ...X.      .....   .X...
+-----     -----   -----     
+
+3-round differential trail core of total weight 39
+* Profile related to χ:
+Propagation weights:   12  12  15
+Active rows:                6   7
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    .....      .....      .....      |  X....     .....   .....     
+    .....      .....      .....      |  .....     .X...   ..X..     
+z^9 ....X z^33 X.... z^12 ..... z^7  |  X.+.. z^5 .X...   ..... z^56
+    ....X      .....      .X...      |  .....     .....   ..X..     
+    .....      X....      .X...      |  .....     .....   .....     
+    -----      -----      -----    
+Round 2 (weight 15, θ-gap 0) after previous χ, then before χ (7 active rows):
+X....     .....   .....       |       .....     .X..X   .....   .....   .....     .....     .....     
+.....     .X...   .XX..       |       .....     .....   ...X.   ...X.   ..X..     .....     .....     
+X.+.. z^5 .X...   ..... z^56  |  z^21 .X... z^3 .....   .....   .....   ..... z^4 ..... z^9 ..... z^20
+.....     .....   .XX..       |       .....     .....   .....   .....   .....     .....     .....     
+.....     .....   .....       |       .....     .....   .....   .....   .....     ..X..     ...X.     
+-----     -----   -----     
+
+3-round differential trail core of total weight 39
+* Profile related to χ:
+Propagation weights:   12  12  15
+Active rows:                6   7
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    .....      .....      .....      |  X....     .....   .....     
+    .....      .....      .....      |  .....     .X...   ..X..     
+z^9 ....X z^33 X.... z^12 ..... z^7  |  X.+.. z^5 .X...   ..... z^56
+    ....X      .....      .X...      |  .....     .....   ..X..     
+    .....      X....      .X...      |  .....     .....   .....     
+    -----      -----      -----    
+Round 2 (weight 15, θ-gap 0) after previous χ, then before χ (7 active rows):
+X..X.     .....   .....       |    ..X..     .....      .X..X   .....   .....     .....     .....     
+.....     .X...   ..X..       |    .....     .....      .....   ...X.   ..X..     .....     .....     
+X.+X. z^5 .X...   ..... z^56  |  z ..... z^8 ..... z^14 .....   ..... z ..... z^4 ..... z^9 ..... z^20
+.....     .....   ..X..       |    .....     .....      .....   .....   .....     .....     .....     
+.....     .....   .....       |    .....     ....X      .....   .....   .....     ..X..     ...X.     
+-----     -----   -----     
+
+3-round differential trail core of total weight 39
+* Profile related to χ:
+Propagation weights:   12  12  15
+Active rows:                6   7
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    .....      .....      .....      |  X....     .....   .....     
+    .....      .....      .....      |  .....     .X...   ..X..     
+z^9 ....X z^33 X.... z^12 ..... z^7  |  X.+.. z^5 .X...   ..... z^56
+    ....X      .....      .X...      |  .....     .....   ..X..     
+    .....      X....      .X...      |  .....     .....   .....     
+    -----      -----      -----    
+Round 2 (weight 15, θ-gap 0) after previous χ, then before χ (7 active rows):
+X...X     .....   .....       |       .X..X   .....   .....     .....     .....      .....  
+.....     .X...   ..X..       |       .....   ...X.   ..X..     .....     .....      .....  
+X.+.X z^5 .X...   ..... z^56  |  z^25 .....   ..... z ..... z^4 ..... z^9 ....X z^18 ..... z
+.....     .....   ..X..       |       .....   .....   .....     .....     .....      ..X..  
+.....     .....   .....       |       .....   .....   .....     ..X..     ...X.      .....  
+-----     -----   -----     
+
+3-round differential trail core of total weight 35
+* Profile related to χ:
+Propagation weights:   12  12  11
+Active rows:                6   5
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    .....      .....      .....      |  X....     .....   .....     
+    .....      .....      .....      |  .....     .X...   ..X..     
+z^9 ....X z^33 X.... z^12 ..... z^7  |  X.+.. z^5 .X...   ..... z^56
+    ....X      .....      .X...      |  .....     .....   ..X..     
+    .....      X....      .X...      |  .....     .....   .....     
+    -----      -----      -----    
+Round 2 (weight 11, θ-gap 0) after previous χ, then before χ (5 active rows):
+X....     .....   .....       |       .X..X   .....   .....     .....     .....     
+.....     .X...   ..X..       |       .....   ...X.   ..X..     .....     .....     
+X.+.. z^5 .X...   ..... z^56  |  z^25 .....   ..... z ..... z^4 ..... z^9 ..... z^20
+.....     .....   ..X..       |       .....   .....   .....     .....     .....     
+.....     .....   .....       |       .....   .....   .....     ..X..     ...X.     
+-----     -----   -----     
+
+3-round differential trail core of total weight 39
+* Profile related to χ:
+Propagation weights:   12  12  15
+Active rows:                6   7
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    .....      .....      .....      |  X....     .....   .....     
+    .....      .....      .....      |  .....     .X...   ..X..     
+z^9 ....X z^33 X.... z^12 ..... z^7  |  X.+.. z^5 .X...   ..... z^56
+    ....X      .....      .X...      |  .....     .....   ..X..     
+    .....      X....      .X...      |  .....     .....   .....     
+    -----      -----      -----    
+Round 2 (weight 15, θ-gap 0) after previous χ, then before χ (7 active rows):
+X....     .....   .....       |       .X..X   .....   .....     .....   .....     .....      .....   
+.....     XX...   ..X..       |       .....   ...X.   ..X..     .....   ..X..     .....      .....   
+X.+.. z^5 XX...   ..... z^56  |  z^25 .....   ..... z ..... z^4 .....   ..... z^8 ..... z^17 ..... zz
+.....     .....   ..X..       |       .....   .....   .....     .....   .....     .....      ...X.   
+.....     .....   .....       |       .....   .....   .....     ..X..   .....     ...X.      .....   
+-----     -----   -----     
+
+3-round differential trail core of total weight 39
+* Profile related to χ:
+Propagation weights:   12  12  15
+Active rows:                6   7
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    .....      .....      .....      |  X....     .....   .....     
+    .....      .....      .....      |  .....     .X...   ..X..     
+z^9 ....X z^33 X.... z^12 ..... z^7  |  X.+.. z^5 .X...   ..... z^56
+    ....X      .....      .X...      |  .....     .....   ..X..     
+    .....      X....      .X...      |  .....     .....   .....     
+    -----      -----      -----    
+Round 2 (weight 15, θ-gap 0) after previous χ, then before χ (7 active rows):
+X....     .....   .....       |      .....     ...X.      .X..X   .....   .....     .....     .....     
+.....     .X..X   ..X..       |      .....     .....      .....   ...X.   ..X..     .....     .....     
+X.+.. z^5 .X..X   ..... z^56  |  z^4 ..... z^7 ..... z^12 .....   ..... z ..... z^4 ..... z^9 ..... z^20
+.....     .....   ..X..       |      ..X..     .....      .....   .....   .....     .....     .....     
+.....     .....   .....       |      .....     .....      .....   .....   .....     ..X..     ...X.     
+-----     -----   -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      ....X      ...X.  |  ..X..     .....      ...X.     
+..X..      ....X      .....  |  .....     .....      .....     
+..X.. z^29 ..... z^32 ...X.  |  ..X.. z^8 ....X z^26 ..... z^27
+.....      .....      .....  |  .....     .....      .....     
+.....      .....      .....  |  .....     ....X      ...X.     
+-----      -----      -----
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+..X..     .....      .X.X.       |  .....    .....     .....     .....     .....     .....      X....   .....     
+.....     .....      .....       |  .....    ....X     .....     .....     X....     .....      .....   .....     
+..X.. z^8 ....X z^26 ..... z^27  |  ..X.. zz ..... z^3 ..... z^3 ..... z^5 ..... z^6 ..... z^19 ..... z ..... z^17
+.....     .....      .....       |  .....    .....     ..X..     ....X     .....     .....      .....   .....     
+.....     ....X      .X.X.       |  .....    .....     .....     .....     .....     X....      .....   ....X     
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      ....X      ...X.  |  ..X..     .....      ...X.     
+..X..      ....X      .....  |  .....     .....      .....     
+..X.. z^29 ..... z^32 ...X.  |  ..X.. z^8 ....X z^26 ..... z^27
+.....      .....      .....  |  .....     .....      .....     
+.....      .....      .....  |  .....     ....X      ...X.     
+-----      -----      -----
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+..X..     .....      ..XX.       |  .....    .....     .....     .....     .....     .....      .....     .....     
+.....     .....      .....       |  .....    ....X     .....     .....     X....     .....      ....X     .....     
+..X.. z^8 ....X z^26 ..... z^27  |  ..X.. zz ..... z^3 ..... z^5 ..... z^3 ..... z^6 ..... z^14 ..... z^6 ..... z^17
+.....     .....      .....       |  .....    .....     ..X..     X....     .....     .....      .....     .....     
+.....     ....X      ..XX.       |  .....    .....     .....     .....     .....     X....      .....     ....X     
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      ....X      ...X.  |  ..X..     .....      ...X.     
+..X..      ....X      .....  |  .....     .....      .....     
+..X.. z^29 ..... z^32 ...X.  |  ..X.. z^8 ....X z^26 ..... z^27
+.....      .....      .....  |  .....     .....      .....     
+.....      .....      .....  |  .....     ....X      ...X.     
+-----      -----      -----
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+..X..     .....      ...X.       |  .....    .....     .....    ..X..     .....     .....      .....     .....    
+.....     .....      .....       |  .....    ....X     .....    .....     X....     .....      .....     X....    
+..X.. z^8 ...XX z^26 ..... z^27  |  ..X.. zz ..... z^3 ..... zz ..... z^6 ..... z^6 ..... z^21 ..... z^7 ..... z^9
+.....     .....      .....       |  .....    .....     ..X..    .....     .....     .....      .....     .....    
+.....     ...XX      ...X.       |  .....    .....     .....    .....     .....     X....      ....X     .....    
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      ....X      ...X.  |  ..X..     .....      ...X.     
+..X..      ....X      .....  |  .....     .....      .....     
+..X.. z^29 ..... z^32 ...X.  |  ..X.. z^8 ....X z^26 ..... z^27
+.....      .....      .....  |  .....     .....      .....     
+.....      .....      .....  |  .....     ....X      ...X.     
+-----      -----      -----
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+X.X..     .....      ...X.       |  .....    .....     .....     .....     .....   ....X    .....      .....     
+.....     .....      .....       |  .....    ....X     .....     X....     .....   .....    ..X..      .....     
+X.X.. z^8 ....X z^26 ..... z^27  |  ..X.. zz ..... z^3 ..... z^9 ..... z^6 .....   ..... zz ..... z^17 ..... z^17
+.....     .....      .....       |  .....    .....     ..X..     .....     .....   .....    .....      .....     
+.....     ....X      ...X.       |  .....    .....     .....     .....     X....   .....    .....      ....X     
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      ....X      ...X.  |  ..X..     .....      ...X.     
+..X..      ....X      .....  |  .....     .....      .....     
+..X.. z^29 ..... z^32 ...X.  |  ..X.. z^8 ....X z^26 ..... z^27
+.....      .....      .....  |  .....     .....      .....     
+.....      .....      .....  |  .....     ....X      ...X.     
+-----      -----      -----
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.XX..     .....      ...X.       |  .....    .....     .....     .....     .....    .....      .....     .....     
+.....     .....      .....       |  .....    ....X     .....     X....     .....    .....      .....     .....     
+.XX.. z^8 ....X z^26 ..... z^27  |  ..X.. zz ..... z^3 ..... z^9 ..... z^6 ..... zz ..... z^11 ..... z^6 ..... z^17
+.....     .....      .....       |  .....    .....     ..X..     .....     .....    .....      ....X     .....     
+.....     ....X      ...X.       |  .....    .....     .....     .....     X....    ..X..      .....     ....X     
+-----     -----      -----     
+
+3-round differential trail core of total weight 36
+* Profile related to χ:
+Propagation weights:   12  12  12
+Active rows:                6   6
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      ....X      ...X.  |  ..X..     .....      ...X.     
+..X..      ....X      .....  |  .....     .....      .....     
+..X.. z^29 ..... z^32 ...X.  |  ..X.. z^8 ....X z^26 ..... z^27
+.....      .....      .....  |  .....     .....      .....     
+.....      .....      .....  |  .....     ....X      ...X.     
+-----      -----      -----
+Round 2 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+..X..     .....      ...X.       |  .....    .....     .....     .....     .....      .....     
+.....     .....      .....       |  .....    ....X     .....     X....     .....      .....     
+..X.. z^8 ....X z^26 ..... z^27  |  ..X.. zz ..... z^3 ..... z^9 ..... z^6 ..... z^21 ..... z^17
+.....     .....      .....       |  .....    .....     ..X..     .....     .....      .....     
+.....     ....X      ...X.       |  .....    .....     .....     .....     X....      ....X     
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      ....X      ...X.  |  ..X..     .....      ...X.     
+..X..      ....X      .....  |  .....     .....      .....     
+..X.. z^29 ..... z^32 ...X.  |  ..X.. z^8 ....X z^26 ..... z^27
+.....      .....      .....  |  .....     .....      .....     
+.....      .....      .....  |  .....     ....X      ...X.     
+-----      -----      -----
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+..X..     .....      ...X.       |  .....    .....     .....   .....     .....     .....      .....     .....     
+.....     .....      .....       |  .....    ....X     .....   .....     X....     .....      .....     .....     
+..X.. z^8 ..X.X z^26 ..... z^27  |  ..X.. zz ..... z^3 ..... z ..X.. z^7 ..... z^6 ..... z^21 ..... z^3 ..... z^13
+.....     .....      .....       |  .....    .....     ..X..   .....     .....     .....      .....     X....     
+.....     ..X.X      ...X.       |  .....    .....     .....   .....     .....     X....      ....X     .....     
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....   ....X      X....       |  .....     ....X      .....     
+     .....   .....      .....       |  .....     .....      .....     
+z^23 ..X.. z ....X z^17 ..... z^20  |  X.+.. z^3 ....X z^18 ..X.. z^40
+     .....   .....      .....       |  X....     .....      ..X..     
+     ..X..   .....      X....       |  .....     .....      .....     
+     -----   -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....     ....X      .....       |     .....      .....     .....     .....      .X...     .....     .....     .....    
+.....     .....      .....       |     .....      .....     .....     ..X..      .....     .....     ..X..     .....    
+X.+.. z^3 ....X z^18 X.X.. z^40  |  zz ..... z^12 ..... z^7 ..X.. z^4 ..... z^12 ..... z^5 ....X z^3 ..... z^4 ..... z^7
+X....     .....      X.X..       |     ..X..      .....     .....     .....      .....     .....     .....     .....    
+.....     .....      .....       |     .....      .X...     .....     .....      .....     .....     .....     .X...    
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....   ....X      X....       |  .....     ....X      .....     
+     .....   .....      .....       |  .....     .....      .....     
+z^23 ..X.. z ....X z^17 ..... z^20  |  X.+.. z^3 ....X z^18 ..X.. z^40
+     .....   .....      .....       |  X....     .....      ..X..     
+     ..X..   .....      X....       |  .....     .....      .....     
+     -----   -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....     ....X      .....       |     .....      .....     .....     .....     .X...     .....    .....     .....    
+.....     .....      .....       |     .....      .....     ..X..     .....     .....     .....    .....     .....    
+X.+.. z^3 ....X z^18 .XX.. z^40  |  zz ..... z^20 ..X.. z^4 ..... z^8 .X... z^3 ..... z^5 ....X zz ..... z^5 ..... z^7
+X....     .....      .XX..       |     ..X..      .....     .....     .....     .....     .....    .....     .....    
+.....     .....      .....       |     .....      .....     .....     .....     .....     .....    ..X..     .X...    
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....   ....X      X....       |  .....     ....X      .....     
+     .....   .....      .....       |  .....     .....      .....     
+z^23 ..X.. z ....X z^17 ..... z^20  |  X.+.. z^3 ....X z^18 ..X.. z^40
+     .....   .....      .....       |  X....     .....      ..X..     
+     ..X..   .....      X....       |  .....     .....      .....     
+     -----   -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....     ...XX      .....       |     .....    ..X..     .....     .....     .....      .X...     .....     .....    
+.....     .....      .....       |     .....    .....     .....     .....     ..X..      .....     .....     .....    
+X.+.. z^3 ...XX z^18 ..X.. z^40  |  zz ..... zz ..... z^8 ..... z^8 ..X.. z^4 ..... z^12 ..... z^5 ....X z^8 ..... z^7
+X....     .....      ..X..       |     ..X..    .....     .....     .....     .....      .....     .....     .....    
+.....     .....      .....       |     .....    .....     ....X     .....     .....      .....     .....     .X...    
+-----     -----      -----     
+
+3-round differential trail core of total weight 39
+* Profile related to χ:
+Propagation weights:   12  12  15
+Active rows:                6   7
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....   ....X      X....       |  .....     ....X      .....     
+     .....   .....      .....       |  .....     .....      .....     
+z^23 ..X.. z ....X z^17 ..... z^20  |  X.+.. z^3 ....X z^18 ..X.. z^40
+     .....   .....      .....       |  X....     .....      ..X..     
+     ..X..   .....      X....       |  .....     .....      .....     
+     -----   -----      -----     
+Round 2 (weight 15, θ-gap 0) after previous χ, then before χ (7 active rows):
+.....     ....X      .....       |    ..X..   .....      .....     .....      .X...     .....     .....    
+.....     .....      .....       |    .....   .....      .....     ..X..      .....     .....     .....    
+X.+X. z^3 ....X z^18 ..X.. z^40  |  z .....   ..... z^20 ..X.. z^4 ..... z^12 ..... z^5 ....X z^8 ..... z^7
+X..X.     .....      ..X..       |    .....   .XX..      .....     .....      .....     .....     .....    
+.....     .....      .....       |    .....   .....      .....     .....      .....     .....     .X...    
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....   ....X      X....       |  .....     ....X      .....     
+     .....   .....      .....       |  .....     .....      .....     
+z^23 ..X.. z ....X z^17 ..... z^20  |  X.+.. z^3 ....X z^18 ..X.. z^40
+     .....   .....      .....       |  X....     .....      ..X..     
+     ..X..   .....      X....       |  .....     .....      .....     
+     -----   -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....     ....X      .....       |     .....      .....     .....      .X...     .....     .....     .....   .....  
+.....     .....      .....       |     .....      .....     ..X..      .....     .....     .....     .X...   .....  
+X.+.X z^3 ....X z^18 ..X.. z^40  |  zz ..... z^20 ..X.. z^4 ..... z^12 ..... z^5 ....X z^8 ..... z^4 .....   ..... z
+X...X     .....      ..X..       |     ..X..      .....     .....      .....     .....     .....     .....   ..X..  
+.....     .....      .....       |     .....      .....     .....      .....     .....     .X...     .....   .....  
+-----     -----      -----     
+
+3-round differential trail core of total weight 36
+* Profile related to χ:
+Propagation weights:   12  12  12
+Active rows:                6   6
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....   ....X      X....       |  .....     ....X      .....     
+     .....   .....      .....       |  .....     .....      .....     
+z^23 ..X.. z ....X z^17 ..... z^20  |  X.+.. z^3 ....X z^18 ..X.. z^40
+     .....   .....      .....       |  X....     .....      ..X..     
+     ..X..   .....      X....       |  .....     .....      .....     
+     -----   -----      -----     
+Round 2 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....     ....X      .....       |     .....      .....     .....      .X...     .....     .....    
+.....     .....      .....       |     .....      .....     ..X..      .....     .....     .....    
+X.+.. z^3 ....X z^18 ..X.. z^40  |  zz ..... z^20 ..X.. z^4 ..... z^12 ..... z^5 ....X z^8 ..... z^7
+X....     .....      ..X..       |     ..X..      .....     .....      .....     .....     .....    
+.....     .....      .....       |     .....      .....     .....      .....     .....     .X...    
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....   ....X      X....       |  .....     ....X      .....     
+     .....   .....      .....       |  .....     .....      .....     
+z^23 ..X.. z ....X z^17 ..... z^20  |  X.+.. z^3 ....X z^18 ..X.. z^40
+     .....   .....      .....       |  X....     .....      ..X..     
+     ..X..   .....      X....       |  .....     .....      .....     
+     -----   -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....     ..X.X      .....       |     .....   .....    .....      .....     .....      .X...     .....     .....    
+.....     .....      .....       |     .....   .....    ....X      .....     ..X..      .....     .....     .....    
+X.+.. z^3 ..X.X z^18 ..X.. z^40  |  zz ..... z ..X.. zz ..... z^15 ..X.. z^4 ..... z^12 ..... z^5 ....X z^8 ..... z^7
+X....     .....      ..X..       |     ..X..   .....    .....      .....     .....      .....     .....     .....    
+.....     .....      .....       |     .....   .....    .....      .....     .....      .....     .....     .X...    
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      .....      .....       |  .....      .X...     ...X.     
+.....      ....X      X....       |  ..X..      .X...     .....     
+..X.. z^20 ..... z^14 X.... z^27  |  ..X.. z^17 ..... z^8 ..... z^36
+..X..      ....X      .....       |  .....      .....     ...X.     
+.....      .....      .....       |  .....      .....     .....     
+-----      -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....      .X...     .X.X.       |  .....   .....      .....     .....   .....   .....    .....      .....    
+..X..      .X...     .....       |  .....   .....      .....     .....   .....   ...X.    .....      .....    
+..X.. z^17 ..... z^8 ..... z^36  |  ..X.. z ..... z^26 ..... z^6 .....   .....   ..... zz .X... z^15 ..... z^6
+.....      .....     .X.X.       |  .....   ....X      .X...     .....   .....   .....    .....      ....X    
+.....      .....     .....       |  .....   .....      .....     ...X.   ....X   .....    .....      .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      .....      .....       |  .....      .X...     ...X.     
+.....      ....X      X....       |  ..X..      .X...     .....     
+..X.. z^20 ..... z^14 X.... z^27  |  ..X.. z^17 ..... z^8 ..... z^36
+..X..      ....X      .....       |  .....      .....     ...X.     
+.....      .....      .....       |  .....      .....     .....     
+-----      -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....      .X...     ..XX.       |  .....      .....   .....     .....   .....   .....     .X...      .....    
+..X..      .X...     .....       |  .....      .....   ....X     .....   .....   ...X.     .....      .....    
+..X.. z^17 ..... z^8 ..... z^36  |  ..X.. z^28 .....   ..... z^5 .....   .....   ..... z^6 ..... z^11 ..... z^6
+.....      .....     ..XX.       |  .....      .X...   .....     .....   .....   .....     .....      ....X    
+.....      .....     .....       |  .....      .....   .....     ...X.   ....X   .....     .....      .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      .....      .....       |  .....      .X...     ...X.     
+.....      ....X      X....       |  ..X..      .X...     .....     
+..X.. z^20 ..... z^14 X.... z^27  |  ..X.. z^17 ..... z^8 ..... z^36
+..X..      ....X      .....       |  .....      .....     ...X.     
+.....      .....      .....       |  .....      .....     .....     
+-----      -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....      .X...     ...X.       |  .....      .....   .....     .....   .....   .....      .....   .....    
+X.X..      .X...     .....       |  .....      ..X..   .....     .....   .....   ...X.      .....   .....    
+X.X.. z^17 ..... z^8 ..... z^36  |  ..X.. z^27 .....   ..... z^6 .....   .....   ..... z^16 ..... z ..... z^6
+.....      .....     ...X.       |  .....      .....   .X...     .....   .....   .....      ...X.   ....X    
+.....      .....     .....       |  .....      .....   .....     ...X.   ....X   .....      .....   .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      .....      .....       |  .....      .X...     ...X.     
+.....      ....X      X....       |  ..X..      .X...     .....     
+..X.. z^20 ..... z^14 X.... z^27  |  ..X.. z^17 ..... z^8 ..... z^36
+..X..      ....X      .....       |  .....      .....     ...X.     
+.....      .....      .....       |  .....      .....     .....     
+-----      -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....      .X...     ...X.       |  .....      .....     .....   .....     .....   .....   .....      .....    
+.XX..      .X...     .....       |  .....      ...X.     .....   .....     .....   .....   ...X.      .....    
+.XX.. z^17 ..... z^8 ..... z^36  |  ..X.. z^19 ..... z^6 ..... z ..... z^6 .....   .....   ..... z^18 ..... z^6
+.....      .....     ...X.       |  .....      .....     .....   .X...     .....   .....   .....      ....X    
+.....      .....     .....       |  .....      .....     ..X..   .....     ...X.   ....X   .....      .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 36
+* Profile related to χ:
+Propagation weights:   12  12  12
+Active rows:                6   6
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      .....      .....       |  .....      .X...     ...X.     
+.....      ....X      X....       |  ..X..      .X...     .....     
+..X.. z^20 ..... z^14 X.... z^27  |  ..X.. z^17 ..... z^8 ..... z^36
+..X..      ....X      .....       |  .....      .....     ...X.     
+.....      .....      .....       |  .....      .....     .....     
+-----      -----      -----     
+Round 2 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      .X...     ...X.       |  .....      .....     .....   .....   .....      .....    
+..X..      .X...     .....       |  .....      .....     .....   .....   ...X.      .....    
+..X.. z^17 ..... z^8 ..... z^36  |  ..X.. z^28 ..... z^6 .....   .....   ..... z^18 ..... z^6
+.....      .....     ...X.       |  .....      .X...     .....   .....   .....      ....X    
+.....      .....     .....       |  .....      .....     ...X.   ....X   .....      .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      .....      .....       |  .....      .X...     ...X.     
+.....      ....X      X....       |  ..X..      .X...     .....     
+..X.. z^20 ..... z^14 X.... z^27  |  ..X.. z^17 ..... z^8 ..... z^36
+..X..      ....X      .....       |  .....      .....     ...X.     
+.....      .....      .....       |  .....      .....     .....     
+-----      -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....      XX...     ...X.       |  .....     .....      .....     .....   .....   .....     ....X      .....    
+..X..      XX...     .....       |  .....     .....      .....     .....   .....   ...X.     .....      .....    
+..X.. z^17 ..... z^8 ..... z^36  |  ..X.. z^8 ..... z^19 ..... z^6 .....   .....   ..... z^4 ..... z^13 ..... z^6
+.....      .....     ...X.       |  .....     ...X.      .X...     .....   .....   .....     .....      ....X    
+.....      .....     .....       |  .....     .....      .....     ...X.   ....X   .....     .....      .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      .....      .....       |  .....      .X...     ...X.     
+.....      ....X      X....       |  ..X..      .X...     .....     
+..X.. z^20 ..... z^14 X.... z^27  |  ..X.. z^17 ..... z^8 ..... z^36
+..X..      ....X      .....       |  .....      .....     ...X.     
+.....      .....      .....       |  .....      .....     .....     
+-----      -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....      .X..X     ...X.       |  .....      ...X.     .....     .....   .....   .....      .....     .....   
+..X..      .X..X     .....       |  .....      .....     .....     .....   .....   ...X.      .....     .....   
+..X.. z^17 ..... z^8 ..... z^36  |  ..X.. z^23 ..... z^4 ..... z^6 .....   .....   ..... z^18 ..... z^3 ....X zz
+.....      .....     ...X.       |  .....      .....     .X...     .....   .....   .....      ....X     .....   
+.....      .....     .....       |  .....      .....     .....     ...X.   ....X   .....      .....     .....   
+-----      -----     -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+  .....      .....      .....      |  ...X.     X....      .....     
+  .....      ..X..      ....X      |  .....     .....      .....     
+z .X... z^26 ..X.. z^29 ..... z^5  |  ..+.. z^8 ..... z^18 ..X.. z^35
+  .....      .....      .....      |  .....     .....      .....     
+  .X...      .....      ....X      |  ...X.     X....      ..X..     
+  -----      -----      -----    
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+...X.     X....      .....       |      .....     .....      .....   .....     ....X      .....     .....     .....    
+.....     .....      .....       |      .....     .....      .....   .....     .....      X....     .....     ..X..    
+..+.. z^8 ..... z^18 X.X.. z^35  |  z^5 ..... z^4 ..... z^17 ..X.. z X.... z^3 ..... z^10 ..... z^3 X.... z^6 ..... z^7
+.....     .....      .....       |      X....     .....      .....   .....     .....      .....     .....     .....    
+...X.     X....      X.X..       |      .....     ....X      .....   .....     .....      .....     .....     .....    
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+  .....      .....      .....      |  ...X.     X....      .....     
+  .....      ..X..      ....X      |  .....     .....      .....     
+z .X... z^26 ..X.. z^29 ..... z^5  |  ..+.. z^8 ..... z^18 ..X.. z^35
+  .....      .....      .....      |  .....     .....      .....     
+  .X...      .....      ....X      |  ...X.     X....      ..X..     
+  -----      -----      -----    
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+...X.     X....      .....       |      .....     .....      .....   .....     ....X   X....     .....     .....    
+.....     .....      .....       |      .....     .....      .....   .....     .....   .....     X....     .....    
+..+.. z^8 ..... z^18 .XX.. z^35  |  z^5 ..... z^4 ..... z^17 ..X.. z X.... z^3 ..... z ..... z^8 ..... z^9 ..... z^8
+.....     .....      .....       |      X....     .....      .....   .....     .....   .....     .....     .....    
+...X.     X....      .XX..       |      .....     ....X      .....   .....     .....   .....     .....     ..X..    
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+  .....      .....      .....      |  ...X.     X....      .....     
+  .....      ..X..      ....X      |  .....     .....      .....     
+z .X... z^26 ..X.. z^29 ..... z^5  |  ..+.. z^8 ..... z^18 ..X.. z^35
+  .....      .....      .....      |  .....     .....      .....     
+  .X...      .....      ....X      |  ...X.     X....      ..X..     
+  -----      -----      -----    
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.X.X.     X....      .....       |      .....    X....   .....      .....   .....     ....X     .....     .....     
+.....     .....      .....       |      .....    .....   .....      .....   .....     .....     .....     X....     
+..+.. z^8 ..... z^18 ..X.. z^35  |  z^5 ..... zz ..... z ..... z^17 ..X.. z X.... z^3 ..... z^4 ..... z^5 ..... z^18
+.....     .....      .....       |      X....    .....   .....      .....   .....     .....     ....X     .....     
+.X.X.     X....      ..X..       |      .....    .....   ....X      .....   .....     .....     .....     .....     
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+  .....      .....      .....      |  ...X.     X....      .....     
+  .....      ..X..      ....X      |  .....     .....      .....     
+z .X... z^26 ..X.. z^29 ..... z^5  |  ..+.. z^8 ..... z^18 ..X.. z^35
+  .....      .....      .....      |  .....     .....      .....     
+  .X...      .....      ....X      |  ...X.     X....      ..X..     
+  -----      -----      -----    
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+..XX.     X....      .....       |      .....   .....     .....      .....   .....     ....X     .....     .....     
+.....     .....      .....       |      ....X   .....     .....      .....   .....     .....     .....     X....     
+..+.. z^8 ..... z^18 ..X.. z^35  |  z^3 ..... z ..... z^4 ..... z^17 ..X.. z X.... z^3 ..... z^6 ..... z^3 ..... z^18
+.....     .....      .....       |      .....   X....     .....      .....   .....     .....     X....     .....     
+..XX.     X....      ..X..       |      .....   .....     ....X      .....   .....     .....     .....     .....     
+-----     -----      -----     
+
+3-round differential trail core of total weight 36
+* Profile related to χ:
+Propagation weights:   12  12  12
+Active rows:                6   6
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+  .....      .....      .....      |  ...X.     X....      .....     
+  .....      ..X..      ....X      |  .....     .....      .....     
+z .X... z^26 ..X.. z^29 ..... z^5  |  ..+.. z^8 ..... z^18 ..X.. z^35
+  .....      .....      .....      |  .....     .....      .....     
+  .X...      .....      ....X      |  ...X.     X....      ..X..     
+  -----      -----      -----    
+Round 2 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+...X.     X....      .....       |      .....     .....      .....   .....     ....X      .....     
+.....     .....      .....       |      .....     .....      .....   .....     .....      X....     
+..+.. z^8 ..... z^18 ..X.. z^35  |  z^5 ..... z^4 ..... z^17 ..X.. z X.... z^3 ..... z^10 ..... z^18
+.....     .....      .....       |      X....     .....      .....   .....     .....      .....     
+...X.     X....      ..X..       |      .....     ....X      .....   .....     .....      .....     
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+  .....      .....      .....      |  ...X.     X....      .....     
+  .....      ..X..      ....X      |  .....     .....      .....     
+z .X... z^26 ..X.. z^29 ..... z^5  |  ..+.. z^8 ..... z^18 ..X.. z^35
+  .....      .....      .....      |  .....     .....      .....     
+  .X...      .....      ....X      |  ...X.     X....      ..X..     
+  -----      -----      -----    
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+...X.     X...X      .....       |      .....     .....      .....     .....   .....     ....X      .....     .....     
+.....     .....      .....       |      .....     .....      .....     .....   .....     .....      X....     .....     
+..+.. z^8 ..... z^18 ..X.. z^35  |  z^5 ..... z^4 ..... z^13 ..... z^3 ..X.. z X.... z^3 ..... z^10 ..... z^6 ....X z^11
+.....     .....      .....       |      X....     .....      .....     .....   .....     .....      .....     .....     
+...X.     X...X      ..X..       |      .....     ....X      X....     .....   .....     .....      .....     .....     
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+  .....      .....      .....      |  ...X.     X....      .....     
+  .....      ..X..      ....X      |  .....     .....      .....     
+z .X... z^26 ..X.. z^29 ..... z^5  |  ..+.. z^8 ..... z^18 ..X.. z^35
+  .....      .....      .....      |  .....     .....      .....     
+  .X...      .....      ....X      |  ...X.     X....      ..X..     
+  -----      -----      -----    
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+...X.     X..X.      .....       |      .....     .....     .....     .....   .....     ....X      .....     .....    
+.....     .....      .....       |      .....     .....     .....     .....   .....     .....      X....     X....    
+..+.. z^8 ..... z^18 ..X.. z^35  |  z^5 ..... z^4 ..... z^8 ..... z^8 ..X.. z X.... z^3 ..... z^10 ..... z^8 ..... z^9
+.....     .....      .....       |      X....     .....     .....     .....   .....     .....      .....     .....    
+...X.     X..X.      ..X..       |      .....     ....X     ....X     .....   .....     .....      .....     .....    
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     ...X.      ....X     .....      |  X....      ..X..     .....     
+     .....      .....     .....      |  .....      .....     .....     
+z^18 ...X. z^30 ..... z^6 .X... z^7  |  ..+.. z^18 ..... z^8 ....X z^35
+     .....      .....     .....      |  .....      .....     .....     
+     .....      ....X     .X...      |  X....      ..X..     ....X     
+     -----      -----     -----    
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+X....      ..X..     .....       |      .....      .....   .....    ....X   .....   .....      .....      .....    
+.....      .....     .....       |      .....      .....   ....X    .....   .....   .....      .....      .....    
+..+.. z^18 ..... z^8 ..X.X z^35  |  z^5 ..... z^15 X....   ..... zz .....   ..... z ..X.. z^14 ..... z^16 ..... z^3
+.....      .....     .....       |      X....      .....   .....    .....   ..X..   .....      .....      X....    
+X....      ..X..     ..X.X       |      .....      .....   .....    .....   .....   .....      X....      .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     ...X.      ....X     .....      |  X....      ..X..     .....     
+     .....      .....     .....      |  .....      .....     .....     
+z^18 ...X. z^30 ..... z^6 .X... z^7  |  ..+.. z^18 ..... z^8 ....X z^35
+     .....      .....     .....      |  .....      .....     .....     
+     .....      ....X     .X...      |  X....      ..X..     ....X     
+     -----      -----     -----    
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+X..X.      ..X..     .....       |       .....      .....   .....    ....X   .....      .....   .....      .....    
+.....      .....     .....       |       .....      .....   ....X    .....   .....      .....   X....      .....    
+..+.. z^18 ..... z^8 ....X z^35  |  z^10 ..... z^10 X....   ..... zz .....   ..... z^16 ..... z ..... z^14 ..... z^3
+.....      .....     .....       |       .....      .....   .....    .....   ..X..      .....   .....      X....    
+X..X.      ..X..     ....X       |       ....X      .....   .....    .....   .....      X....   .....      .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     ...X.      ....X     .....      |  X....      ..X..     .....     
+     .....      .....     .....      |  .....      .....     .....     
+z^18 ...X. z^30 ..... z^6 .X... z^7  |  ..+.. z^18 ..... z^8 ....X z^35
+     .....      .....     .....      |  .....      .....     .....     
+     .....      ....X     .X...      |  X....      ..X..     ....X     
+     -----      -----     -----    
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+X...X      ..X..     .....       |       .....     .....   .....    ....X   .....      .....      .....    
+.....      .....     .....       |       .....     .....   ....X    .....   .....      .....      .....    
+..+.. z^18 ..... z^8 ....X z^35  |  z^15 ..... z^5 X....   ..... zz .....   ..... z^16 ....X z^16 ..... z^3
+.....      .....     .....       |       .....     .....   .....    .....   ..X..      .....      X....    
+X...X      ..X..     ....X       |       X....     .....   .....    .....   .....      X....      .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 36
+* Profile related to χ:
+Propagation weights:   12  12  12
+Active rows:                6   6
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     ...X.      ....X     .....      |  X....      ..X..     .....     
+     .....      .....     .....      |  .....      .....     .....     
+z^18 ...X. z^30 ..... z^6 .X... z^7  |  ..+.. z^18 ..... z^8 ....X z^35
+     .....      .....     .....      |  .....      .....     .....     
+     .....      ....X     .X...      |  X....      ..X..     ....X     
+     -----      -----     -----    
+Round 2 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+X....      ..X..     .....       |       .....   .....    ....X   .....      .....      .....    
+.....      .....     .....       |       .....   ....X    .....   .....      .....      .....    
+..+.. z^18 ..... z^8 ....X z^35  |  z^21 X....   ..... zz .....   ..... z^16 ..... z^16 ..... z^3
+.....      .....     .....       |       .....   .....    .....   ..X..      .....      X....    
+X....      ..X..     ....X       |       .....   .....    .....   .....      X....      .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     ...X.      ....X     .....      |  X....      ..X..     .....     
+     .....      .....     .....      |  .....      .....     .....     
+z^18 ...X. z^30 ..... z^6 .X... z^7  |  ..+.. z^18 ..... z^8 ....X z^35
+     .....      .....     .....      |  .....      .....     .....     
+     .....      ....X     .X...      |  X....      ..X..     ....X     
+     -----      -----     -----    
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+X....      .XX..     .....       |       .....   .....    ....X   .....   X....      .....      .....   .....    
+.....      .....     .....       |       .....   ....X    .....   .....   .....      .....      .....   .....    
+..+.. z^18 ..... z^8 ....X z^35  |  z^21 X....   ..... zz .....   .....   ..... z^15 ..... z^14 ..... z ..... z^3
+.....      .....     .....       |       .....   .....    .....   ..X..   .....      .....      ....X   X....    
+X....      .XX..     ....X       |       .....   .....    .....   .....   .....      X....      .....   .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     ...X.      ....X     .....      |  X....      ..X..     .....     
+     .....      .....     .....      |  .....      .....     .....     
+z^18 ...X. z^30 ..... z^6 .X... z^7  |  ..+.. z^18 ..... z^8 ....X z^35
+     .....      .....     .....      |  .....      .....     .....     
+     .....      ....X     .X...      |  X....      ..X..     ....X     
+     -----      -----     -----    
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+X....      X.X..     .....       |       .....   .....    ....X   .....      .....    .....   ....X      .....    
+.....      .....     .....       |       .....   ....X    .....   .....      .....    .....   .....      .....    
+..+.. z^18 ..... z^8 ....X z^35  |  z^21 X....   ..... zz .....   ..... z^13 X.... zz .....   ..... z^15 ..... z^3
+.....      .....     .....       |       .....   .....    .....   ..X..      .....    .....   .....      X....    
+X....      X.X..     ....X       |       .....   .....    .....   .....      .....    X....   .....      .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     ...X.      ....X     .....      |  X....      ..X..     .....     
+     .....      .....     .....      |  .....      .....     .....     
+z^18 ...X. z^30 ..... z^6 .X... z^7  |  ..+.. z^18 ..... z^8 ....X z^35
+     .....      .....     .....      |  .....      .....     .....     
+     .....      ....X     .X...      |  X....      ..X..     ....X     
+     -----      -----     -----    
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+X....      ..X..     .....       |      .....      .....   .....    ....X   .....    ..X..      .....      .....    
+.....      .....     .....       |      X....      .....   ....X    .....   .....    .....      .....      .....    
+..+.. z^18 ..... z^8 ...XX z^35  |  z^9 ..... z^11 X....   ..... zz .....   ..... zz ..... z^13 ..... z^16 ..... z^3
+.....      .....     .....       |      .....      .....   .....    .....   ..X..    .....      .....      X....    
+X....      ..X..     ...XX       |      .....      .....   .....    .....   .....    .....      X....      .....    
+-----      -----     -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....     .X...      ..X..     |  .....      .X...      X....     
+     .....     .....      .....     |  ....X      .X...      .....     
+z^18 ..... z^6 ..... z^35 ..... zz  |  ..+.. z^14 ..... z^17 ..... z^30
+     ....X     .....      ..X..     |  ....X      .....      .....     
+     ....X     .X...      .....     |  .....      .....      X....     
+     -----     -----      -----   
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....      .X...      X..X.       |      ...X.     .....      .....     .....      .....     ....X    .....   
+....X      .X...      .....       |      .....     X....      ...X.     .....      .....     .....    .X...   
+..+.. z^14 ..... z^17 ..... z^30  |  z^6 ..... z^7 ..... z^20 ..... z^7 ..... z^10 X.... z^3 ..... zz ..... zz
+....X      .....      .....       |      .....     .....      .....     .....      ....X     .....    .....   
+.....      .....      X..X.       |      .....     .....      .....     ....X      .....     .....    .....   
+-----      -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....     .X...      ..X..     |  .....      .X...      X....     
+     .....     .....      .....     |  ....X      .X...      .....     
+z^18 ..... z^6 ..... z^35 ..... zz  |  ..+.. z^14 ..... z^17 ..... z^30
+     ....X     .....      ..X..     |  ....X      .....      .....     
+     ....X     .X...      .....     |  .....      .....      X....     
+     -----     -----      -----   
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....      .X...      X...X       |      ...X.     .....      .....      .....     .....     ....X    .....   
+....X      .X...      .....       |      .....     .....      ...X.      .....     .....     .....    .X...   
+..+.. z^14 ..... z^17 ..... z^30  |  z^6 ..... z^5 ....X z^22 ..... z^12 ..... z^5 X.... z^3 ..... zz ..... zz
+....X      .....      .....       |      .....     .....      .....      .....     ....X     .....    .....   
+.....      .....      X...X       |      .....     .....      .....      X....     .....     .....    .....   
+-----      -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....     .X...      ..X..     |  .....      .X...      X....     
+     .....     .....      .....     |  ....X      .X...      .....     
+z^18 ..... z^6 ..... z^35 ..... zz  |  ..+.. z^14 ..... z^17 ..... z^30
+     ....X     .....      ..X..     |  ....X      .....      .....     
+     ....X     .X...      .....     |  .....      .....      X....     
+     -----     -----      -----   
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....      .X...      X....       |      ...X.      .X...      .....   .....      .....     ....X    .....   
+..X.X      .X...      .....       |      .....      .....      ...X.   .....      .....     .....    .X...   
+..+.. z^14 ..... z^17 ..... z^30  |  z^6 ..... z^11 ..... z^16 .....   ..... z^17 X.... z^3 ..... zz ..... zz
+..X.X      .....      .....       |      .....      .....      .....   .....      ....X     .....    .....   
+.....      .....      X....       |      .....      .....      .....   ...X.      .....     .....    .....   
+-----      -----      -----     
+
+3-round differential trail core of total weight 36
+* Profile related to χ:
+Propagation weights:   12  12  12
+Active rows:                6   6
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....     .X...      ..X..     |  .....      .X...      X....     
+     .....     .....      .....     |  ....X      .X...      .....     
+z^18 ..... z^6 ..... z^35 ..... zz  |  ..+.. z^14 ..... z^17 ..... z^30
+     ....X     .....      ..X..     |  ....X      .....      .....     
+     ....X     .X...      .....     |  .....      .....      X....     
+     -----     -----      -----   
+Round 2 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....      .X...      X....       |      ...X.      .....      .....     ....X    .....   
+....X      .X...      .....       |      .....      ...X.      .....     .....    .X...   
+..+.. z^14 ..... z^17 ..... z^30  |  z^6 ..... z^28 ..... z^18 X.... z^3 ..... zz ..... zz
+....X      .....      .....       |      .....      .....      ....X     .....    .....   
+.....      .....      X....       |      .....      .....      .....     .....    .....   
+-----      -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....     .X...      ..X..     |  .....      .X...      X....     
+     .....     .....      .....     |  ....X      .X...      .....     
+z^18 ..... z^6 ..... z^35 ..... zz  |  ..+.. z^14 ..... z^17 ..... z^30
+     ....X     .....      ..X..     |  ....X      .....      .....     
+     ....X     .X...      .....     |  .....      .....      X....     
+     -----     -----      -----   
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....      .X...      X....       |     .....     ...X.      .....     .....     .....     ....X    .....   
+...XX      .X...      .....       |     .....     .....      ...X.     .....     .....     .....    .X...   
+..+.. z^14 ..... z^17 ..... z^30  |  zz ..... z^3 ..... z^28 ..... z^8 ...X. z^9 X.... z^3 ..... zz ..... zz
+...XX      .....      .....       |     .X...     .....      .....     .....     ....X     .....    .....   
+.....      .....      X....       |     .....     .....      .....     .....     .....     .....    .....   
+-----      -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....     .X...      ..X..     |  .....      .X...      X....     
+     .....     .....      .....     |  ....X      .X...      .....     
+z^18 ..... z^6 ..... z^35 ..... zz  |  ..+.. z^14 ..... z^17 ..... z^30
+     ....X     .....      ..X..     |  ....X      .....      .....     
+     ....X     .X...      .....     |  .....      .....      X....     
+     -----     -----      -----   
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....      XX...      X....       |      ...X.      .....     ....X      .....     ....X    .....   
+....X      XX...      .....       |      .....      ...X.     .....      .....     .....    .X...   
+..+.. z^14 ..... z^17 ..... z^30  |  z^6 ..... z^28 ..... z^4 ..... z^13 X.... z^3 ..... zz ..... zz
+....X      .....      .....       |      ...X.      .....     .....      ....X     .....    .....   
+.....      .....      X....       |      .....      .....     .....      .....     .....    .....   
+-----      -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+     .....     .X...      ..X..     |  .....      .X...      X....     
+     .....     .....      .....     |  ....X      .X...      .....     
+z^18 ..... z^6 ..... z^35 ..... zz  |  ..+.. z^14 ..... z^17 ..... z^30
+     ....X     .....      ..X..     |  ....X      .....      .....     
+     ....X     .X...      .....     |  .....      .....      X....     
+     -----     -----      -----   
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....      .X..X      X....       |      ...X.      ...X.      .....      .....     ....X    .....   
+....X      .X..X      .....       |      .....      .....      ...X.      .....     .....    .X...   
+..+.. z^14 ..... z^17 ..... z^30  |  z^6 ..... z^14 ..... z^13 ..... z^18 X.... z^3 ....X zz ..... zz
+....X      .....      .....       |      .....      .....      .....      ....X     .....    .....   
+.....      .....      X....       |      .....      .....      .....      .....     .....    .....   
+-----      -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    X....      ...X.     .....       |  .....     .....      ....X     
+    X....      .....     ..X..       |  .....     X....      .....     
+z^9 ..... z^14 ..... z^3 ..... z^35  |  ..+.. z^4 ..... z^28 ..... z^29
+    .....      .....     .....       |  ...X.     X....      .....     
+    .....      ...X.     ..X..       |  ...X.     .....      ....X     
+    -----      -----     -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....     .....      ..X.X       |     .....     .....   .....      .....     .....     .....      .....   .....   
+.....     X....      .....       |     .....     .....   .....      ....X     X....     .....      .....   .....   
+..+.. z^4 ..... z^28 ..... z^29  |  zz ..... z^8 ..... z ....X z^23 ..... z^7 ..... z^3 ..... z^10 .....   ..... zz
+...X.     X....      .....       |     .X...     X....   .....      .....     .....     .....      ...X.   .....   
+...X.     .....      ..X.X       |     .....     .....   .....      .....     .....     X....      .....   .X...   
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    X....      ...X.     .....       |  .....     .....      ....X     
+    X....      .....     ..X..       |  .....     X....      .....     
+z^9 ..... z^14 ..... z^3 ..... z^35  |  ..+.. z^4 ..... z^28 ..... z^29
+    .....      .....     .....       |  ...X.     X....      .....     
+    .....      ...X.     ..X..       |  ...X.     .....      ....X     
+    -----      -----     -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....     .....      ....X       |     .....     X....     .....   .....      .....     .....      .....   .....   
+.....     X....      .....       |     .....     .....     .....   .....      X....     .....      .....   .....   
+..+.. z^4 ..... z^28 ..... z^29  |  zz ..... z^5 ..... z^4 ....X   .X... z^30 ..... z^3 ..... z^10 .....   ..... zz
+.X.X.     X....      .....       |     .X...     .....     .....   .....      .....     .....      ...X.   .....   
+.X.X.     .....      ....X       |     .....     .....     .....   .....      .....     X....      .....   .X...   
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    X....      ...X.     .....       |  .....     .....      ....X     
+    X....      .....     ..X..       |  .....     X....      .....     
+z^9 ..... z^14 ..... z^3 ..... z^35  |  ..+.. z^4 ..... z^28 ..... z^29
+    .....      .....     .....       |  ...X.     X....      .....     
+    .....      ...X.     ..X..       |  ...X.     .....      ....X     
+    -----      -----     -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....     .....      ....X       |     .....      .....     .X...      .....     .....     .....      .....   .....   
+.....     X....      .....       |     .....      .....     .....      .....     X....     .....      .....   .....   
+..+.. z^4 ..... z^28 ..... z^29  |  zz ..... z^10 ....X z^4 ..... z^22 ..... z^3 ..... z^3 ..... z^10 .....   ..... zz
+..XX.     X....      .....       |     .X...      .....     .....      X....     .....     .....      ...X.   .....   
+..XX.     .....      ....X       |     .....      .....     .....      .....     .....     X....      .....   .X...   
+-----     -----      -----     
+
+3-round differential trail core of total weight 36
+* Profile related to χ:
+Propagation weights:   12  12  12
+Active rows:                6   6
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    X....      ...X.     .....       |  .....     .....      ....X     
+    X....      .....     ..X..       |  .....     X....      .....     
+z^9 ..... z^14 ..... z^3 ..... z^35  |  ..+.. z^4 ..... z^28 ..... z^29
+    .....      .....     .....       |  ...X.     X....      .....     
+    .....      ...X.     ..X..       |  ...X.     .....      ....X     
+    -----      -----     -----     
+Round 2 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+.....     .....      ....X       |     .....      .....      .....     .....      .....   .....   
+.....     X....      .....       |     .....      .....      X....     .....      .....   .....   
+..+.. z^4 ..... z^28 ..... z^29  |  zz ..... z^10 ....X z^31 ..... z^3 ..... z^10 .....   ..... zz
+...X.     X....      .....       |     .X...      .....      .....     .....      ...X.   .....   
+...X.     .....      ....X       |     .....      .....      .....     X....      .....   .X...   
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    X....      ...X.     .....       |  .....     .....      ....X     
+    X....      .....     ..X..       |  .....     X....      .....     
+z^9 ..... z^14 ..... z^3 ..... z^35  |  ..+.. z^4 ..... z^28 ..... z^29
+    .....      .....     .....       |  ...X.     X....      .....     
+    .....      ...X.     ..X..       |  ...X.     .....      ....X     
+    -----      -----     -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....     .....      ....X       |     .....     ...X.   .....      .....     .....      .....   .....   
+.....     X...X      .....       |     .X...     .....   .....      X....     .....      .....   .....   
+..+.. z^4 ..... z^28 ..... z^29  |  zz ..... z^8 ..... z ....X z^31 ..... z^3 ..... z^10 .....   ..... zz
+...X.     X...X      .....       |     .X...     .....   .....      .....     .....      ...X.   .....   
+...X.     .....      ....X       |     .....     .....   .....      .....     X....      .....   .X...   
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    X....      ...X.     .....       |  .....     .....      ....X     
+    X....      .....     ..X..       |  .....     X....      .....     
+z^9 ..... z^14 ..... z^3 ..... z^35  |  ..+.. z^4 ..... z^28 ..... z^29
+    .....      .....     .....       |  ...X.     X....      .....     
+    .....      ...X.     ..X..       |  ...X.     .....      ....X     
+    -----      -----     -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....     .....      ....X       |     .....     .....     .....      .....     .....      .....   .....   
+.....     X..X.      .....       |     .....     .....     .....      X....     .....      .....   .....   
+..+.. z^4 ..... z^28 ..... z^29  |  zz ..... z^4 ..... z^5 ....X z^31 ..... z^3 ...X. z^10 .....   ..... zz
+...X.     X..X.      .....       |     .X...     .X...     .....      .....     .....      ...X.   .....   
+...X.     .....      ....X       |     .....     .....     .....      .....     X....      .....   .X...   
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    X....      ...X.     .....       |  .....     .....      ....X     
+    X....      .....     ..X..       |  .....     X....      .....     
+z^9 ..... z^14 ..... z^3 ..... z^35  |  ..+.. z^4 ..... z^28 ..... z^29
+    .....      .....     .....       |  ...X.     X....      .....     
+    .....      ...X.     ..X..       |  ...X.     .....      ....X     
+    -----      -----     -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.....     .....      ...XX       |     .....      .....   .....      .....   .....     .....      .....   .....   
+.....     X....      .....       |     .....      .....   X....      .....   X....     .....      .....   .....   
+..+.. z^4 ..... z^28 ..... z^29  |  zz ..... z^10 ....X z ..... z^28 .....   ..... z^3 ..... z^10 .....   ..... zz
+...X.     X....      .....       |     .X...      .....   .....      .....   .....     .....      ...X.   .....   
+...X.     .....      ...XX       |     .....      .....   .....      ....X   .....     X....      .....   .X...   
+-----     -----      -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    .....      .....      .....  |  ..X..   .....     
+    X....      ...X.      .....  |  .....   X....     
+z^9 ..... z^10 ..... z^42 ...X.  |  ..+X.   ..... z^62
+    X....      .....      ...X.  |  ...X.   .X...     
+    .....      ...X.      .....  |  .....   .X...     
+    -----      -----      -----
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+..X..   .....       |  .....   ..X..   .....   .....     X....     .....      .....   .....    
+.....   X....       |  .....   .....   .....   ....X     .....     .....      .....   .....    
+..XX.   ..... z^62  |  ..X..   .....   .....   ..... z^5 ..... z^5 .X... z^40 .....   ..... z^6
+...X.   XX...       |  .....   .....   .X...   .....     .....     .....      ...X.   .....    
+.....   .X...       |  .....   .....   .....   .....     .....     .....      .....   .X...    
+-----   -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    .....      .....      .....  |  ..X..   .....     
+    X....      ...X.      .....  |  .....   X....     
+z^9 ..... z^10 ..... z^42 ...X.  |  ..+X.   ..... z^62
+    X....      .....      ...X.  |  ...X.   .X...     
+    .....      ...X.      .....  |  .....   .X...     
+    -----      -----      -----
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+..X..   .....       |    ..X..   .....   .....     X....     .....    .X...      .....   .....    
+.....   X....       |    .....   .....   ....X     .....     .....    .....      .....   .....    
+..+X.   ..... z^62  |  z .....   .....   ..... z^5 ..... z^5 .X... zz ..... z^37 .....   ..... z^6
+..XX.   XX...       |    .....   .X...   .....     .....     .....    .....      ...X.   .....    
+.....   .X...       |    .....   .....   .....     .....     .....    .....      .....   .X...    
+-----   -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    .....      .....      .....  |  ..X..   .....     
+    X....      ...X.      .....  |  .....   X....     
+z^9 ..... z^10 ..... z^42 ...X.  |  ..+X.   ..... z^62
+    X....      .....      ...X.  |  ...X.   .X...     
+    .....      ...X.      .....  |  .....   .X...     
+    -----      -----      -----
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+..X..   .....       |    ..X..   .....   .....     X....     .....    .X...     .....      .....    
+.....   X....       |    .....   .....   ....X     .....     .....    .....     .....      .....    
+..+X.   ..... z^62  |  z .....   .....   ..... z^5 ..... z^5 .X... zz ..... z^3 X.... z^33 ..... z^7
+..XX.   .X...       |    .....   .X...   .....     .....     .....    .....     .....      ...X.    
+.....   XX...       |    .....   .....   .....     .....     .....    .....     .....      .....    
+-----   -----     
+
+3-round differential trail core of total weight 40
+* Profile related to χ:
+Propagation weights:   12  12  16
+Active rows:                6   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 12, θ-gap 0) after previous χ, then before χ (6 active rows):
+    .....      .....      .....  |  ..X..   .....     
+    X....      ...X.      .....  |  .....   X....     
+z^9 ..... z^10 ..... z^42 ...X.  |  ..+X.   ..... z^62
+    X....      .....      ...X.  |  ...X.   .X...     
+    .....      ...X.      .....  |  .....   .X...     
+    -----      -----      -----
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+..X..   .....       |  .....   ..X..   .....   .....     X....     .....     .....      .....    
+.....   X....       |  .....   .....   .....   ....X     .....     .....     .....      .....    
+..XX.   ..... z^62  |  ..X..   .....   .....   ..... z^5 ..... z^5 .X... z^6 X.... z^33 ..... z^7
+...X.   .X...       |  .....   .....   .X...   .....     .....     .....     .....      ...X.    
+.....   XX...       |  .....   .....   .....   .....     .....     .....     .....      .....    
+-----   -----     
+
+3-round differential trail core of total weight 39
+* Profile related to χ:
+Propagation weights:   12  11  16
+Active rows:                5   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 11, θ-gap 0) after previous χ, then before χ (5 active rows):
+    .....      ....X      .....       |  .X...      .....     
+    .....      .....      ..X..       |  .X...      .X...     
+z^3 ..... z^17 ..... z^24 ..... z^17  |  ..+.X z^17 ..... z^45
+    ....X      ....X      ..X..       |  .....      .....     
+    ....X      .....      .....       |  .....      X..X.     
+    -----      -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.X..X      .....       |      .....      .....     X....      .....   .....     .....      .....  
+.X...      XX...       |      .....      ...X.     .....      ...X.   .....     .....      .....  
+..+.X z^17 ..... z^45  |  z^9 ..... z^10 ..... z^5 ..... z^11 .....   X.... z^3 ....X z^18 ..... z
+.....      .....       |      ...X.      .....     .....      .....   ....X     .....      ..X..  
+.....      XX...       |      .....      .....     .....      .....   .....     .....      .....  
+-----      -----     
+
+3-round differential trail core of total weight 39
+* Profile related to χ:
+Propagation weights:   12  11  16
+Active rows:                5   8
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 12
+Round 1 (weight 11, θ-gap 0) after previous χ, then before χ (5 active rows):
+    .....      ....X      .....       |  .X...      .....     
+    .....      .....      ..X..       |  .X...      .X...     
+z^3 ..... z^17 ..... z^24 ..... z^17  |  ..+.X z^17 ..... z^45
+    ....X      ....X      ..X..       |  .....      .....     
+    ....X      .....      .....       |  .....      X..X.     
+    -----      -----      -----     
+Round 2 (weight 16, θ-gap 0) after previous χ, then before χ (8 active rows):
+.X...      .....       |      ...X.    .....      .....     X....      .....   .....      .....  
+.X..X      XX...       |      .....    .....      ...X.     .....      ...X.   .....      .....  
+..+.X z^17 ..... z^45  |  z^6 ..... zz ..... z^10 ..... z^5 ..... z^11 .....   X.... z^22 ..... z
+.....      .....       |      .....    ...X.      .....     .....      .....   ....X      ..X..  
+.....      XX...       |      .....    .....      .....     .....      .....   .....      .....  
+-----      -----     
+

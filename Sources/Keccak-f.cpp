@@ -110,7 +110,7 @@ void KeccakF::ROL(LaneValue& L, int offset) const
     L &= mask;
 }
 
-void KeccakF::fromBytesToLanes(UINT8 *in, vector<LaneValue>& out) const
+void KeccakF::fromBytesToLanes(const UINT8 *in, vector<LaneValue>& out) const
 {
     out.resize(25);
     if ((laneSize == 1) || (laneSize == 2) || (laneSize == 4) || (laneSize == 8)) {

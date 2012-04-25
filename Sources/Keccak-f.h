@@ -374,7 +374,7 @@ public:
       * @param  out     The state as a vector of lanes.
       *                 It will be resized to 25 if necessary.
       */
-    void fromBytesToLanes(UINT8 *in, vector<LaneValue>& out) const;
+    void fromBytesToLanes(const UINT8 *in, vector<LaneValue>& out) const;
     /**
       * Method that converts a vector of lanes in 64-bit words into a state 
       * given as an array of bytes.

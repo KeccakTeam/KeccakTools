@@ -1,0 +1,32 @@
+DC/LC analysis of Keccak-f[1600]
+Linear cryptanalysis
+
+1 trails of length 3 read and checked.
+Minimum weight: 26
+       1 trails of weight 26
+
+Showing the trails up to weight 26 (in no particular order).
+
+3-round linear trail core of total weight 26
+* Profile related to χ:
+Propagation weights:   18   4   4
+Active rows:                2   2
+* Profile related to θ:
+Gaps:          1   0
+Kernel:        N   k
+Round 0 would have weight at least 18
+Round 1 (weight 4) after previous χ, then before θ of gap 1, then before χ (2 active rows):
+  ..X..     .....     .....     .....     .....      .....   .....   .....   .....       |  ...X.   .X...       |  .....   .....     
+  .....     .....     .....     ...X.     .....      .....   .....   .....   X....       |  ...X.   .X...       |  .....   .....     
+z ..... z^8 ..... z^4 .X... z^5 ..... z^6 ..... z^11 ..... z ..... z ...X.   ..... z^18  |  ..+X.   .X... z^62  |  ..+..   ..... z^62
+  .....     .....     .....     .....     .....      ....X   X....   .....   .....       |  .....   .X...       |  ...X.   .....     
+  .....     ....X     .....     .....     ..X..      .....   .....   .....   .....       |  ...X.   ..X..       |  .....   .XX..     
+                                                                                            -----   --O--     
+Round 2 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+.....   .....       |      .....       |      .....     
+.....   .....       |      X....       |      X....     
+..+..   ..... z^62  |  z^9 ..... z^54  |  z^9 ..... z^54
+...X.   .....       |      X....       |      X....     
+.....   .X...       |      .....       |      .....     
+                           -----     
+

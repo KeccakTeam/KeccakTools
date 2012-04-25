@@ -63,10 +63,21 @@ void Sponge::reset()
 
 void Sponge::absorb(const UINT8 *input, unsigned int lengthInBits)
 {
-    absorbQueue.append(input, lengthInBits);
+    unsigned int lengthInBytes = (lengthInBits+7)/8;
+    vector<UINT8> inputAsVector(input, input+lengthInBytes);
+    absorb(inputAsVector, lengthInBits);
+}
+
+void Sponge::absorb(const vector<UINT8>& input, unsigned int lengthInBits)
+{
+    if (lengthInBits == 0)
+        return;
+    unsigned int lengthInBytes = (lengthInBits+7)/8;
+    if (input.size() < lengthInBytes)
+        throw SpongeException("The given input length is inconsistent.");
     if (squeezing)
         throw SpongeException("The absorbing phase is over.");
-    unsigned int i = 0;
+    absorbQueue.append(input, lengthInBits);
     while(absorbQueue.firstBlockIsWhole()) {
         absorbBlock(absorbQueue.firstBlock());
         absorbQueue.removeFirstBlock();
@@ -82,6 +93,14 @@ void Sponge::absorbBlock(const vector<UINT8>& block)
 
 void Sponge::squeeze(UINT8 *output, unsigned int desiredLengthInBits)
 {
+    vector<UINT8> outputAsVector;
+    squeeze(outputAsVector, desiredLengthInBits);
+    for(unsigned int i=0; i<outputAsVector.size(); i++)
+        output[i] = outputAsVector[i];
+}
+
+void Sponge::squeeze(vector<UINT8>& output, unsigned int desiredLengthInBits)
+{
     if (!squeezing)
         flushAndSwitchToSqueezingPhase();
     if ((rate % 8) == 0) {
@@ -92,8 +111,7 @@ void Sponge::squeeze(UINT8 *output, unsigned int desiredLengthInBits)
             if (squeezeBuffer.size() == 0)
                 squeezeIntoBuffer();
             while((desiredLengthInBytes > 0) && (squeezeBuffer.size() > 0)) {
-                (*output) = squeezeBuffer.front();
-                output++;
+                output.push_back(squeezeBuffer.front());
                 desiredLengthInBytes--;
                 squeezeBuffer.pop_front();
             }
@@ -105,8 +123,7 @@ void Sponge::squeeze(UINT8 *output, unsigned int desiredLengthInBits)
         if (squeezeBuffer.size() == 0)
             squeezeIntoBuffer();
         while(squeezeBuffer.size() > 0) {
-            (*output) = squeezeBuffer.front();
-            output++;
+            output.push_back(squeezeBuffer.front());
             squeezeBuffer.pop_front();
         }
     }

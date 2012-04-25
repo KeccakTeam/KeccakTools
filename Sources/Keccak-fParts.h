@@ -17,6 +17,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #define _KECCAKFPARTS_H_
 
 #include "Keccak-f.h"
+#include "Keccak-fPositions.h"
 
 using namespace std;
 
@@ -53,6 +54,115 @@ typedef UINT32 SliceValue;
   */
 const SliceValue maxSliceValue = 0x1FFFFFF;
 
+/** The LaneIndex type codes the x and y coordinates as the single integer x + 5y.
+  */
+typedef unsigned int LaneIndex;
+
+/** This method returns the lane index from (x,y) coordinates.
+  *
+  * @param  x   The x coordinate, with 0 ≤ x < 5.
+  * @param  y   The y coordinate, with 0 ≤ y < 5.
+  */
+inline LaneIndex getLaneIndex(unsigned int x, unsigned int y)
+{
+    return x + 5*y;
+}
+
+/** This method returns the lane index from (x,y) coordinates.
+  *
+  * @param  x   The x coordinate, which can be any signed integer (reduced modulo 5).
+  * @param  y   The y coordinate, which can be any signed integer (reduced modulo 5).
+  */
+LaneIndex getLaneIndexSafely(int x, int y);
+
+/** This method returns the value of a given bit in a state.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  x   The x coordinate.
+  * @param  y   The y coordinate.
+  * @param  z   The z coordinate.
+  */
+inline int getBit(const vector<SliceValue>& slices, unsigned int x, unsigned int y, unsigned int z)
+{
+    return (slices[z] >> (x+5*y)) & 1;
+}
+
+/** This method returns the value of a given bit in a state.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  p   The x, y, z coordinates.
+  */
+inline int getBit(const vector<SliceValue>& slices, const BitPosition& p)
+{
+    return getBit(slices, p.x, p.y, p.z);
+}
+
+/** This method sets to 0 a particular bit in a state.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  x   The x coordinate.
+  * @param  y   The y coordinate.
+  * @param  z   The z coordinate.
+  */
+inline void setBitToZero(vector<SliceValue>& slices, unsigned int x, unsigned int y, unsigned int z)
+{
+    slices[z] &= ~((SliceValue)1 << (x+5*y));
+}
+
+/** This method sets to 0 a particular bit in a state.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  p   The x, y, z coordinates.
+  */
+inline void setBitToZero(vector<SliceValue>& slices, const BitPosition& p)
+{
+    return setBitToZero(slices, p.x, p.y, p.z);
+}
+
+/** This method sets to 1 a particular bit in a state.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  x   The x coordinate.
+  * @param  y   The y coordinate.
+  * @param  z   The z coordinate.
+  */
+inline void setBitToOne(vector<SliceValue>& slices, unsigned int x, unsigned int y, unsigned int z)
+{
+    slices[z] |= (SliceValue)1 << (x+5*y);
+}
+
+/** This method sets to 1 a particular bit in a state.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  p   The x, y, z coordinates.
+  */
+inline void setBitToOne(vector<SliceValue>& slices, const BitPosition& p)
+{
+    setBitToOne(slices, p.x, p.y, p.z);
+}
+
+/** This method inverts a particular bit in a state.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  x   The x coordinate.
+  * @param  y   The y coordinate.
+  * @param  z   The z coordinate.
+  */
+inline void invertBit(vector<SliceValue>& slices, unsigned int x, unsigned int y, unsigned int z)
+{
+    slices[z] ^= (SliceValue)1 << (x+5*y);
+}
+
+/** This method inverts a particular bit in a state.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  p   The x, y, z coordinates.
+  */
+inline void invertBit(vector<SliceValue>& slices, const BitPosition& p)
+{
+    invertBit(slices, p.x, p.y, p.z);
+}
+
 /** This function returns a SliceValue with bits set to zero, except at 
   * row y, where the value is given by the argument @a row.
   */
@@ -68,6 +178,39 @@ inline RowValue getRowFromSlice(const SliceValue& slice, const unsigned int& y)
     return (slice >> (5*y)) & 0x1F;
 }
 
+/** This method returns the value of a given bit in a plane.
+  *
+  * @param  slices   The state as a vector of rows.
+  * @param  x   The x coordinate.
+  * @param  z   The z coordinate.
+  */
+inline int getBit(const vector<RowValue>& rows, unsigned int x, unsigned int z)
+{
+    return (rows[z] >> x) & 1;
+}
+
+/** This method sets to 0 a particular bit in a plane.
+  *
+  * @param  slices   The state as a vector of rows.
+  * @param  x   The x coordinate.
+  * @param  z   The z coordinate.
+  */
+inline void setBitToZero(vector<RowValue>& rows, unsigned int x, unsigned int z)
+{
+    rows[z] &= ~((RowValue)1 << x);
+}
+
+/** This method sets to 1 a particular bit in a plane.
+  *
+  * @param  slices   The state as a vector of rows.
+  * @param  x   The x coordinate.
+  * @param  z   The z coordinate.
+  */
+inline void setBitToOne(vector<RowValue>& rows, unsigned int x, unsigned int z)
+{
+    rows[z] |= (RowValue)1 << x;
+}
+
 /** This method returns the value of a given row in a slice.
   *
   * @param  slices   The state as a vector of slices.
@@ -75,6 +218,16 @@ inline RowValue getRowFromSlice(const SliceValue& slice, const unsigned int& y)
   * @param  z   The z coordinate.
   */
 RowValue getRow(const vector<SliceValue>& slices, unsigned int y = 0, unsigned int z = 0);
+
+/** This method returns the value of a given row in a slice.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  p   The y, z coordinates.
+  */
+inline RowValue getRow(const vector<SliceValue>& slices, const RowPosition& p)
+{
+    return getRow(slices, p.y, p.z);
+}
 
 /** This method sets the value of a particular row in a vector of slices.
   *
@@ -84,6 +237,17 @@ RowValue getRow(const vector<SliceValue>& slices, unsigned int y = 0, unsigned i
   * @param  z   The z coordinate.
   */
 void setRow(vector<SliceValue>& slices, RowValue row, unsigned int y = 0, unsigned int z = 0);
+
+/** This method sets the value of a particular row in a vector of slices.
+  *
+  * @param  slices   The state as a vector of slices.
+  * @param  row     The row value.
+  * @param  p   The y, z coordinates.
+  */
+inline void setRow(vector<SliceValue>& slices, RowValue row, const RowPosition& p)
+{
+    setRow(slices, row, p.y, p.z);
+}
 
 /** This method constructs a slice value from 5 row values.
   */
@@ -197,31 +361,6 @@ void fromSlicesToLanes(const vector<SliceValue>& slices, vector<LaneValue>& lane
 
 // -------------------------------------------------------------
 //
-// Display
-//
-// -------------------------------------------------------------
-
-/** This method outputs to fout the value of the state in a human readable way.
-  * The slices are displayed side by side.
-  */
-void displayState(ostream& fout, const vector<SliceValue>& state, bool showParity = false);
-
-/** This method outputs to fout the value of the 2 states in a human readable way.
-  */
-void displayStates(ostream& fout,
-                   const vector<SliceValue>& state1, bool showParity1,
-                   const vector<SliceValue>& state2, bool showParity2);
-
-/** This method outputs to fout the value of the 3 states in a human readable way.
-  */
-void displayStates(ostream& fout,
-                   const vector<SliceValue>& state1, bool showParity1,
-                   const vector<SliceValue>& state2, bool showParity2,
-                   const vector<SliceValue>& state3, bool showParity3);
-
-
-// -------------------------------------------------------------
-//
 // Hamming weight and related
 //
 // -------------------------------------------------------------
@@ -229,6 +368,10 @@ void displayStates(ostream& fout,
 /** This function returns the Hamming weight of the given row value.
   */
 unsigned int getHammingWeightRow(RowValue row);
+
+/** This function returns the Hamming weight of the given column value.
+  */
+unsigned int getHammingWeightColumn(ColumnValue column);
 
 /** This function returns the Hamming weight of the given slice value.
   */

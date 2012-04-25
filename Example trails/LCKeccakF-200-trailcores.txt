@@ -1,0 +1,82 @@
+DC/LC analysis of Keccak-f[200]
+Linear cryptanalysis
+
+1 trails of length 2 read and checked.
+1 trails of length 3 read and checked.
+1 trails of length 4 read and checked.
+Minimum weight: 8
+       1 trails of weight  8
+       1 trails of weight 20
+       1 trails of weight 46
+
+Showing the trails up to weight 46 (in no particular order).
+
+2-round linear trail core of total weight 8
+* Profile related to χ:
+Propagation weights:    4   4
+Active rows:                2
+* Profile related to θ:
+Gaps:          0
+Kernel:        k
+Round 0 would have weight at least 4
+Round 1 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+.....     .....      |  .....      |  .....    
+.....     .....      |  ..X..      |  ..X..    
+..X.. z^3 ..... z^3  |  ..X.. z^7  |  ..X.. z^7
+.....     .....      |  .....      |  .....    
+.....     ...X.      |  .....      |  .....    
+                        -----    
+
+3-round linear trail core of total weight 20
+* Profile related to χ:
+Propagation weights:    8   8   4
+Active rows:                4   2
+* Profile related to θ:
+Gaps:          0   0
+Kernel:        k   k
+Round 0 would have weight at least 8
+Round 1 (weight 8) after previous χ, then before θ of gap 0, then before χ (4 active rows):
+    ..X..    .....   .....  |  .X...   .....      |  .X...   .....    
+    .....    .....   X....  |  .....   .....      |  .....   .....    
+z^3 ..... zz .X...   .....  |  ..+.. z ...X. z^5  |  ..+.. z ...X. z^5
+    .....    .....   ....X  |  .X...   .....      |  .X...   .....    
+    .....    .....   .....  |  .....   ...X.      |  .....   ...X.    
+                               -----   -----    
+Round 2 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+.X...   .....      |      .....    |      .....  
+.....   .....      |      ..XX.    |      ..XX.  
+..+.. z ...X. z^5  |  z^6 ..... z  |  z^6 ..... z
+.X...   .....      |      ..XX.    |      ..XX.  
+.....   ...X.      |      .....    |      .....  
+                          -----  
+
+4-round linear trail core of total weight 46
+* Profile related to χ:
+Propagation weights:   16   4   4  22
+Active rows:                2   2  10
+* Profile related to θ:
+Gaps:          1   0   2
+Kernel:        N   k   N
+Round 0 would have weight at least 16
+Round 1 (weight 4) after previous χ, then before θ of gap 1, then before χ (2 active rows):
+.....    .....   .....   ...X.   X....  |  ....X     .X...  |  .....     .....
+.....    ...X.   .....   .....   .....  |  ....X     .X...  |  .....     .....
+..+.. zz ....X z .X...   .....   .....  |  ..+.X z^6 .....  |  ..+.. z^6 .X...
+.....    .....   .....   ..X.X   .....  |  X....     .X...  |  X...X     .....
+.X...    .....   .....   .....   X....  |  ....X     .X...  |  .....     .....
+                                           O----     -----
+Round 2 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+.....     .....  |    .X...      |    .X...    
+.....     .....  |    .....      |    .....    
+..+.. z^6 .X...  |  z ..... z^6  |  z ..... z^6
+....X     .....  |    .X...      |    .X...    
+.....     .....  |    .....      |    .....    
+                      -----    
+Round 3 (weight 22) after previous χ, then before θ of gap 2, then before χ (10 active rows):
+  .X...      |      .....  |      ...XX   .XX..
+  .....      |      .....  |      ...XX   .XX..
+z ..... z^6  |  z^7 .....  |  z^6 ...XX   .XX..
+  .X...      |      ..XX.  |      ...XX   .X.X.
+  .....      |      .....  |      ...XX   .XX..
+                    --OO-
+
