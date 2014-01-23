@@ -262,7 +262,7 @@ public:
       * @param  z   The z coordinate.
       * @param  value   The new slice value.
       */
-    inline SliceValue setSlice(unsigned int z, SliceValue value)
+    inline void setSlice(unsigned int z, SliceValue value)
     {
         map<unsigned int, SliceValue>::iterator slice = slices.find(z);
         if (slice == slices.end()) {
