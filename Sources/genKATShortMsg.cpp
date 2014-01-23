@@ -27,8 +27,8 @@ typedef unsigned char BitSequence;
 
 STATUS_CODES genShortMsg(unsigned int rate, unsigned int capacity, int outputLength, const std::string& suffix, bool fixedOutputLength = false);
 int     FindMarker(FILE *infile, const char *marker);
-int     ReadHex(FILE *infile, BitSequence *A, int Length, char *str);
-void    fprintBstr(FILE *fp, char *S, BitSequence *A, int L);
+int     ReadHex(FILE *infile, BitSequence *A, int Length, const char *str);
+void    fprintBstr(FILE *fp, const char *S, BitSequence *A, int L);
 
 #define SqueezingOutputLength 4096
 
@@ -320,7 +320,7 @@ FindMarker(FILE *infile, const char *marker)
 // ALLOW TO READ HEXADECIMAL ENTRY (KEYS, DATA, TEXT, etc.)
 //
 int
-ReadHex(FILE *infile, BitSequence *A, int Length, char *str)
+ReadHex(FILE *infile, BitSequence *A, int Length, const char *str)
 {
     int         i, ch, started;
     BitSequence ich;
@@ -362,7 +362,7 @@ ReadHex(FILE *infile, BitSequence *A, int Length, char *str)
 }
 
 void
-fprintBstr(FILE *fp, char *S, BitSequence *A, int L)
+fprintBstr(FILE *fp, const char *S, BitSequence *A, int L)
 {
     int     i;
 

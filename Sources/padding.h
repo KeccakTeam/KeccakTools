@@ -136,6 +136,10 @@ private:
   */
 class PaddingRule {
 public:
+    /**
+      * Virtual destructor - necessary because this is an abstract class.
+      */
+    virtual ~PaddingRule() {};
     /** Abstract method to apply the padding on the given message queue.
       * @param  rate The block size in bits to which the padding must align.
       * @param  queue    The message bits to which the padding must be appended.

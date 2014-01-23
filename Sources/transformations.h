@@ -28,6 +28,10 @@ class Transformation {
 public:
     Transformation() {};
     /**
+      * Virtual destructor - necessary because this is an abstract class.
+      */
+    virtual ~Transformation() {};
+    /**
       * Abstract method that returns the number of bits of its domain and range.
       */
     virtual unsigned int getWidth() const = 0;
