@@ -203,6 +203,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sources\Keccak-fDisplay.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Sources\Keccak-fEquations.cpp"
 				>
 			</File>
@@ -271,6 +275,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sources\progress.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Sources\sponge.cpp"
 				>
 			</File>
@@ -310,6 +318,10 @@
 			</File>
 			<File
 				RelativePath=".\Sources\Keccak-fDCLC.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sources\Keccak-fDisplay.h"
 				>
 			</File>
 			<File
@@ -374,6 +386,10 @@
 			</File>
 			<File
 				RelativePath=".\Sources\padding.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Sources\progress.h"
 				>
 			</File>
 			<File
