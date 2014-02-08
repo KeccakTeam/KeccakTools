@@ -2,10 +2,12 @@ DC/LC analysis of Keccak-f[1600]
 Linear cryptanalysis
 
 1 trails of length 3 read and checked.
+1 trails of length 4 read and checked.
 Minimum weight: 26
        1 trails of weight 26
+       1 trails of weight 66
 
-Showing the trails up to weight 26 (in no particular order).
+Showing the trails up to weight 66 (in no particular order).
 
 3-round linear trail core of total weight 26
 * Profile related to χ:
@@ -29,4 +31,34 @@ Round 2 (weight 4) after previous χ, then before θ of gap 0, then before χ (2
 ...X.   .....       |      X....       |      X....     
 .....   .X...       |      .....       |      .....     
                            -----     
+
+4-round linear trail core of total weight 66
+* Profile related to χ:
+Propagation weights:   18   4   4  40
+Active rows:                2   2  20
+* Profile related to θ:
+Gaps:          1   0   2
+Kernel:        N   k   N
+Round 0 would have weight at least 18
+Round 1 (weight 4) after previous χ, then before θ of gap 1, then before χ (2 active rows):
+  ..X..     .....     .....     .....     .....      .....   .....   .....   .....       |  ...X.   .X...       |  .....   .....     
+  .....     .....     .....     ...X.     .....      .....   .....   .....   X....       |  ...X.   .X...       |  .....   .....     
+z ..... z^8 ..... z^4 .X... z^5 ..... z^6 ..... z^11 ..... z ..... z ...X.   ..... z^18  |  ..+X.   .X... z^62  |  ..+..   ..... z^62
+  .....     .....     .....     .....     .....      ....X   X....   .....   .....       |  .....   .X...       |  ...X.   .....     
+  .....     ....X     .....     .....     ..X..      .....   .....   .....   .....       |  ...X.   ..X..       |  .....   .XX..     
+                                                                                            -----   --O--     
+Round 2 (weight 4) after previous χ, then before θ of gap 0, then before χ (2 active rows):
+.....   .....       |      .....       |      .....     
+.....   .....       |      X....       |      X....     
+..+..   ..... z^62  |  z^9 ..... z^54  |  z^9 ..... z^54
+...X.   .....       |      X....       |      X....     
+.....   .X...       |      .....       |      .....     
+                           -----     
+Round 3 (weight 40) after previous χ, then before θ of gap 2, then before χ (20 active rows):
+    .....       |       .....     .....       |       ....X   ..X..    ...X.   .X...     
+    X....       |       .....     .....       |       ....X   ..X..    ...X.   .X...     
+z^9 ..... z^54  |  z^28 ..... z^3 ..... z^31  |  z^27 ....X   ..X.. zz ...X.   .X... z^31
+    X....       |       .....     .....       |       ....X   ..X..    ...X.   .X...     
+    .....       |       ...X.     ..X..       |       ....X   ..XX.    ...X.   .XX..     
+                        ---O-     --O--     
 
