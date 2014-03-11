@@ -510,10 +510,7 @@ int main(int argc, char *argv[])
         //generateTrailFromDinurDunkelmanShamirCollision();
         //extendTrails();
     }
-    catch(SpongeException e) {
-        cout << e.reason << endl;
-    }
-    catch(KeccakException e) {
+    catch(Exception e) {
         cout << e.reason << endl;
     }
 

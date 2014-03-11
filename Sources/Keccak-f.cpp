@@ -18,8 +18,6 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 using namespace std;
 
-KeccakException::KeccakException(const string& aReason)
-    : reason(aReason)
 {
 }
 

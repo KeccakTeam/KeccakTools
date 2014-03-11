@@ -19,12 +19,6 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 using namespace std;
 
-DuplexException::DuplexException(const string& aReason)
-    : reason(aReason)
-{
-}
-
-
 Duplex::Duplex(const Transformation *aF, const PaddingRule *aPad, unsigned int aRate)
     : f(aF), pad(aPad), rate(aRate)
 {

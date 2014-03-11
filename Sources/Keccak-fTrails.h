@@ -22,23 +22,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 class KeccakFPropagation;
 
-/**
- * Exception that can be thrown by the class Trail.
- */
-class TrailException {
-public:
-    /** A string expressing the reason for the exception. */
-    string reason;
-    /**
-     * The constructor.
-     */
-    TrailException() : reason() {}
-    /**
-     * The constructor.
-     * @param   aReason A string giving the reason of the exception.
-     */
-    TrailException(const string& aReason) : reason(aReason) {}
-};
+typedef Exception TrailException;
 
 /** This class implements a container for a differential or linear trail. 
   * A trail makes sense only in the context of a KeccakFPropagation object.

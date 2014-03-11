@@ -25,19 +25,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 using namespace std;
 
-/**
- * Exception that can be thrown by the class Sponge.
- */
-class SpongeException {
-public:
-    /** A string expressing the reason for the exception. */
-    string reason;
-    /**
-     * The constructor.
-     * @param   aReason     A string giving the reason of the exception.
-     */
-    SpongeException(const string& aReason);
-};
+typedef Exception SpongeException;
 
 /**
   * Class implementing the sponge construction.
