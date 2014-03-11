@@ -26,6 +26,7 @@ typedef enum { KAT_SUCCESS = 0, KAT_FILE_OPEN_ERROR = 1, KAT_HEADER_ERROR = 2, K
 typedef unsigned char BitSequence;
 
 STATUS_CODES genShortMsg(unsigned int rate, unsigned int capacity, int outputLength, const std::string& suffix, bool fixedOutputLength = false);
+STATUS_CODES genShortMsgHash(unsigned int rate, unsigned int capacity,  unsigned char delimitedSuffix, unsigned int hashbitlen, unsigned int squeezedOutputLength, const std::string& fileName, const std::string& description);
 int     FindMarker(FILE *infile, const char *marker);
 int     ReadHex(FILE *infile, BitSequence *A, int Length, const char *str);
 void    fprintBstr(FILE *fp, const char *S, BitSequence *A, int L);
@@ -40,12 +41,40 @@ void genKATShortMsg_main()
     genShortMsg( 832,  768,  384, "384", true);
     genShortMsg( 576, 1024,  512, "512", true);
     genShortMsg(1344,  256, 4096, "r1344c256");
-    genShortMsg( 256,  544,  544, "r256c544");
-    genShortMsg( 512,  288,  512, "r512c288");
-    genShortMsg( 544,  256,  544, "r544c256");
-    genShortMsg( 128,  272,  272, "r128c272");
-    genShortMsg( 144,  256,  256, "r144c256");
-    genShortMsg(  40,   160,  160, "r40c160");
+    genShortMsg(1440,  160, 1440, "r1440c160");
+
+    genShortMsg( 256,  544, 4096, "r256c544");
+    genShortMsg( 288,  512, 4096, "r288c512");
+    genShortMsg( 512,  288, 4096, "r512c288");
+    genShortMsg( 544,  256, 4096, "r544c256");
+    genShortMsg( 640,  160, 4096, "r640c160");
+ 
+    genShortMsg( 128,  272, 4096, "r128c272");
+    genShortMsg( 144,  256, 4096, "r144c256");
+    genShortMsg( 240,  160, 4096, "r240c160");
+    
+    genShortMsg(  40,   160, 4096, "r40c160");
+
+    // The following instances are from
+    // [Keccak team, Cryptology ePrint Archive, Report 2013/231, Table 4]
+    genShortMsgHash(1344, 256, 0x1F, 0, 4096, 
+        "ShortMsgKAT_KeccakSeqHash11c256.txt", 
+        "Keccak(SakuraSequential|11)[r=1344, c=256] sponge function");
+    genShortMsgHash(1344, 256, 0x33, 224, 0, 
+        "ShortMsgKAT_KeccakSeqHash001c256_n224.txt", 
+        "Keccak(SakuraSequential|001)[r=1344, c=256] 224-bit hash function");
+    genShortMsgHash(1344, 256, 0x37, 256, 0, 
+        "ShortMsgKAT_KeccakSeqHash101c256_n256.txt", 
+        "Keccak(SakuraSequential|101)[r=1344, c=256] 256-bit hash function");
+    genShortMsgHash(1088, 512, 0x1F, 0, 4096,
+        "ShortMsgKAT_KeccakSeqHash11c512.txt", 
+        "Keccak(SakuraSequential|11)[r=1088, c=512] sponge function");
+    genShortMsgHash(1088, 512, 0x33, 384, 0,
+        "ShortMsgKAT_KeccakSeqHash001c512_n384.txt", 
+        "Keccak(SakuraSequential|001)[r=1088, c=512] 384-bit hash function");
+    genShortMsgHash(1088, 512, 0x37, 512, 0, 
+        "ShortMsgKAT_KeccakSeqHash101c512_n512.txt", 
+        "Keccak(SakuraSequential|101)[r=1088, c=512] 512-bit hash function");
 }
 
 STATUS_CODES genSpongeKAT(Sponge& sponge, const std::string& suffix);
@@ -177,6 +206,86 @@ STATUS_CODES genShortMsg(unsigned int rate, unsigned int capacity, int outputLen
     return KAT_SUCCESS;
 }
 
+unsigned int getNumberOfDelimitedBits(unsigned char delimitedSuffix)
+{
+    if ((delimitedSuffix & 0x80) != 0)
+        return 7;
+    else if ((delimitedSuffix & 0x40) != 0)
+        return 6;
+    else if ((delimitedSuffix & 0x20) != 0)
+        return 5;
+    else if ((delimitedSuffix & 0x10) != 0)
+        return 4;
+    else if ((delimitedSuffix & 0x08) != 0)
+        return 3;
+    else if ((delimitedSuffix & 0x04) != 0)
+        return 2;
+    else if ((delimitedSuffix & 0x02) != 0)
+        return 1;
+    else
+        return 0;
+}
+
+STATUS_CODES genShortMsgHash(unsigned int rate, unsigned int capacity,  unsigned char delimitedSuffix, unsigned int hashbitlen, unsigned int squeezedOutputLength, const std::string& fileName, const std::string& description)
+{
+    char        line[SUBMITTER_INFO_LEN];
+    int         msglen, msgbytelen, done;
+    BitSequence Msg[256];
+    BitSequence Squeezed[SqueezingOutputLength/8];
+    FILE        *fp_in, *fp_out;
+
+    if ( (fp_in = fopen("ShortMsgKAT.txt", "r")) == NULL ) {
+        printf("Couldn't open <ShortMsgKAT.txt> for read\n");
+        return KAT_FILE_OPEN_ERROR;
+    }
+    
+    if ( (fp_out = fopen(fileName.c_str(), "w")) == NULL ) {
+        printf("Couldn't open <%s> for write\n", fileName.c_str());
+        return KAT_FILE_OPEN_ERROR;
+    }
+    fprintf(fp_out, "# %s\n", description.c_str());
+    
+    done = 0;
+    do {
+        if ( FindMarker(fp_in, "Len = ") )
+            fscanf(fp_in, "%d", &msglen);
+        else {
+            done = 1;
+            break;
+        }
+        msgbytelen = (msglen+7)/8;
+
+        if ( !ReadHex(fp_in, Msg, msgbytelen, "Msg = ") ) {
+            printf("ERROR: unable to read 'Msg' from <ShortMsgKAT.txt>\n");
+            return KAT_DATA_ERROR;
+        }
+        fprintf(fp_out, "\nLen = %d\n", msglen);
+        fprintBstr(fp_out, "Msg = ", Msg, msgbytelen);
+
+        Keccak keccak(rate, capacity);
+
+        fromNISTConventionToInternalConvention(Msg, msglen);
+        keccak.absorb(Msg, msglen);
+        {
+            unsigned char suffix[1];
+            suffix[0] = delimitedSuffix;
+            keccak.absorb(suffix, getNumberOfDelimitedBits(delimitedSuffix));
+        }
+        keccak.squeeze(Squeezed, max(hashbitlen, squeezedOutputLength));
+                
+        if (hashbitlen > 0)
+            fprintBstr(fp_out, "MD = ", Squeezed, hashbitlen/8);
+        if (squeezedOutputLength > 0)
+            fprintBstr(fp_out, "Squeezed = ", Squeezed, SqueezingOutputLength/8);
+    } while ( !done );
+    printf("finished ShortMsgKAT for <%s>\n", fileName.c_str());
+    
+    fclose(fp_in);
+    fclose(fp_out);
+    
+    return KAT_SUCCESS;
+}
+
 STATUS_CODES genSpongeKAT(Sponge& sponge, const std::string& suffix)
 {
     int absorbedLen, absorbedByteLen, squeezedLen, squeezedByteLen, done;
@@ -270,7 +379,7 @@ STATUS_CODES genDuplexKAT(Duplex& duplex, const std::string& suffix)
         if (inLen <= duplex.getMaximumInputLength()) {
             fprintf(fp_out, "\nInLen = %d\n", inLen);
             fprintBstr(fp_out, "In = ", in, inByteLen);
-            duplex.duplexing(in, inLen, out, outLen);
+            duplex.duplexing((const UINT8 *)in, inLen, (UINT8 *)out, outLen);
             fprintf(fp_out, "OutLen = %d\n", outLen);
             fprintBstr(fp_out, "Out = ", out, outByteLen);
         }
