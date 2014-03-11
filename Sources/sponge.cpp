@@ -14,6 +14,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 */
 
 #include <sstream>
+#include <string.h>
 #include <vector>
 #include "sponge.h"
 
@@ -33,6 +34,16 @@ Sponge::Sponge(const Transformation *aF, const PaddingRule *aPad, unsigned int a
     state.reset(new UINT8[(width+7)/8]);
     for(unsigned int i=0; i<(width+7)/8; i++)
         state.get()[i] = 0;
+}
+
+Sponge::Sponge(const Sponge& other)
+    : f(other.f), pad(other.pad), capacity(other.capacity), rate(other.rate),
+        squeezing(other.squeezing), absorbQueue(other.absorbQueue),
+        squeezeBuffer(other.squeezeBuffer)
+{
+    unsigned int width = f->getWidth();
+    state.reset(new UINT8[(width+7)/8]);
+    memcpy(state.get(), other.state.get(), (width+7)/8);
 }
 
 unsigned int Sponge::getCapacity()
@@ -71,7 +82,7 @@ void Sponge::absorb(const vector<UINT8>& input, unsigned int lengthInBits)
         throw SpongeException("The given input length is inconsistent.");
     if (squeezing)
         throw SpongeException("The absorbing phase is over.");
-    absorbQueue.append(input, lengthInBits);
+    absorbQueue.append(input.begin(), lengthInBits);
     while(absorbQueue.firstBlockIsWhole()) {
         absorbBlock(absorbQueue.firstBlock());
         absorbQueue.removeFirstBlock();
@@ -95,7 +106,7 @@ void Sponge::squeeze(UINT8 *output, unsigned int desiredLengthInBits)
 
 void Sponge::squeeze(vector<UINT8>& output, unsigned int desiredLengthInBits)
 {
-    if (!squeezing)
+	if (!squeezing)
         flushAndSwitchToSqueezingPhase();
     if ((rate % 8) == 0) {
         if ((desiredLengthInBits % 8) != 0)
@@ -142,7 +153,7 @@ void Sponge::fromStateToSqueezeBuffer()
 
 void Sponge::flushAndSwitchToSqueezingPhase()
 {
-    pad->pad(rate, absorbQueue);
+    absorbQueue.pad(*pad);
     while(absorbQueue.firstBlockIsWhole()) {
         absorbBlock(absorbQueue.firstBlock());
         absorbQueue.removeFirstBlock();

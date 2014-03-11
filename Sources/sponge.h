@@ -78,6 +78,11 @@ public:
       *                    not necessarily a multiple of 8.
       */
     Sponge(const Transformation *aF, const PaddingRule *aPad, unsigned int aRate);
+    /**
+      * The copy constructor.
+      * @param  other   A reference to the object to copy from.
+      */
+    Sponge(const Sponge& other);
     /** Method to reset the sponge to the initial state. */
     void reset();
     /**

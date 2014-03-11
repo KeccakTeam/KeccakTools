@@ -133,28 +133,9 @@ void MessageQueue::appendZeroes(unsigned int count)
     }
 }
 
-void MessageQueue::append(const UINT8 *input, unsigned int lengthInBits)
+void MessageQueue::pad(const PaddingRule &pad)
 {
-    unsigned int lengthInBytes = (lengthInBits+7)/8;
-    vector<UINT8> inputAsVector(input, input+lengthInBytes);
-    append(inputAsVector, lengthInBits);
-}
-
-void MessageQueue::append(const vector<UINT8>& input, unsigned int lengthInBits)
-{
-    if (lengthInBits == 0)
-        return;
-    vector<UINT8>::const_iterator i = input.begin();
-    while(lengthInBits >= 8) {
-        appendByte(*i);
-        ++i;
-        lengthInBits -= 8;
-    }
-    UINT8 lastByte = *i;
-    for(unsigned int i=0; i<lengthInBits; i++) {
-        appendBit(lastByte % 2);
-        lastByte = lastByte / 2;
-    }
+    pad.pad(blockSize, *this);
 }
 
 bool MessageQueue::firstBlockIsWhole() const
@@ -192,6 +173,23 @@ void PaddingRule::append10star(unsigned int blockSize, MessageQueue& queue) cons
     if ((queue.lastBlockSize() % blockSize) != 0)
         queue.appendZeroes(blockSize - (queue.lastBlockSize() % blockSize));
 }
+
+unsigned int PaddingRule::getDuplexRate(unsigned int rho_max) const
+{
+    unsigned int rate = 0;
+    bool rateIsSufficient = false;
+    while ( rateIsSufficient == false ) {
+        rate++;
+        rateIsSufficient = true;
+        unsigned int inputSize = 0;
+        while ( ( rateIsSufficient == true ) && (inputSize <= rho_max) ) {
+            rateIsSufficient = rateIsSufficient && (rate == getPaddedSize(rate,inputSize));
+            inputSize++;
+        }
+    }
+    return rate;
+}
+
 
 ostream& operator<<(ostream& a, const PaddingRule& pad)
 {

@@ -14,6 +14,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 */
 
 #include <sstream>
+#include <string.h>
 #include <vector>
 #include "duplex.h"
 
@@ -36,62 +37,79 @@ Duplex::Duplex(const Transformation *aF, const PaddingRule *aPad, unsigned int a
     computeRhoMax();
 }
 
+Duplex::Duplex(const Duplex& other)
+    : f(other.f), pad(other.pad), capacity(other.capacity), rate(other.rate), rho_max(other.rho_max)
+{
+    unsigned int width = f->getWidth();
+    state.reset(new UINT8[(width+7)/8]);
+    memcpy(state.get(), other.state.get(), (width+7)/8);
+}
+
 void Duplex::computeRhoMax()
 {
     rho_max = 0;
     unsigned int inputSize = 0;
     while(pad->getPaddedSize(rate, inputSize) <= rate) {
-        rho_max = inputSize; 
+        rho_max = inputSize;
         inputSize++;
     }
 }
 
-unsigned int Duplex::getCapacity()
+unsigned int Duplex::getCapacity() const
 {
     return capacity;
 }
 
-unsigned int Duplex::getMaximumInputLength()
+unsigned int Duplex::getMaximumInputLength() const
 {
     return rho_max;
 }
 
-unsigned int Duplex::getMaximumOutputLength()
+unsigned int Duplex::getMaximumOutputLength() const
 {
     return rate;
 }
 
 void Duplex::duplexing(const UINT8 *input, unsigned int inputLengthInBits, UINT8 *output, unsigned int desiredOutputLengthInBits)
 {
-    MessageQueue queue(rate);
-    queue.append(input, inputLengthInBits);
-    pad->pad(rate, queue);
+    vector<UINT8> outputAsVector;
+    duplexing(input, inputLengthInBits, outputAsVector, desiredOutputLengthInBits);
+    for(unsigned int i=0; i<outputAsVector.size(); i++)
+        output[i] = outputAsVector[i];
+}
+
+const UINT8* Duplex::processDuplexing(MessageQueue& queue, UINT8 delimitedSigmaEnd)
+{
+    if (delimitedSigmaEnd == 0x00)
+        throw DuplexException("delimitedSigmaEnd has an invalid coding.");
+    while (delimitedSigmaEnd != 0x01) {
+        queue.appendBit(delimitedSigmaEnd & 1);
+        delimitedSigmaEnd >>= 1;
+    }
+    queue.pad(*pad);
     if ((queue.blockCount() != 1) || (!queue.firstBlockIsWhole()))
         throw DuplexException("The given input length must be such that it spans exactly one block after padding.");
     const vector<UINT8>& block = queue.firstBlock();
     for(vector<UINT8>::size_type i=0; i<block.size(); ++i)
         state.get()[i] ^= block[i];
     (*f)(state.get());
+    return state.get();
+}
 
-    if (desiredOutputLengthInBits > rate)
-        throw DuplexException("The given output length must be less than or equal to the rate.");
-    for(unsigned int i=0; i<desiredOutputLengthInBits/8; ++i) {
-        *output = state.get()[i];
-        output++;
-    }
-    if ((desiredOutputLengthInBits % 8) != 0) {
-        UINT8 lastByte = (state.get())[desiredOutputLengthInBits/8];
-        UINT8 mask = (1 << (desiredOutputLengthInBits % 8)) - 1;
-        *output = lastByte & mask;
-    }
+void Duplex::duplexingBytes(const UINT8 *sigmaBegin, unsigned int sigmaBeginByteLen, UINT8 delimitedSigmaEnd, UINT8 *Z, unsigned int ZByteLen)
+{
+    vector<UINT8> ZAsVector;
+    duplexingBytes(sigmaBegin, sigmaBegin+sigmaBeginByteLen, delimitedSigmaEnd, ZAsVector, ZByteLen);
+    for(unsigned int i=0; i<ZAsVector.size(); i++)
+        Z[i] = ZAsVector[i];
 }
 
 string Duplex::getDescription() const
 {
     stringstream a;
     a << "Duplex[f=" << (*f) << ", pad=" << (*pad)
-        << ", r=" << dec << rate 
-        << ", c=" << capacity 
+        << ", r=" << dec << rate
+        << ", c=" << capacity
         << ", \xCF\x81max=" << rho_max
         << "]";
     return a.str();

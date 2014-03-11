@@ -46,7 +46,7 @@ void ShortLeafInterleavedSpongeTree::absorb(const vector<UINT8>& input, unsigned
 {
     if (squeezing)
         throw SpongeException("The absorbing phase is over.");
-    absorbQueue.append(input, lengthInBits);
+    absorbQueue.append(input.begin(), lengthInBits);
     while(absorbQueue.firstBlockIsWhole()) {
         leaves[leafIndex]->absorb(absorbQueue.firstBlock(), B);
         absorbQueue.removeFirstBlock();

@@ -23,9 +23,9 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 using namespace std;
 
-/** Class representing a message block whose size is not necessarily 
+/** Class representing a message block whose size is not necessarily
   * a multiple of 8 bits.
-  * The block can contain any number of bits. 
+  * The block can contain any number of bits.
   */
 class MessageBlock {
 private:
@@ -51,7 +51,7 @@ public:
       * @param  count     The number of zeroes to append.
       */
     void appendZeroes(unsigned int count);
-    /** Method that returns the number of bits in the block. 
+    /** Method that returns the number of bits in the block.
       * @return  The number of bits in the block.
       */
     unsigned int size() const;
@@ -63,7 +63,9 @@ public:
     const vector<UINT8>& get() const;
 };
 
-/** Class representing a sequence of fixed-size blocks, except the last one, 
+class PaddingRule;
+
+/** Class representing a sequence of fixed-size blocks, except the last one,
   * whose size can be smaller.
   */
 class MessageQueue {
@@ -90,19 +92,44 @@ public:
       */
     void appendZeroes(unsigned int count);
     /** Method to append a number of bits to the sequence.
-      * @param  input  Pointer to the bits to append.
+      * @param  inputStart  Constant iterator for the sequence of bytes to append.
       * If the number of bits is not a multiple of 8, the last byte contains the
       * last few bits in its least significant bits.
       * @param  lengthInBits The number of bits to append.
       */
-    void append(const UINT8 *input, unsigned int lengthInBits);
-    /** Method to append a number of bits to the sequence.
-      * @param  input  Vector containing the bytes to append.
-      * If the number of bits is not a multiple of 8, the last byte contains the
-      * last few bits in its least significant bits.
-      * @param  lengthInBits The number of bits to append.
+    template<class InputIterator>
+    void append(InputIterator inputStart, unsigned int lengthInBits)
+    {
+        if (lengthInBits == 0)
+            return;
+        InputIterator i = inputStart;
+        while(lengthInBits >= 8) {
+            appendByte(*i);
+            ++i;
+            lengthInBits -= 8;
+        }
+        if (lengthInBits > 0) {
+            UINT8 lastByte = *i;
+            for(unsigned int i=0; i<lengthInBits; i++) {
+                appendBit(lastByte & 1);
+                lastByte = lastByte >> 1;
+            }
+        }
+    }
+    /** Method to append a number of bytes to the sequence.
+      * @param  inputStart  Constant iterator for the begin of the sequence of bytes to append.
+      * @param  inputStop   Constant iterator for the end of the sequence of bytes to append.
       */
-    void append(const vector<UINT8>& input, unsigned int lengthInBits);
+    template<class InputIterator>
+    void append(InputIterator inputStart, InputIterator inputStop)
+    {
+        for(InputIterator i = inputStart; i != inputStop; ++i)
+            appendByte(*i);
+    }
+    /** Method that performs the padding up to the block length.
+      * @param  pad The padding rule.
+      */
+    void pad(const PaddingRule &pad);
     /** Method that returns the size of the last block.
       * @return  The size of the last block in bits.
       */
@@ -150,6 +177,12 @@ public:
       * @param  inputSize   The size in bits of the input message before padding.
       */
     virtual unsigned int getPaddedSize(unsigned int rate, unsigned int inputSize) const = 0;
+    /** Abstract method to compute the minimum rate of a duplex object with the
+      * given padding, given the maximum duplex rate rho_max.
+      * @param  rate The block size in bits to which the padding must align.
+      * @param  inputSize   The size in bits of the input message before padding.
+      */
+    unsigned int getDuplexRate(unsigned int rho_max) const;
     /**
       * Abstract method that returns a string with a description of itself.
       */
@@ -220,10 +253,29 @@ public:
     unsigned int getPaddedSize(unsigned int rate, unsigned int inputSize) const;
     /** Actual method for OldDiversifiedKeccakPadding, see PaddingRule::getDescription(). */
     string getDescription() const;
-    /** Actual method for OldDiversifiedKeccakPadding, see PaddingRule::isRateValid(). 
+    /** Actual method for OldDiversifiedKeccakPadding, see PaddingRule::isRateValid().
       * The rate must be a multiple of 8.
       */
     bool isRateValid(unsigned int rate) const;
 };
+
+template<class InputIterator>
+vector<UINT8> getKeyPack(InputIterator keyStart, unsigned int keyLengthInBits, unsigned int packLengthInBits)
+{
+    if ((packLengthInBits%8) != 0)
+        throw Exception("The pack length must be a multiple of 8 bits");
+    if (packLengthInBits > 255*8)
+        throw Exception("The pack cannot be longer than 255 bytes");
+
+    MessageQueue keyPackQueue(packLengthInBits);
+    keyPackQueue.appendByte((UINT8)packLengthInBits/8);
+    keyPackQueue.append(keyStart, keyLengthInBits);
+    keyPackQueue.pad(SimplePadding());
+
+    if (keyPackQueue.blockCount() != 1)
+        throw Exception("The pack length is not large enough to make the key fit");
+
+    return keyPackQueue.firstBlock();
+}
 
 #endif
