@@ -513,15 +513,16 @@ void KeccakF::chi(vector<Lane>& A) const
     }
 }
 
+
 template<class Lane>
 void KeccakF::inverseChi(vector<Lane>& A) const
 {
-    vector<Lane> C(5);
     for(unsigned int y=0; y<5; y++) { 
-        for(unsigned int x=0; x<5; x++) 
-            C[x] = A[index(x,y)];
-        for(unsigned int x=0; x<(5+1); x++) {
-            unsigned int X = x*3;
+        unsigned int length = 5;
+        vector<Lane> C(length);
+        for(unsigned int x=0; x<length; x++) C[index(x)] = A[index(x,y)];
+        for(unsigned int x=0; x<(3*(length-1)/2); x++) {
+            unsigned int X = (length-2)*x;
             A[index(X,y)] = C[index(X)] ^ (A[index(X+2,y)] & (~C[index(X+1)]));
         }
     }
