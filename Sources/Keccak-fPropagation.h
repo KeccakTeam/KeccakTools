@@ -367,6 +367,7 @@ public:
     /** This function converts the t coordinate into (x,z) coordinates.
       * - DC: (x,z)=(-2t,t)
       * - LC: (x,z)=(2t,-t)
+      * Note that the t coordinate is considered modulo 5w, so the input t can be ≥ 5w.
       * @param  t   The t coordinate.
       * @param  x   The resulting x coordinate.
       * @param  z   The resulting z coordinate.

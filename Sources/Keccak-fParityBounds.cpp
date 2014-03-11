@@ -154,7 +154,7 @@ unsigned int ParityAsRuns::getLowerBoundTotalHammingWeight(const KeccakFPropagat
     unsigned int total = 5*2*runs.size();
     for(unsigned int i=0; i<runs.size(); i++) {
         for(unsigned int t=runs[i].tStart; t<runs[i].tStart+runs[i].length; t++) {
-            if (!affected[t])
+            if (!affected[t % (DCorLC.laneSize*5)])
                 total += 2;
         }
     }
@@ -189,7 +189,7 @@ unsigned int ParityAsRuns::getLowerBoundTotalActiveRows(const KeccakFPropagation
     }
     for(unsigned int i=0; i<runs.size(); i++) {
         for(unsigned int t=runs[i].tStart; t<runs[i].tStart+runs[i].length; t++) {
-            if (!affected[t]) {
+            if (!affected[t % (DCorLC.laneSize*5)]) {
                 unsigned int x, z;
                 DCorLC.getXandZfromT(t, x, z);
                 xzUOC.push_back(ColumnPosition(x, z));
