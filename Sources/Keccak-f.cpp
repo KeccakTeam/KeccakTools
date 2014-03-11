@@ -18,14 +18,32 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 using namespace std;
 
-{
-}
-
-
-KeccakF::KeccakF(unsigned int aWidth, unsigned int aNrRounds)
+KeccakF::KeccakF(unsigned int aWidth, int aStartRoundIndex, unsigned int aNrRounds)
 {
     width = aWidth;
+    initializeNominalNumberOfRounds();
     laneSize = width/25;
+    nrRounds = aNrRounds;
+    startRoundIndex = aStartRoundIndex;
+    mask = (LaneValue(~0)) >> (64-laneSize);
+    initializeRhoOffsets();
+    initializeRoundConstants();
+}
+
+KeccakF::KeccakF(unsigned int aWidth)
+{
+    width = aWidth;
+    initializeNominalNumberOfRounds();
+    laneSize = width/25;
+    nrRounds = nominalNrRounds;
+    startRoundIndex = 0;
+    mask = (LaneValue(~0)) >> (64-laneSize);
+    initializeRhoOffsets();
+    initializeRoundConstants();
+}
+
+void KeccakF::initializeNominalNumberOfRounds()
+{
     switch(width) {
     case 25:
         nominalNrRounds = 12;
@@ -51,10 +69,6 @@ KeccakF::KeccakF(unsigned int aWidth, unsigned int aNrRounds)
     default:
         throw(KeccakException("The width must be 25 times a power of two between 1 and 64."));
     }
-    nrRounds = (aNrRounds == 0) ? nominalNrRounds : aNrRounds;
-    mask = (LaneValue(~0)) >> (64-laneSize);
-    initializeRhoOffsets();
-    initializeRoundConstants();
 }
 
 unsigned int KeccakF::getWidth() const
@@ -65,6 +79,21 @@ unsigned int KeccakF::getWidth() const
 unsigned int KeccakF::getLaneSize() const
 {
     return laneSize;
+}
+
+unsigned int KeccakF::getNumberOfRounds() const
+{
+    return nrRounds;
+}
+
+unsigned int KeccakF::getNominalNumberOfRounds() const
+{
+    return nominalNrRounds;
+}
+
+int KeccakF::getIndexOfFirstRound() const
+{
+    return startRoundIndex;
 }
 
 unsigned int KeccakF::index(int x, int y)
@@ -159,8 +188,8 @@ string KeccakF::getDescription() const
 {
     stringstream a;
     a << "Keccak-f[" << dec << width;
-    if (nrRounds != nominalNrRounds)
-        a << ", nr=" << dec << nrRounds;
+    if ((nrRounds != nominalNrRounds) || (startRoundIndex != 0))
+        a << ", " << dec << nrRounds << " rounds " << startRoundIndex << "-" << (startRoundIndex+nrRounds-1);
     a << "]";
     return a.str();
 }
@@ -169,6 +198,8 @@ string KeccakF::getName() const
 {
     stringstream a;
     a << "KeccakF-" << dec << width << "-" << nrRounds;
+    if (startRoundIndex != 0)
+        a << "-" << startRoundIndex;
     return a.str();
 }
 
@@ -193,7 +224,7 @@ void KeccakF::initializeRoundConstants()
 {
     roundConstants.clear();
     UINT8 LFSRstate = 0x01;
-    for(unsigned int i=0; i<nrRounds; i++) {
+    for(unsigned int i=0; i<255; i++) {
         LaneValue c = 0;
         for(unsigned int j=0; j<7; j++) {
             unsigned int bitPosition = (1<<j)-1; //2^j-1
@@ -247,4 +278,38 @@ string KeccakF::laneName(const string& prefix, unsigned int x, unsigned int y)
 string KeccakF::sheetName(const string& prefix, unsigned int x)
 {
     return prefix + "aeiou"[x];
+}
+
+LaneValue KeccakF::getRoundConstant(int roundIndex) const
+{
+    unsigned int ir = (unsigned int)(((roundIndex % 255) + 255) % 255);
+    return roundConstants[ir];
+}
+
+KeccakFfirstRounds::KeccakFfirstRounds(unsigned int aWidth, unsigned int aNrRounds)
+: KeccakF(aWidth, 0, aNrRounds)
+{
+}
+
+KeccakFfirstRounds::KeccakFfirstRounds(unsigned int aWidth)
+: KeccakF(aWidth)
+{
+}
+
+KeccakFlastRounds::KeccakFlastRounds(unsigned int aWidth, unsigned int aNrRounds)
+: KeccakF(aWidth, 0, aNrRounds)
+{
+    startRoundIndex = (int)nominalNrRounds - (int)nrRounds;
+}
+
+KeccakFlastRounds::KeccakFlastRounds(unsigned int aWidth)
+: KeccakF(aWidth)
+{
+}
+
+string KeccakFlastRounds::getName() const
+{
+    stringstream a;
+    a << "KeccakP-" << dec << width << "-" << nrRounds;
+    return a.str();
 }

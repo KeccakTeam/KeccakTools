@@ -32,7 +32,7 @@ public:
     /**
       * The constructor. See KeccakF() for more details.
       */
-    KeccakFEquations(unsigned int aWidth, unsigned int aNrRounds = 0);
+    KeccakFEquations(unsigned int aWidth);
     /**
       * Method that generate equations for the rounds of the chosen Keccak-<i>f</i>
       * instance. The variables starting with letter A are the input of round #0.
@@ -40,10 +40,12 @@ public:
       * The C's are the output of round #1 and the input of round #2, etc.
       *
       * @param  fout    The stream to which the equations are sent.
+      * @param  startRoundIndex The index of the first round to perform.
+      * @param  nrRounds    The number of rounds to perform.
       * @param  forSage A Boolean value telling whether the syntax of Sage
       *                 should be followed.
       */
-    void genRoundEquations(ostream& fout, bool forSage=false) const;
+    void genRoundEquations(ostream& fout, int startRoundIndex, unsigned nrRounds, bool forSage=false) const;
     /**
       * Method that generate equations for the mappings θ, ρ, π, χ and ι 
       * of the chosen Keccak-<i>f</i> instance.
@@ -64,8 +66,10 @@ public:
       * @param  fout    The stream to which the equations are sent.
       * @param  input   The input state.
       * @param  prefix  The prefix of the variables.
+      * @param  startRoundIndex The index of the first round to perform.
+      * @param  nrRounds    The number of rounds to perform.
       */
-    void genAbsoluteValuesBeforeChi(ostream& fout, const vector<LaneValue>& input, const string& prefix) const;
+    void genAbsoluteValuesBeforeChi(ostream& fout, const vector<LaneValue>& input, const string& prefix, int startRoundIndex, unsigned nrRounds) const;
 protected:
     /**
       * Internal method to generate the equations from symbolic lanes. 

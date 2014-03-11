@@ -52,7 +52,7 @@ public:
     /**
       * The constructor. See KeccakF() for more details.
       */
-    KeccakFCodeGen(unsigned int aWidth, unsigned int aNrRounds=0);
+    KeccakFCodeGen(unsigned int aWidth);
     /**
       * Method to set the interleaving factor.
       *

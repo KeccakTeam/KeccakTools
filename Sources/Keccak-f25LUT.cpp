@@ -20,7 +20,13 @@ http://creativecommons.org/publicdomain/zero/1.0/
 using namespace std;
 
 KeccakF25LUT::KeccakF25LUT(unsigned int aNrRounds)
-    : KeccakF(25, aNrRounds)
+    : KeccakFfirstRounds(25, aNrRounds)
+{
+    generateLUT();
+}
+
+KeccakF25LUT::KeccakF25LUT()
+    : KeccakFfirstRounds(25)
 {
     generateLUT();
 }

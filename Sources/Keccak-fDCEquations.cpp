@@ -15,12 +15,12 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 #include "Keccak-fDCEquations.h"
 
-KeccakFDCEquations::KeccakFDCEquations(unsigned int aWidth, unsigned int aNrRounds)
-    : KeccakFDCLC(aWidth, aNrRounds)
+KeccakFDCEquations::KeccakFDCEquations(unsigned int aWidth)
+    : KeccakFDCLC(aWidth)
 {
 }
 
-void KeccakFDCEquations::buildDCTrailFromPair(vector<SliceValue>& a1, vector<SliceValue>& a2, Trail& trail) const
+void KeccakFDCEquations::buildDCTrailFromPair(vector<SliceValue>& a1, vector<SliceValue>& a2, Trail& trail, int startRoundIndex, unsigned nrRounds) const
 {
     KeccakFPropagation DC(*this, KeccakFPropagation::DC);
 
@@ -29,7 +29,7 @@ void KeccakFDCEquations::buildDCTrailFromPair(vector<SliceValue>& a1, vector<Sli
     vector<LaneValue> state2;
     fromSlicesToLanes(a2, state2);
 
-    for(unsigned int i=0; i<nrRounds; i++) {
+    for(int i=startRoundIndex; i<startRoundIndex+nrRounds; i++) {
         lambda(state1, KeccakFDCLC::Straight);
         lambda(state2, KeccakFDCLC::Straight);
 
@@ -43,7 +43,7 @@ void KeccakFDCEquations::buildDCTrailFromPair(vector<SliceValue>& a1, vector<Sli
         chi(state1);       chi(state2);
         iota(state1, i);   iota(state2, i);
 
-        if (i == (nrRounds-1)) {
+        if (i == (startRoundIndex+nrRounds-1)) {
             fromLanesToSlices(state1, a1);
             fromLanesToSlices(state2, a2);
             for(unsigned int z=0; z<laneSize; z++)

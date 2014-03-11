@@ -28,16 +28,18 @@ public:
     /** This constructor initializes the Keccak-<i>f</i> instance
       * with the given width, see KeccakF::KeccakF().
       */
-    KeccakFDCEquations(unsigned int aWidth, unsigned int aNrRounds = 0);
+    KeccakFDCEquations(unsigned int aWidth);
     /** This method produces a differential trail from a pair of inputs.
       * The state values are given before θ, as in the normal order of
       * the round function.
       * @param   a1     The first state of the pair, as a vector of slices.
       * @param   a2     The second state of the pair, as a vector of slices.
       * @param   trail  The output trail.
+      * @param  startRoundIndex The index of the first round to perform.
+      * @param  nrRounds    The number of rounds to perform.
       * @see KeccakFEquations::genAbsoluteValuesBeforeChi()
       */
-    void buildDCTrailFromPair(vector<SliceValue>& a1, vector<SliceValue>& a2, Trail& trail) const;
+    void buildDCTrailFromPair(vector<SliceValue>& a1, vector<SliceValue>& a2, Trail& trail, int startRoundIndex, unsigned nrRounds) const;
     /** This method displays the equations from round to round
       * that a pair has to satisfy to follow the given trail.
       * @note Note that for row patterns 11111, 5 equations are generated, 

@@ -38,6 +38,8 @@ protected:
     unsigned int laneSize;
     /** The nominal number of rounds, as function of the width. */
     unsigned int nominalNrRounds;
+    /** The round index to start with (for experiments on reduced-round version). */
+    int startRoundIndex;
     /** The actual number of rounds (for experiments on reduced-round version). */
     unsigned int nrRounds;
     /** The translation offsets for ρ. */
@@ -46,20 +48,29 @@ protected:
     vector<LaneValue> roundConstants;
     /** A 64-bit word whose first laneSize bits are 1 and all others 0. */
     LaneValue mask;
+protected:
+    /**
+      * The constructor. The width and the range of rounds are
+      * given as parameters.
+      *
+      * @param  aWidth      The width of the Keccak-<i>f</i> permutation.
+      *                     It must be one of the valid Keccak-<i>f</i> widths, namely
+      *                     25, 50, 100, 200, 400, 800 or 1600.
+      * @param  aStartRoundIndex    The index of the first round to perform.
+      * @param  aNrRounds   The desired number of rounds.
+      */
+    KeccakF(unsigned int aWidth, int aStartRoundIndex, unsigned int aNrRounds);
 public:
     /**
       * The constructor. The width and number of rounds are given to the 
-      * constructor. If omitted or set to zero, nrRounds is set to 
-      * nominalNrRounds.
+      * constructor. The number of rounds is the nominal number of rounds
+      * as defined by the specifications.
       *
       * @param  aWidth      The width of the Keccak-<i>f</i> permutation. 
       *                     It must be one of the valid Keccak-<i>f</i> widths, namely
       *                     25, 50, 100, 200, 400, 800 or 1600.
-      * @param  aNrRounds   The desired number of rounds. By omitting or 
-      *                     setting this parameter to 0, the nominal number
-      *                     of rounds is taken.
       */
-    KeccakF(unsigned int aWidth, unsigned int aNrRounds = 0);
+    KeccakF(unsigned int aWidth);
     /**
       * Method that returns the number of bits of its domain and range.
       */
@@ -68,6 +79,21 @@ public:
       * Method that retuns the lane size of the Keccak-<i>f</i> instance.
       */
     unsigned int getLaneSize() const;
+    /**
+      * Method that returns the number of rounds of this instance.
+      * This should be the nominal number of rounds for Keccak-<i>f</i> itself.
+      */
+    unsigned int getNumberOfRounds() const;
+    /**
+      * Method that returns the nominal number of rounds of Keccak-<i>f</i>
+      * according to the specifications for the width of this instance.
+      */
+    unsigned int getNominalNumberOfRounds() const;
+    /**
+      * Method that returns the index of the first round of this instance.
+      * This should be zero for Keccak-<i>f</i> itself.
+      */
+    int getIndexOfFirstRound() const;
     /**
       * Method that applies the Keccak-<i>f</i> permutation onto the parameter 
       * @a state.
@@ -167,9 +193,9 @@ public:
       *                 numbering inside the vector is defined by index().
       *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
-      * @param  roundNumber     The round number, from 0 to nrRounds - 1.
+      * @param  roundIndex  The round index.
       */
-    template<class Lane> void round(vector<Lane>& A, unsigned int roundNumber) const;
+    template<class Lane> void round(vector<Lane>& A, int roundIndex) const;
     /**
       * Template method that applies the inverse of the round function. 
       * This function is a template to allow both numerical and symbolic values 
@@ -180,9 +206,9 @@ public:
       *                 numbering inside the vector is defined by index().
       *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
-      * @param  roundNumber     The round number, from 0 to nrRounds - 1.
+      * @param  roundIndex  The round index.
       */
-    template<class Lane> void inverseRound(vector<Lane>& A, unsigned int roundNumber) const;
+    template<class Lane> void inverseRound(vector<Lane>& A, int roundIndex) const;
     /**
       * Template method that applies χ.
       * This function is a template to allow both numerical and symbolic values 
@@ -331,9 +357,15 @@ public:
       *                 numbering inside the vector is defined by index().
       *                 The parameter type @a Lane can be a LaneValue for an
       *                 actual evaluation.
-      * @param  roundNumber     The round number, from 0 to nrRounds - 1.
+      * @param  roundIndex  The round index.
       */
-    template<class Lane> void iota(vector<Lane>& A, unsigned int roundNumber) const;
+    template<class Lane> void iota(vector<Lane>& A, int roundIndex) const;
+    /** 
+      * Method that retuns the i-th round constant used by ι.
+      * 
+      * @param  roundIndex  The round index.
+      */
+    LaneValue getRoundConstant(int roundIndex) const;
     /**
       * Template method that translates a lane along the z-axis.
       * This function is a template to allow both numerical and symbolic values 
@@ -419,7 +451,12 @@ public:
     static string sheetName(const string& prefix, unsigned int x);
 private:
     /**
-      * Method that initializes the nrRounds round constants according to the
+      * Method that initializes the nominal number of rounds according to the
+      * specifications.
+      */
+    void initializeNominalNumberOfRounds();
+    /**
+      * Method that initializes the round constants according to the
       * specifications.
       */
     void initializeRoundConstants();
@@ -433,31 +470,31 @@ private:
 template<class Lane>
 void KeccakF::forward(vector<Lane>& state) const
 {
-    for(unsigned int i=0; i<nrRounds; i++)
+    for(int i=startRoundIndex; i<startRoundIndex+nrRounds; i++)
         round(state, i);
 }
 
 template<class Lane>
 void KeccakF::inverse(vector<Lane>& state) const
 {
-    for(int i=nrRounds-1; i>=0; i--)
+    for(int i=startRoundIndex+nrRounds-1; i>=startRoundIndex; i--)
         inverseRound(state, i);
 }
 
 template<class Lane>
-void KeccakF::round(vector<Lane>& state, unsigned int roundNumber) const
+void KeccakF::round(vector<Lane>& state, int roundIndex) const
 {
     theta(state);
     rho(state);
     pi(state);
     chi(state);
-    iota(state, roundNumber);
+    iota(state, roundIndex);
 }
 
 template<class Lane>
-void KeccakF::inverseRound(vector<Lane>& state, unsigned int roundNumber) const
+void KeccakF::inverseRound(vector<Lane>& state, int roundIndex) const
 {
-    iota(state, roundNumber);
+    iota(state, roundIndex);
     inverseChi(state);
     inversePi(state);
     inverseRho(state);
@@ -584,10 +621,10 @@ void KeccakF::inverseRho(vector<Lane>& A) const
 }
 
 template<class Lane>
-void KeccakF::iota(vector<Lane>& A, unsigned int roundNumber) const
+void KeccakF::iota(vector<Lane>& A, int roundIndex) const
 {
-    if (roundNumber < roundConstants.size())
-        A[index(0,0)] ^= roundConstants[roundNumber];
+    unsigned int ir = (unsigned int)(((roundIndex % 255) + 255) % 255);
+    A[index(0,0)] ^= roundConstants[ir];
 }
 
 template<class Lane> 
@@ -595,5 +632,60 @@ void KeccakF::ROL(Lane& L, int offset) const
 {
     L.ROL(offset, laneSize);
 }
+
+/**
+  * Class implementing the 7 Keccak-<i>f</i> permutations with a reduced
+  * number of rounds, starting from the first nominal round.
+  */
+class KeccakFfirstRounds : public KeccakF {
+public:
+    /**
+      * The constructor. The width and the number of rounds are
+      * given as parameters.
+      *
+      * @param  aWidth      The width of the Keccak-<i>f</i> permutation.
+      *                     It must be one of the valid Keccak-<i>f</i> widths, namely
+      *                     25, 50, 100, 200, 400, 800 or 1600.
+      * @param  aNrRounds   The desired number of rounds.
+      */
+    KeccakFfirstRounds(unsigned int aWidth, unsigned int aNrRounds);
+    /**
+      * The constructor. The width is given as parameter. The number of rounds
+      * is nominal.
+      *
+      * @param  aWidth      The width of the Keccak-<i>f</i> permutation.
+      *                     It must be one of the valid Keccak-<i>f</i> widths, namely
+      *                     25, 50, 100, 200, 400, 800 or 1600.
+      */
+    KeccakFfirstRounds(unsigned int aWidth);
+};
+
+/**
+  * Class implementing the 7 Keccak-<i>f</i> permutations with a reduced
+  * number of rounds, ending at the last nominal round.
+  */
+class KeccakFlastRounds : public KeccakF {
+public:
+    /**
+      * The constructor. The width and the number of rounds are
+      * given as parameters.
+      *
+      * @param  aWidth      The width of the Keccak-<i>f</i> permutation.
+      *                     It must be one of the valid Keccak-<i>f</i> widths, namely
+      *                     25, 50, 100, 200, 400, 800 or 1600.
+      * @param  aNrRounds   The desired number of rounds.
+      */
+    KeccakFlastRounds(unsigned int aWidth, unsigned int aNrRounds);
+    /**
+      * The constructor. The width is given as parameter. The number of rounds
+      * is nominal.
+      *
+      * @param  aWidth      The width of the Keccak-<i>f</i> permutation.
+      *                     It must be one of the valid Keccak-<i>f</i> widths, namely
+      *                     25, 50, 100, 200, 400, 800 or 1600.
+      */
+    KeccakFlastRounds(unsigned int aWidth);
+    string getName() const;
+};
 
 #endif

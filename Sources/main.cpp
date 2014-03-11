@@ -147,7 +147,7 @@ void generateEquations()
             ofstream fout(fileName.c_str());
             fout << "// " << keccakF << endl;
             keccakF.genComponentEquations(fout, "I", "O");
-            keccakF.genRoundEquations(fout);
+            keccakF.genRoundEquations(fout, 0, keccakF.getNominalNumberOfRounds());
         }
         catch(KeccakException e) {
             cout << e.reason << endl;
@@ -393,7 +393,7 @@ void generateTrailFromDinurDunkelmanShamirCollision()
         cout << endl;
     }
     {
-        KeccakFDCEquations keccakF(1600, 4);
+        KeccakFDCEquations keccakF(1600);
         KeccakFPropagation DC(keccakF, KeccakFPropagation::DC);
         vector<LaneValue> m1lanes, m2lanes;
         {
@@ -414,7 +414,7 @@ void generateTrailFromDinurDunkelmanShamirCollision()
         fromLanesToSlices(m1lanes, m1slices, 64);
         fromLanesToSlices(m2lanes, m2slices, 64);
         Trail trail;
-        keccakF.buildDCTrailFromPair(m1slices, m2slices, trail);
+        keccakF.buildDCTrailFromPair(m1slices, m2slices, trail, 0, 4);
         {
             ofstream fout("DinurEtAl.trail");
             trail.save(fout);

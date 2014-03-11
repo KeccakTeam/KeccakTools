@@ -19,8 +19,8 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 using namespace std;
 
-KeccakFCodeGen::KeccakFCodeGen(unsigned int aWidth, unsigned int aNrRounds)
-    : KeccakF(aWidth, aNrRounds), interleavingFactor(1),
+KeccakFCodeGen::KeccakFCodeGen(unsigned int aWidth)
+    : KeccakF(aWidth), interleavingFactor(1),
     wordSize(laneSize), outputMacros(false), outputSubscripts(false),
     scheduleType(1)
 {

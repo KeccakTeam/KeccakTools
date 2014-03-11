@@ -147,8 +147,8 @@ SymbolicLane& SymbolicLane::operator^=(const SymbolicLane& b)
 }
 
 
-KeccakFEquations::KeccakFEquations(unsigned int aWidth, unsigned int aNrRounds)
-    : KeccakF(aWidth, aNrRounds)
+KeccakFEquations::KeccakFEquations(unsigned int aWidth)
+    : KeccakF(aWidth)
 {
 }
 
@@ -187,11 +187,11 @@ void KeccakFEquations::initializeState(vector<SymbolicLane>& state, const string
         state[index(x,y)] = SymbolicLane(laneSize, laneName(prefix, x, y));
 }
 
-void KeccakFEquations::genRoundEquations(ostream& fout, bool forSage) const
+void KeccakFEquations::genRoundEquations(ostream& fout, int startRoundIndex, unsigned nrRounds, bool forSage) const
 {
     char input = 'A';
     char output = 'B';
-    for(unsigned int i=0; i<nrRounds; i++) {
+    for(int i=startRoundIndex; i<startRoundIndex+nrRounds; i++) {
         if (!forSage)
             fout << "// --- Round " << dec << i << endl;
         string inputName(1, input);
@@ -260,10 +260,10 @@ void KeccakFEquations::genComponentEquations(ostream& fout, const string& prefix
     }
 }
 
-void KeccakFEquations::genAbsoluteValuesBeforeChi(ostream& fout, const vector<LaneValue>& input, const string& prefix) const
+void KeccakFEquations::genAbsoluteValuesBeforeChi(ostream& fout, const vector<LaneValue>& input, const string& prefix, int startRoundIndex, unsigned nrRounds) const
 {
     vector<LaneValue> state(input);
-    for(unsigned int i=0; i<nrRounds; i++) {
+    for(int i=startRoundIndex; i<startRoundIndex+nrRounds; i++) {
         theta(state);
         rho(state);
         pi(state);

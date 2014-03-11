@@ -64,8 +64,8 @@ void ListOfRowPatterns::display(ostream& fout) const
 //
 // -------------------------------------------------------------
 
-KeccakFDCLC::KeccakFDCLC(unsigned int aWidth, unsigned int aNrRounds)
-    : KeccakF(aWidth, aNrRounds)
+KeccakFDCLC::KeccakFDCLC(unsigned int aWidth)
+    : KeccakF(aWidth)
 {
     initializeAll();
 }

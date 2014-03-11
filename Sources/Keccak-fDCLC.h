@@ -139,7 +139,7 @@ public:
     };
     /** This constructor has the same parameters as KeccakF::KeccakF.
       */
-    KeccakFDCLC(unsigned int aWidth, unsigned int aNrRounds = 0);
+    KeccakFDCLC(unsigned int aWidth);
     /** This method retuns a string describing the instance. */
     string getDescription() const;
     /** This method displays all the possible output patterns

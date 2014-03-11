@@ -25,7 +25,7 @@ using namespace std;
 /**
   * Class implementing Keccak-<i>f</i>[25] using a look-up table (LUT).
   */
-class KeccakF25LUT : public KeccakF {
+class KeccakF25LUT : public KeccakFfirstRounds {
 public:
     /**
       * Attribute containing the lookup table for Keccak-<i>f</i>[25].
@@ -40,7 +40,11 @@ public:
       * If the lookup table exists on disk, it is retrieved instead of being generated.
       * See KeccakF() for more details.
       */
-    KeccakF25LUT(unsigned int aNrRounds = 0);
+    KeccakF25LUT(unsigned int aNrRounds);
+    /**
+      * The constructor, with the nominal number of rounds.
+      */
+    KeccakF25LUT();
 protected:
     /**
       * Method that saves the lookup table to a file with extension '.LUT'.
