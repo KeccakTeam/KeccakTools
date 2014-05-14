@@ -376,7 +376,7 @@ void generateTrailFromDinurDunkelmanShamirCollision()
     const unsigned int M2len = 135;
     {
         UINT8 output[32];
-        ReducedRoundKeccak keccak(1088, 512, 4);
+        ReducedRoundKeccak keccak(1088, 512, 0, 4);
         keccak.absorb(M1, M1len*8);
         keccak.squeeze(output, 256);
         for(unsigned int i=0; i<32; i++)
@@ -385,7 +385,7 @@ void generateTrailFromDinurDunkelmanShamirCollision()
     }
     {
         UINT8 output[32];
-        ReducedRoundKeccak keccak(1088, 512, 4);
+        ReducedRoundKeccak keccak(1088, 512, 0, 4);
         keccak.absorb(M2, M2len*8);
         keccak.squeeze(output, 256);
         for(unsigned int i=0; i<32; i++)

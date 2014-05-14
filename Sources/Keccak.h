@@ -52,19 +52,22 @@ public:
 class ReducedRoundKeccak : public Sponge {
 protected:
     unsigned int nrRounds;
+    unsigned int startRoundIndex;
 public:
     /**
-      * The constructor. It dynamically allocates a KeccakF permutation.
+      * The constructor. It dynamically allocates a KeccakF permutation
+      * with a chosen number of rounds, starting from a chosen round index.
       *
-      * @param  aRate       The desired rate (in bits) of the Keccak sponge 
+      * @param  aRate       The desired rate (in bits) of the Keccak sponge
       *                     function.
-      * @param  aCapacity   The desired capacity (in bits) of the Keccak sponge 
+      * @param  aCapacity   The desired capacity (in bits) of the Keccak sponge
       *                     function. The sum of the rate and capacity must
-      *                     be equal to the width of one of the Keccak-<i>f</i> 
+      *                     be equal to the width of one of the Keccak-<i>f</i>
       *                     permutations.
-      * @param  aNrRounds     The desired number of rounds used in Keccak-<i>f</i>.
+      * @param  aStartRoundIndex    The desired index of the first round.
+      * @param  aNrRounds   The desired number of rounds used in Keccak-<i>f</i>.
       */
-    ReducedRoundKeccak(unsigned int aRate, unsigned int aCapacity, unsigned int aNrRounds);
+    ReducedRoundKeccak(unsigned int aRate, unsigned int aCapacity, int aStartRoundIndex, unsigned int aNrRounds);
     /**
       * The destructor. It frees the allocated KeccakF permutation.
       */
@@ -75,5 +78,6 @@ public:
       */
     string getDescription() const;
 };
+
 
 #endif

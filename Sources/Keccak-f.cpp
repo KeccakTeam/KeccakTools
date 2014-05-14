@@ -313,3 +313,13 @@ string KeccakFlastRounds::getName() const
     a << "KeccakP-" << dec << width << "-" << nrRounds;
     return a.str();
 }
+
+KeccakFanyRounds::KeccakFanyRounds(unsigned int aWidth, int aStartRoundIndex, unsigned int aNrRounds)
+: KeccakF(aWidth, aStartRoundIndex, aNrRounds)
+{
+}
+
+KeccakFanyRounds::KeccakFanyRounds(unsigned int aWidth)
+: KeccakF(aWidth)
+{
+}

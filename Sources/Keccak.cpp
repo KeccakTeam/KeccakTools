@@ -37,8 +37,9 @@ string Keccak::getDescription() const
     return a.str();
 }
 
-ReducedRoundKeccak::ReducedRoundKeccak(unsigned int aRate, unsigned int aCapacity, unsigned int aNrRounds)
-    : Sponge(new KeccakFfirstRounds(aRate+aCapacity, aNrRounds), new MultiRatePadding(), aRate),
+ReducedRoundKeccak::ReducedRoundKeccak(unsigned int aRate, unsigned int aCapacity, int aStartRoundIndex, unsigned int aNrRounds)
+    : Sponge(new KeccakFanyRounds(aRate+aCapacity, aStartRoundIndex, aNrRounds), new MultiRatePadding(), aRate),
+    startRoundIndex(aStartRoundIndex),
     nrRounds(aNrRounds)
 {
 }
@@ -52,8 +53,8 @@ ReducedRoundKeccak::~ReducedRoundKeccak()
 string ReducedRoundKeccak::getDescription() const
 {
     stringstream a;
-    a << "Keccak[r=" << dec << rate << ", c=" << dec << capacity << ", rounds=" << dec << nrRounds << "]";
+    a << "Keccak[r=" << dec << rate << ", c=" << dec << capacity << ", " << dec << nrRounds << " ";
+    a << ((nrRounds > 1) ? "rounds" : "round");
+    a << " from " << dec << startRoundIndex << " to " << startRoundIndex+nrRounds-1 << "]";
     return a.str();
 }
-
-

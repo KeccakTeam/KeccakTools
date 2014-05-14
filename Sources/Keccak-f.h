@@ -689,4 +689,32 @@ public:
     string getName() const;
 };
 
+/**
+  * Class implementing the 7 Keccak-<i>f</i> permutations with a reduced
+  * number of rounds, starting at any round index.
+  */
+class KeccakFanyRounds : public KeccakF {
+public:
+    /**
+      * The constructor. The width and the number of rounds are
+      * given as parameters.
+      *
+      * @param  aWidth      The width of the Keccak-<i>f</i> permutation.
+      *                     It must be one of the valid Keccak-<i>f</i> widths, namely
+      *                     25, 50, 100, 200, 400, 800 or 1600.
+      * @param  aStartRoundIndex    The index of the first round to perform.
+      * @param  aNrRounds   The desired number of rounds.
+      */
+    KeccakFanyRounds(unsigned int aWidth, int aStartRoundIndex, unsigned int aNrRounds);
+    /**
+      * The constructor. The width is given as parameter. The number of rounds
+      * is nominal.
+      *
+      * @param  aWidth      The width of the Keccak-<i>f</i> permutation.
+      *                     It must be one of the valid Keccak-<i>f</i> widths, namely
+      *                     25, 50, 100, 200, 400, 800 or 1600.
+      */
+    KeccakFanyRounds(unsigned int aWidth);
+};
+
 #endif
