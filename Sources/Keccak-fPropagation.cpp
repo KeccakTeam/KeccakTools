@@ -734,6 +734,47 @@ void KeccakFPropagation::displayParity(ostream& fout, PackedParity p) const
     displayParity(fout, C);
 }
 
+void KeccakFPropagation::specifyFirstStateArbitrarily(Trail& trail) const
+{
+    if (!trail.firstStateSpecified) {
+        if (trail.states.size() <= 1)
+            throw KeccakException("The trail is empty.");
+        vector<SliceValue> stateBeforeLambda;
+        parent.lambda(trail.states[1], stateBeforeLambda, reverseLambdaMode);
+        trail.states[0].clear();
+        for(unsigned int z=0; z<stateBeforeLambda.size(); z++) {
+            SliceValue newSlice = 0;
+            for(unsigned int y=0; y<nrRowsAndColumns; y++) {
+                RowValue rowAfterChi = getRowFromSlice(stateBeforeLambda[z], y);
+                RowValue rowBeforeChi = reverseRowOutputListPerInput[rowAfterChi].values[0];
+                newSlice ^= getSliceFromRow(rowBeforeChi, y);
+            }
+            trail.states[0].push_back(newSlice);
+        }
+        trail.firstStateSpecified = true;
+    }
+}
+
+void KeccakFPropagation::specifyStateAfterLastChiArbitrarily(Trail& trail) const
+{
+    if (!trail.stateAfterLastChiSpecified) {
+        if (trail.states.size() == 0)
+            throw KeccakException("The trail is empty.");
+        const vector<SliceValue>& stateBeforeChi = trail.states[trail.states.size()-1];
+        trail.stateAfterLastChi.clear();
+        for(unsigned int z=0; z<stateBeforeChi.size(); z++) {
+            SliceValue newSlice = 0;
+            for(unsigned int y=0; y<nrRowsAndColumns; y++) {
+                RowValue rowBeforeChi = getRowFromSlice(stateBeforeChi[z], y);
+                RowValue rowAfterChi = directRowOutputListPerInput[rowBeforeChi].values[0];
+                newSlice ^= getSliceFromRow(rowAfterChi, y);
+            }
+            trail.stateAfterLastChi.push_back(newSlice);
+        }
+        trail.stateAfterLastChiSpecified = true;
+    }
+}
+
 
 ReverseStateIterator KeccakFPropagation::getReverseStateIterator(const vector<SliceValue>& stateAfterChi, unsigned int maxWeight) const
 {

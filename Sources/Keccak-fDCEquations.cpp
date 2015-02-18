@@ -109,6 +109,8 @@ void KeccakFDCEquations::getDCEquations(const vector<SliceValue>& diffIn,
 
 void KeccakFDCEquations::genDCEquations(ostream& fout, const Trail& trail, bool forSage) const
 {
+    if ((!trail.stateAfterLastChiSpecified) || (!trail.firstStateSpecified))
+        throw KeccakException("The trail must be fully specified, i.e., it must not be a trail prefix or a trail core.");
     char input = 'A';
     char output = 'B';
     for(unsigned int r=0; r<trail.states.size(); r++) {

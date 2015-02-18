@@ -331,10 +331,12 @@ void generateDCTrailEquations()
     KeccakFPropagation DC(keccakFDCEq, KeccakFPropagation::DC);
     cout << keccakFDCEq << endl;
 
-    // Trail from file 'KeccakF-50-DC-trails', 4 rounds
-    istringstream sin("2 1d 4 7 d 5 4 0 849000 84018c a0000 0 3404 4 100000");
+    // Trail core from file 'DCKeccakF-50-trailcores', 4 rounds
+    istringstream sin("2 1d 0 c 4 7 d 5 4 3 84018c a0000 0 3404 4 100000 0");
     // Read the trail and display it
     Trail trail(sin);
+    DC.specifyFirstStateArbitrarily(trail);
+    DC.specifyStateAfterLastChiArbitrarily(trail);
     keccakFDCEq.checkDCTrail(trail); // optional
     trail.display(DC, cout); // for information
 

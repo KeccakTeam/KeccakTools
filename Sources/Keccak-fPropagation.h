@@ -417,6 +417,19 @@ public:
       * @return The constructed file name.
       */
     string buildFileName(const string& prefix, const string& suffix) const;
+    /** This method transforms a trail core into a trail or a trail prefix by
+      * choosing a first state arbitrarily.
+      * The choice is not entirely arbitrary in the sense that the weight of
+      * the chosen first state matches the minimum reverse weight of the state
+      * it propagates to.
+      * @param  trail   The trail to transform.
+      */
+    void specifyFirstStateArbitrarily(Trail& trail) const;
+    /** This method transforms a trail prefix into a fully specified trail by
+      * choosing a state after the last χ arbitrarily.
+      * @param  trail   The trail to transform.
+      */
+    void specifyStateAfterLastChiArbitrarily(Trail& trail) const;
 private:
     /** This method initializes affinePerInput.
       */
