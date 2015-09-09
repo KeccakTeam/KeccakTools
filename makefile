@@ -78,14 +78,19 @@ VPATH = Sources
 
 INCLUDES = -ISources
 
-$(BINDIR)/%.o:%.cpp $(HEADERS)
+-include $(addsuffix .d, $(OBJECTS))
+
+$(BINDIR)/%.o:%.cpp
 	$(CXX) $(INCLUDES) $(CFLAGS) -c $< -o $@
+	@$(CXX) $(INCLUDES) -MM $(CFLAGS) $< > $@.d.tmp
+	@sed -e 's|.*:|$@:|' < $@.d.tmp > $@.d
+	@rm $@.d.tmp
 
 .PHONY: KeccakTools
 
 KeccakTools: bin/KeccakTools
 
-bin/KeccakTools:  $(BINDIR) $(OBJECTS)  $(HEADERS)
+bin/KeccakTools:  $(BINDIR) $(OBJECTS)
 	$(CXX) $(CFLAGS) -o $@ $(OBJECTS)
 
 clean:
