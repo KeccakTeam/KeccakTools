@@ -20,7 +20,7 @@ KeccakFDCEquations::KeccakFDCEquations(unsigned int aWidth)
 {
 }
 
-void KeccakFDCEquations::buildDCTrailFromPair(vector<SliceValue>& a1, vector<SliceValue>& a2, Trail& trail, int startRoundIndex, unsigned nrRounds) const
+void KeccakFDCEquations::buildDCTrailFromPair(const vector<SliceValue>& a1, const vector<SliceValue>& a2, Trail& trail, int startRoundIndex, unsigned nrRounds) const
 {
     KeccakFPropagation DC(*this, KeccakFPropagation::DC);
 
@@ -44,10 +44,11 @@ void KeccakFDCEquations::buildDCTrailFromPair(vector<SliceValue>& a1, vector<Sli
         iota(state1, i);   iota(state2, i);
 
         if (i == (startRoundIndex+nrRounds-1)) {
-            fromLanesToSlices(state1, a1);
-            fromLanesToSlices(state2, a2);
+            vector<SliceValue> aa1, aa2;
+            fromLanesToSlices(state1, aa1);
+            fromLanesToSlices(state2, aa2);
             for(unsigned int z=0; z<laneSize; z++)
-                aDiff[z] = a1[z]^a2[z];
+                aDiff[z] = aa1[z]^aa2[z];
             trail.stateAfterLastChiSpecified = true;
             trail.stateAfterLastChi = aDiff;
         }
@@ -168,4 +169,29 @@ void KeccakFDCEquations::displayEquations(ostream& fout, const vector<SymbolicLa
             fout << ", ";
         fout << endl;
     }
+}
+
+bool KeccakFDCEquations::checkPairGivenDCTrail(const vector<SliceValue>& a1, const Trail& givenTrail, Trail& actualTrail, int startRoundIndex) const
+{
+    if (!givenTrail.firstStateSpecified)
+        throw KeccakException("The trail must not be a trail core.");
+    if (givenTrail.states.size() < 1)
+        throw KeccakException("The trail should have at least one round.");
+    const vector<SliceValue>& diffBeforeChi(givenTrail.states[0]);
+    if (a1.size() != diffBeforeChi.size())
+        throw KeccakException("The given state's and trail's lane sizes do not match.");
+    vector<SliceValue> diffBeforeTheta;
+    lambda(diffBeforeChi, diffBeforeTheta, KeccakFDCLC::Inverse);
+    vector<SliceValue> a2(a1);
+    for(unsigned int i=0; i<a1.size(); i++)
+        a2[i] ^= diffBeforeTheta[i];
+    buildDCTrailFromPair(a1, a2, actualTrail, startRoundIndex, givenTrail.states.size());
+    bool match = true;
+    for(unsigned int i=1; (i<givenTrail.states.size()) && (i<actualTrail.states.size()); i++)
+        for(unsigned int z=0; z<givenTrail.states[i].size(); z++)
+            match = match && (givenTrail.states[i][z] == actualTrail.states[i][z]);
+    if ((givenTrail.stateAfterLastChiSpecified) && (actualTrail.stateAfterLastChiSpecified))
+        for(unsigned int z=0; z<givenTrail.stateAfterLastChi.size(); z++)
+            match = match && (givenTrail.stateAfterLastChi[z] == actualTrail.stateAfterLastChi[z]);
+    return match;
 }
