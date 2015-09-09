@@ -107,7 +107,9 @@
     <ClCompile Include="Sources\Keccak-fTrails.cpp" />
     <ClCompile Include="Sources\Keccak.cpp" />
     <ClCompile Include="Sources\KeccakCrunchyContest.cpp" />
+    <ClCompile Include="Sources\Keyakv2.cpp" />
     <ClCompile Include="Sources\main.cpp" />
+    <ClCompile Include="Sources\Motorist.cpp" />
     <ClCompile Include="Sources\padding.cpp" />
     <ClCompile Include="Sources\progress.cpp" />
     <ClCompile Include="Sources\sponge.cpp" />
@@ -137,6 +139,8 @@
     <ClInclude Include="Sources\Keccak-fTrails.h" />
     <ClInclude Include="Sources\Keccak.h" />
     <ClInclude Include="Sources\KeccakCrunchyContest.h" />
+    <ClInclude Include="Sources\Keyakv2.h" />
+    <ClInclude Include="Sources\Motorist.h" />
     <ClInclude Include="Sources\padding.h" />
     <ClInclude Include="Sources\progress.h" />
     <ClInclude Include="Sources\sponge.h" />

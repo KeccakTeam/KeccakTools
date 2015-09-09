@@ -266,10 +266,18 @@
 				RelativePath=".\Sources\KeccakCrunchyContest.cpp"
 				>
 			</File>
+            <File
+                RelativePath=".\Sources\Keyakv2.cpp"
+                >
+            </File>
 			<File
 				RelativePath=".\Sources\main.cpp"
 				>
 			</File>
+            <File
+                RelativePath=".\Sources\Motorist.cpp"
+                >
+            </File>
 			<File
 				RelativePath=".\Sources\padding.cpp"
 				>
@@ -384,6 +392,14 @@
 				RelativePath=".\Sources\KeccakCrunchyContest.h"
 				>
 			</File>
+            <File
+                RelativePath=".\Sources\Keyakv2.h"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Motorist.h"
+                >
+            </File>
 			<File
 				RelativePath=".\Sources\padding.h"
 				>

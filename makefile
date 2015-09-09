@@ -25,7 +25,9 @@ SOURCES = \
     Sources/Keccak-fTrailCoreRows.cpp \
     Sources/Keccak-fTrailExtension.cpp \
     Sources/Keccak-fTrails.cpp \
+    Sources/Keyakv2.cpp \
     Sources/main.cpp \
+    Sources/Motorist.cpp \
     Sources/padding.cpp \
     Sources/progress.cpp \
     Sources/sponge.cpp \
@@ -56,6 +58,8 @@ HEADERS = \
     Sources/Keccak-fTrailCoreRows.h \
     Sources/Keccak-fTrailExtension.h \
     Sources/Keccak-fTrails.h \
+    Sources/Keyakv2.h \
+    Sources/Motorist.h \
     Sources/padding.h \
     Sources/progress.h \
     Sources/sponge.h \
