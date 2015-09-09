@@ -173,8 +173,18 @@ void Trail::display(const KeccakFPropagation& DCorLC, ostream& fout) const
             displayStates(fout, allAfterPreviousChi[i-offsetIndex], false, allBeforeTheta[i-offsetIndex], true, states[i], false);
     }
     if (stateAfterLastChiSpecified) {
-        fout << "After \xCF\x87 of round " << dec << (states.size()-1) << ":" << endl;
-        displayState(fout, stateAfterLastChi);
+        if (DCorLC.getPropagationType() == KeccakFPropagation::DC) {
+            fout << "After \xCF\x87 of round " << dec << (states.size()-1) << ":" << endl;
+            displayState(fout, stateAfterLastChi);
+        }
+        else {
+            vector<SliceValue> stateBeforeTheta;
+            vector<SliceValue> stateAfterTheta;
+            DCorLC.directLambdaBeforeTheta(stateAfterLastChi, stateBeforeTheta);
+            DCorLC.directLambda(stateAfterLastChi, stateAfterTheta);
+            fout << "After \xCF\x87 of round " << dec << (states.size()-1) << ", then before \xCE\xB8 and finally after \xCE\xB8:" << endl;
+            displayStates(fout, stateAfterLastChi, false, stateBeforeTheta, true, stateAfterTheta, false);
+        }
     }
 }
 
