@@ -17,8 +17,8 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 UINT8 enc8(unsigned int x);
 
-Keyak::Keyak(unsigned int b, unsigned int nr, unsigned int Pi, unsigned int ac, unsigned int tau)
-    : f(b, nr), W(max((int)b/25, 8)), c(ac), motorist(&f, Pi, W, c, tau)
+Keyak::Keyak(unsigned int b, unsigned int nr, unsigned int aPi, unsigned int ac, unsigned int atau)
+    : f(b, nr), W(max((int)b/25, 8)), Pi(aPi), c(ac), tau(atau), motorist(&f, Pi, W, c, tau)
 {
 }
 
@@ -42,4 +42,13 @@ bool Keyak::StartEngine(const string& K, const string& N, bool tagFlag, stringst
 bool Keyak::Wrap(istream& I, stringstream& O, istream& A, stringstream& T, bool unwrapFlag, bool forgetFlag)
 {
     return motorist.Wrap(I, O, A, T, unwrapFlag, forgetFlag);
+}
+
+ostream& operator<<(ostream& a, const Keyak& keyak)
+{
+    return a << "Keyak[b=" << dec << keyak.f.getWidth()
+        << ", nr=" << keyak.f.getNumberOfRounds()
+        << ", \316\240=" << keyak.Pi
+        << ", c=" << keyak.c
+        << ", \317\204=" << keyak.tau << "]";
 }

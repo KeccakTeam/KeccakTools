@@ -27,6 +27,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include "Keccak-fPropagation.h"
 #include "Keccak-fTrailExtension.h"
 #include "Keccak-fTrails.h"
+#include "Keyakv2-test.h"
 
 using namespace std;
 
@@ -511,6 +512,7 @@ int main(int argc, char *argv[])
         //verifyChallenges();
         //generateTrailFromDinurDunkelmanShamirCollision();
         //extendTrails();
+        //testAllKeyakv2Instances();
     }
     catch(Exception e) {
         cout << e.reason << endl;

@@ -27,12 +27,15 @@ class Keyak {
 protected:
     KeccakFlastRounds f;
     unsigned int W;
+    unsigned int Pi;
     unsigned int c;
+    unsigned int tau;
     Motorist motorist;
 public:
-    Keyak(unsigned int b, unsigned int nr, unsigned int Pi, unsigned int ac, unsigned int tau);
+    Keyak(unsigned int b, unsigned int nr, unsigned int aPi, unsigned int ac, unsigned int atau);
     bool StartEngine(const string& K, const string& N, bool tagFlag, stringstream& T, bool unwrapFlag, bool forgetFlag);
     bool Wrap(istream& I, stringstream& O, istream& A, stringstream& T, bool unwrapFlag, bool forgetFlag);
+    friend ostream& operator<<(ostream& a, const Keyak& piston);
 };
 
 class RiverKeyak : public Keyak {

@@ -270,6 +270,10 @@
                 RelativePath=".\Sources\Keyakv2.cpp"
                 >
             </File>
+            <File
+                RelativePath=".\Sources\Keyakv2-test.cpp"
+                >
+            </File>
 			<File
 				RelativePath=".\Sources\main.cpp"
 				>
@@ -394,6 +398,10 @@
 			</File>
             <File
                 RelativePath=".\Sources\Keyakv2.h"
+                >
+            </File>
+            <File
+                RelativePath=".\Sources\Keyakv2-test.h"
                 >
             </File>
             <File

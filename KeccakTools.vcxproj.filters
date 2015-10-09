@@ -87,6 +87,9 @@
     <ClCompile Include="Sources\Keyakv2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Keyakv2-test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Sources\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -177,6 +180,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Keyakv2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Keyakv2-test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Motorist.h">

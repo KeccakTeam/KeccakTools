@@ -108,6 +108,7 @@
     <ClCompile Include="Sources\Keccak.cpp" />
     <ClCompile Include="Sources\KeccakCrunchyContest.cpp" />
     <ClCompile Include="Sources\Keyakv2.cpp" />
+    <ClCompile Include="Sources\Keyakv2-test.cpp" />
     <ClCompile Include="Sources\main.cpp" />
     <ClCompile Include="Sources\Motorist.cpp" />
     <ClCompile Include="Sources\padding.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="Sources\Keccak.h" />
     <ClInclude Include="Sources\KeccakCrunchyContest.h" />
     <ClInclude Include="Sources\Keyakv2.h" />
+    <ClInclude Include="Sources\Keyakv2-test.h" />
     <ClInclude Include="Sources\Motorist.h" />
     <ClInclude Include="Sources\padding.h" />
     <ClInclude Include="Sources\progress.h" />

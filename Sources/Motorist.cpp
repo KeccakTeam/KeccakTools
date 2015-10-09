@@ -192,7 +192,7 @@ void Engine::InjectCollective(istream& X, bool diversifyFlag)
 
 ostream& operator<<(ostream& a, const Engine& engine)
 {
-    return a << "Engine[" << engine.Pi << "\303\227" << engine.Pistons[0] << "]";
+    return a << "Engine[" << dec << engine.Pi << "\303\227" << engine.Pistons[0] << "]";
 }
 
 Motorist::Motorist(const Permutation *f, unsigned int aPi, unsigned int aW, unsigned int ac, unsigned int atau):
