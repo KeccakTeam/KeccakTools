@@ -268,7 +268,7 @@ vector<UINT8> getKeyPack(InputIterator keyStart, unsigned int keyLengthInBits, u
         throw Exception("The pack cannot be longer than 255 bytes");
 
     MessageQueue keyPackQueue(packLengthInBits);
-    keyPackQueue.appendByte((UINT8)packLengthInBits/8);
+    keyPackQueue.appendByte((UINT8)(packLengthInBits/8));
     keyPackQueue.append(keyStart, keyLengthInBits);
     keyPackQueue.pad(SimplePadding());
 
