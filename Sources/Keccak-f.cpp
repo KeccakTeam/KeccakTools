@@ -187,9 +187,14 @@ void KeccakF::inverse(UINT8 * state) const
 string KeccakF::getDescription() const
 {
     stringstream a;
-    a << "Keccak-f[" << dec << width;
-    if ((nrRounds != nominalNrRounds) || (startRoundIndex != 0))
+    if ((nrRounds == nominalNrRounds) && (startRoundIndex == 0))
+        a << "Keccak-f[" << dec << width;
+    else if ((startRoundIndex + nrRounds) == nominalNrRounds)
+        a << "Keccak-p[" << dec << width << ", " << nrRounds;
+    else {
+        a << "Keccak-f[" << dec << width;
         a << ", " << dec << nrRounds << " rounds " << startRoundIndex << "-" << (startRoundIndex+nrRounds-1);
+    }
     a << "]";
     return a.str();
 }
@@ -296,18 +301,18 @@ KeccakFfirstRounds::KeccakFfirstRounds(unsigned int aWidth)
 {
 }
 
-KeccakFlastRounds::KeccakFlastRounds(unsigned int aWidth, unsigned int aNrRounds)
+KeccakP::KeccakP(unsigned int aWidth, unsigned int aNrRounds)
 : KeccakF(aWidth, 0, aNrRounds)
 {
     startRoundIndex = (int)nominalNrRounds - (int)nrRounds;
 }
 
-KeccakFlastRounds::KeccakFlastRounds(unsigned int aWidth)
+KeccakP::KeccakP(unsigned int aWidth)
 : KeccakF(aWidth)
 {
 }
 
-string KeccakFlastRounds::getName() const
+string KeccakP::getName() const
 {
     stringstream a;
     a << "KeccakP-" << dec << width << "-" << nrRounds;
@@ -323,3 +328,37 @@ KeccakFanyRounds::KeccakFanyRounds(unsigned int aWidth)
 : KeccakF(aWidth)
 {
 }
+
+KeccakPStar::KeccakPStar(unsigned int aWidth, unsigned int aNrRounds)
+: KeccakF(aWidth, 0, aNrRounds)
+{
+    startRoundIndex = (int)nominalNrRounds - (int)nrRounds;
+}
+
+void KeccakPStar::operator()(UINT8 * state) const
+{
+    vector<LaneValue> A(25);
+    fromBytesToLanes(state, A);
+    inversePi(A);
+    KeccakF::forward(A);
+    pi(A);
+    fromLanesToBytes(A, state);
+}
+
+void KeccakPStar::inverse(UINT8 * state) const
+{
+    vector<LaneValue> A(25);
+    fromBytesToLanes(state, A);
+    inversePi(A);
+    KeccakF::inverse(A);
+    pi(A);
+    fromLanesToBytes(A, state);
+}
+
+string KeccakPStar::getName() const
+{
+    stringstream a;
+    a << "KeccakPStar-" << dec << width << "-" << nrRounds;
+    return a.str();
+}
+

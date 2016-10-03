@@ -43,7 +43,7 @@ protected:
     /** The actual number of rounds (for experiments on reduced-round version). */
     unsigned int nrRounds;
     /** The translation offsets for ρ. */
-    vector<int> rhoOffsets; 
+    vector<int> rhoOffsets;
     /** The round constants for ι. */
     vector<LaneValue> roundConstants;
     /** A 64-bit word whose first laneSize bits are 1 and all others 0. */
@@ -62,11 +62,11 @@ protected:
     KeccakF(unsigned int aWidth, int aStartRoundIndex, unsigned int aNrRounds);
 public:
     /**
-      * The constructor. The width and number of rounds are given to the 
+      * The constructor. The width and number of rounds are given to the
       * constructor. The number of rounds is the nominal number of rounds
       * as defined by the specifications.
       *
-      * @param  aWidth      The width of the Keccak-<i>f</i> permutation. 
+      * @param  aWidth      The width of the Keccak-<i>f</i> permutation.
       *                     It must be one of the valid Keccak-<i>f</i> widths, namely
       *                     25, 50, 100, 200, 400, 800 or 1600.
       */
@@ -75,7 +75,7 @@ public:
       * Method that returns the number of bits of its domain and range.
       */
     unsigned int getWidth() const;
-    /** 
+    /**
       * Method that retuns the lane size of the Keccak-<i>f</i> instance.
       */
     unsigned int getLaneSize() const;
@@ -95,17 +95,17 @@ public:
       */
     int getIndexOfFirstRound() const;
     /**
-      * Method that applies the Keccak-<i>f</i> permutation onto the parameter 
+      * Method that applies the Keccak-<i>f</i> permutation onto the parameter
       * @a state.
       */
     void operator()(UINT8 * state) const;
     /**
-      * Method that applies the inverse of the Keccak-<i>f</i> permutation onto 
+      * Method that applies the inverse of the Keccak-<i>f</i> permutation onto
       * the parameter @a state.
       */
     void inverse(UINT8 * state) const;
     /**
-      * Method that returns a string describing the instance of the Keccak-<i>f</i> 
+      * Method that returns a string describing the instance of the Keccak-<i>f</i>
       * permutation.
       */
     string getDescription() const;
@@ -114,15 +114,15 @@ public:
       * Keccak-<i>f</i> instance.
       */
     virtual string getName() const;
-    /** 
-      * Method that builds a file name by prepending a prefix and appending 
+    /**
+      * Method that builds a file name by prepending a prefix and appending
       * a suffix to getName().
       */
     string buildFileName(const string& prefix, const string& suffix) const;
     /**
-      * Method that maps the coordinates (x, y) onto the lanes 
-      * numbered from 0 to 24. The formula is (x mod 5)+5*(y mod 5), 
-      * so that the lanes are ordered in line with the bit ordering defined 
+      * Method that maps the coordinates (x, y) onto the lanes
+      * numbered from 0 to 24. The formula is (x mod 5)+5*(y mod 5),
+      * so that the lanes are ordered in line with the bit ordering defined
       * in the specifications.
       *
       * @param  x           The x coordinate. It can be any signed integer,
@@ -161,7 +161,7 @@ public:
     static unsigned int index(int x);
     /**
       * Template method that applies the permutation.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  state   The given state is organized as a vector of 25 lanes.
@@ -173,7 +173,7 @@ public:
     template<class Lane> void forward(vector<Lane>& state) const;
     /**
       * Template method that applies the inverse permutation.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  state   The given state is organized as a vector of 25 lanes.
@@ -185,7 +185,7 @@ public:
     template<class Lane> void inverse(vector<Lane>& state) const;
     /**
       * Template method that applies the round function.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  A       The given state is organized as a vector of 25 lanes.
@@ -197,8 +197,8 @@ public:
       */
     template<class Lane> void round(vector<Lane>& A, int roundIndex) const;
     /**
-      * Template method that applies the inverse of the round function. 
-      * This function is a template to allow both numerical and symbolic values 
+      * Template method that applies the inverse of the round function.
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  A       The given state is organized as a vector of 25 lanes.
@@ -211,7 +211,7 @@ public:
     template<class Lane> void inverseRound(vector<Lane>& A, int roundIndex) const;
     /**
       * Template method that applies χ.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  A       The given state is organized as a vector of 25 lanes.
@@ -223,7 +223,7 @@ public:
     template<class Lane> void chi(vector<Lane>& A) const;
     /**
       * Template method that applies the inverse of χ.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  A       The given state is organized as a vector of 25 lanes.
@@ -235,7 +235,7 @@ public:
     template<class Lane> void inverseChi(vector<Lane>& A) const;
     /**
       * Template method that applies θ.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  A       The given state is organized as a vector of 25 lanes.
@@ -247,7 +247,7 @@ public:
     template<class Lane> void theta(vector<Lane>& A) const;
     /**
       * Template method that applies the inverse of θ.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  A       The given state is organized as a vector of 25 lanes.
@@ -259,7 +259,7 @@ public:
     template<class Lane> void inverseTheta(vector<Lane>& A) const;
     /**
       * Template method that applies π.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  A       The given state is organized as a vector of 25 lanes.
@@ -280,7 +280,7 @@ public:
     static void pi(unsigned int x, unsigned int y, unsigned int& X, unsigned int& Y);
     /**
       * Template method that applies the inverse of π.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  A       The given state is organized as a vector of 25 lanes.
@@ -301,7 +301,7 @@ public:
     static void inversePi(unsigned int X, unsigned int Y, unsigned int& x, unsigned int& y);
     /**
       * Template method that applies ρ.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  A       The given state is organized as a vector of 25 lanes.
@@ -325,7 +325,7 @@ public:
     }
     /**
       * Template method that applies the inverse of ρ.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  A       The given state is organized as a vector of 25 lanes.
@@ -349,7 +349,7 @@ public:
     }
     /**
       * Template method that applies ι, which is its own inverse.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  A       The given state is organized as a vector of 25 lanes.
@@ -360,15 +360,15 @@ public:
       * @param  roundIndex  The round index.
       */
     template<class Lane> void iota(vector<Lane>& A, int roundIndex) const;
-    /** 
+    /**
       * Method that retuns the i-th round constant used by ι.
-      * 
+      *
       * @param  roundIndex  The round index.
       */
     LaneValue getRoundConstant(int roundIndex) const;
     /**
       * Template method that translates a lane along the z-axis.
-      * This function is a template to allow both numerical and symbolic values 
+      * This function is a template to allow both numerical and symbolic values
       * to be processed (see also KeccakFEquations).
       *
       * @param  L       The given lane.
@@ -389,25 +389,25 @@ public:
       * of lanes in 64-bit words.
       *
       * @param  in      The state as an array of bytes.
-      *                 The array @a in must have a size of at least 
+      *                 The array @a in must have a size of at least
       *                 ceil(getWidth()/8.0) bytes.
       * @param  out     The state as a vector of lanes.
       *                 It will be resized to 25 if necessary.
       */
     void fromBytesToLanes(const UINT8 *in, vector<LaneValue>& out) const;
     /**
-      * Method that converts a vector of lanes in 64-bit words into a state 
+      * Method that converts a vector of lanes in 64-bit words into a state
       * given as an array of bytes.
       *
       * @param  in      The state as a vector of lanes.
       *                 in.size() must be equal to 25.
       * @param  out     The state as an array of bytes.
-      *                 The array @a out must have a size of at least 
+      *                 The array @a out must have a size of at least
       *                 ceil(getWidth()/8.0) bytes.
       */
     void fromLanesToBytes(const vector<LaneValue>& in, UINT8 *out) const;
     /**
-      * Function that appends the z coordinate to the given prefix. 
+      * Function that appends the z coordinate to the given prefix.
       * If the lane size is 1, the z coordinate is not appended.
       * If the lane size is at most 10, the z coordinate is appended using one digit.
       * Otherwise, the z coordinate is appended using two digits.
@@ -419,8 +419,8 @@ public:
     static string buildBitName(const string& prefixSymbol, unsigned int laneSize, unsigned int z);
     /**
       * Method that constructs a variable name for a particular bit in the state.
-      * The resulting variable name consists of the prefix, a consonant coding the y coordinate, 
-      * a vowel coding the x coordinate and finally a digit (or pair of digits) coding the z coordinate 
+      * The resulting variable name consists of the prefix, a consonant coding the y coordinate,
+      * a vowel coding the x coordinate and finally a digit (or pair of digits) coding the z coordinate
       * (using buildBitName(), i.e., if the lane size is greater than 1).
       * This naming convention is such that the alphabetic order is also
       * the bit ordering for the message input at sponge level.
@@ -433,7 +433,7 @@ public:
     string bitName(const string& prefix, unsigned int x, unsigned int y, unsigned int z) const;
     /**
       * Method that constructs a variable name for a particular lane in the state.
-      * The resulting variable name consists of the prefix, a consonant coding the y coordinate 
+      * The resulting variable name consists of the prefix, a consonant coding the y coordinate
       * and a vowel coding the x coordinate.
       *
       * @param  prefix  The name prefix.
@@ -505,7 +505,7 @@ template<class Lane>
 void KeccakF::chi(vector<Lane>& A) const
 {
     vector<Lane> C(5);
-    for(unsigned int y=0; y<5; y++) { 
+    for(unsigned int y=0; y<5; y++) {
         for(unsigned int x=0; x<5; x++)
             C[x] = A[index(x,y)] ^ ((~A[index(x+1,y)]) & A[index(x+2,y)]);
         for(unsigned int x=0; x<5; x++)
@@ -517,7 +517,7 @@ void KeccakF::chi(vector<Lane>& A) const
 template<class Lane>
 void KeccakF::inverseChi(vector<Lane>& A) const
 {
-    for(unsigned int y=0; y<5; y++) { 
+    for(unsigned int y=0; y<5; y++) {
         unsigned int length = 5;
         vector<Lane> C(length);
         for(unsigned int x=0; x<length; x++) C[index(x)] = A[index(x,y)];
@@ -533,8 +533,8 @@ void KeccakF::theta(vector<Lane>& A) const
 {
     vector<Lane> C(5);
     for(unsigned int x=0; x<5; x++) {
-        C[x] = A[index(x,0)]; 
-        for(unsigned int y=1; y<5; y++) 
+        C[x] = A[index(x,0)];
+        for(unsigned int y=1; y<5; y++)
             C[x] ^= A[index(x,y)];
     }
     vector<Lane> D(5);
@@ -554,7 +554,7 @@ void KeccakF::inverseTheta(vector<Lane>& A) const
     vector<Lane> C(5);
     for(unsigned int x=0; x<5; x++) {
         C[x] = A[index(x,0)];
-        for(unsigned int y=1; y<5; y++){ 
+        for(unsigned int y=1; y<5; y++){
             C[x] ^= A[index(x,y)];
         }
     }
@@ -572,7 +572,7 @@ void KeccakF::inverseTheta(vector<Lane>& A) const
         for(unsigned int xOff=0; xOff<5; xOff++)
            for(int x=0; x<5; x++)
                for(unsigned int y=0; y<5; y++)
-                   if ((inversePositions[xOff] & 1) != 0) 
+                   if ((inversePositions[xOff] & 1) != 0)
                       A[index(x, y)] ^= C[index(x-xOff)];
         for(unsigned int xOff=0; xOff<5; xOff++) {
             ROL(C[xOff], 1);
@@ -585,7 +585,7 @@ template<class Lane>
 void KeccakF::pi(vector<Lane>& A) const
 {
     vector<Lane> a(A);
-    for(unsigned int x=0; x<5; x++) 
+    for(unsigned int x=0; x<5; x++)
     for(unsigned int y=0; y<5; y++) {
         unsigned int X, Y;
         pi(x, y, X, Y);
@@ -597,7 +597,7 @@ template<class Lane>
 void KeccakF::inversePi(vector<Lane>& A) const
 {
     vector<Lane> a(A);
-    for(unsigned int X=0; X<5; X++) 
+    for(unsigned int X=0; X<5; X++)
     for(unsigned int Y=0; Y<5; Y++) {
         unsigned int x, y;
         inversePi(X, Y, x, y);
@@ -608,7 +608,7 @@ void KeccakF::inversePi(vector<Lane>& A) const
 template<class Lane>
 void KeccakF::rho(vector<Lane>& A) const
 {
-    for(unsigned int x=0; x<5; x++) 
+    for(unsigned int x=0; x<5; x++)
     for(unsigned int y=0; y<5; y++)
         ROL(A[index(x,y)], rhoOffsets[index(x,y)]);
 }
@@ -616,7 +616,7 @@ void KeccakF::rho(vector<Lane>& A) const
 template<class Lane>
 void KeccakF::inverseRho(vector<Lane>& A) const
 {
-    for(unsigned int x=0; x<5; x++) 
+    for(unsigned int x=0; x<5; x++)
     for(unsigned int y=0; y<5; y++)
         ROL(A[index(x,y)], -rhoOffsets[index(x,y)]);
 }
@@ -628,7 +628,7 @@ void KeccakF::iota(vector<Lane>& A, int roundIndex) const
     A[index(0,0)] ^= roundConstants[ir];
 }
 
-template<class Lane> 
+template<class Lane>
 void KeccakF::ROL(Lane& L, int offset) const
 {
     L.ROL(offset, laneSize);
@@ -662,10 +662,11 @@ public:
 };
 
 /**
-  * Class implementing the 7 Keccak-<i>f</i> permutations with a reduced
-  * number of rounds, ending at the last nominal round.
+  * Class implementing the 7 Keccak-<i>p</i> permutations with a reduced
+  * number of rounds, which correspond to the last rounds of the Keccak-<i>f</i>
+  * permutations.
   */
-class KeccakFlastRounds : public KeccakF {
+class KeccakP : public KeccakF {
 public:
     /**
       * The constructor. The width and the number of rounds are
@@ -676,7 +677,7 @@ public:
       *                     25, 50, 100, 200, 400, 800 or 1600.
       * @param  aNrRounds   The desired number of rounds.
       */
-    KeccakFlastRounds(unsigned int aWidth, unsigned int aNrRounds);
+    KeccakP(unsigned int aWidth, unsigned int aNrRounds);
     /**
       * The constructor. The width is given as parameter. The number of rounds
       * is nominal.
@@ -685,7 +686,7 @@ public:
       *                     It must be one of the valid Keccak-<i>f</i> widths, namely
       *                     25, 50, 100, 200, 400, 800 or 1600.
       */
-    KeccakFlastRounds(unsigned int aWidth);
+    KeccakP(unsigned int aWidth);
     string getName() const;
 };
 
@@ -715,6 +716,47 @@ public:
       *                     25, 50, 100, 200, 400, 800 or 1600.
       */
     KeccakFanyRounds(unsigned int aWidth);
+};
+
+/**
+  * Class implementing the 7 twisted Keccak-<i>f</i>* permutations with a reduced
+  * number of rounds. These are the same as the Keccak-<i>p</i> permutation but with an extra
+  * call to π<sup>-1</sup> at input and to π at output.
+  */
+class KeccakPStar : public KeccakF {
+public:
+    /**
+      * The constructor. The width and the number of rounds are
+      * given as parameters.
+      *
+      * @param  aWidth      The width of the Keccak-<i>f</i> permutation.
+      *                     It must be one of the valid Keccak-<i>f</i> widths, namely
+      *                     25, 50, 100, 200, 400, 800 or 1600.
+      * @param  aNrRounds   The desired number of rounds.
+      */
+    KeccakPStar(unsigned int aWidth, unsigned int aNrRounds);
+
+    /**
+      * Abstract method that applies the transformation onto the parameter
+      * @a state.
+      *
+      * @param  state   A buffer on which to apply the transformation.
+      *                 The state must have a size of at least
+      *                 ceil(getWidth()/8.0) bytes.
+      */
+    virtual void operator()(UINT8 * state) const;
+
+    /**
+      * Abstract method that applies the <em>inverse</em> of the permutation
+      * onto the parameter @a state.
+      *
+      * @param  state   A buffer on which to apply the inverse permutation.
+      *                 The state must have a size of at least
+      *                 ceil(getWidth()/8.0) bytes.
+      */
+    virtual void inverse(UINT8 * state) const;
+
+    string getName() const;
 };
 
 #endif

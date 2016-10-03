@@ -25,7 +25,7 @@ using namespace std;
 
 class Keyak {
 protected:
-    KeccakFlastRounds f;
+    KeccakP f;
     unsigned int W;
     unsigned int Pi;
     unsigned int c;
