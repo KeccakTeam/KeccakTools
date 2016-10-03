@@ -723,7 +723,7 @@ public:
   * number of rounds. These are the same as the Keccak-<i>p</i> permutation but with an extra
   * call to π<sup>-1</sup> at input and to π at output.
   */
-class KeccakPStar : public KeccakF {
+class KeccakPStar : public KeccakP {
 public:
     /**
       * The constructor. The width and the number of rounds are
@@ -744,7 +744,7 @@ public:
       *                 The state must have a size of at least
       *                 ceil(getWidth()/8.0) bytes.
       */
-    virtual void operator()(UINT8 * state) const;
+    void operator()(UINT8 * state) const;
 
     /**
       * Abstract method that applies the <em>inverse</em> of the permutation
@@ -754,7 +754,7 @@ public:
       *                 The state must have a size of at least
       *                 ceil(getWidth()/8.0) bytes.
       */
-    virtual void inverse(UINT8 * state) const;
+    void inverse(UINT8 * state) const;
 
     string getName() const;
 };

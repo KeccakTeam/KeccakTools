@@ -1,6 +1,7 @@
 all: KeccakTools
 
 SOURCES = \
+	Sources/bitstring.cpp \
     Sources/duplex.cpp \
     Sources/genKATShortMsg.cpp \
     Sources/Keccak.cpp \
@@ -25,9 +26,12 @@ SOURCES = \
     Sources/Keccak-fTrailCoreRows.cpp \
     Sources/Keccak-fTrailExtension.cpp \
     Sources/Keccak-fTrails.cpp \
+    Sources/Ketjev2.cpp \
+    Sources/Ketjev2-test.cpp \
     Sources/Keyakv2.cpp \
     Sources/Keyakv2-test.cpp \
     Sources/main.cpp \
+    Sources/monkey.cpp \
     Sources/Motorist.cpp \
     Sources/padding.cpp \
     Sources/progress.cpp \
@@ -36,6 +40,7 @@ SOURCES = \
     Sources/transformations.cpp
 
 HEADERS = \
+    Sources/bitstring.h \
     Sources/duplex.h \
     Sources/Keccak.h \
     Sources/KeccakCrunchyContest.h \
@@ -59,8 +64,11 @@ HEADERS = \
     Sources/Keccak-fTrailCoreRows.h \
     Sources/Keccak-fTrailExtension.h \
     Sources/Keccak-fTrails.h \
+    Sources/Ketjev2.h \
+    Sources/Ketjev2-test.h \
     Sources/Keyakv2.h \
     Sources/Keyakv2-test.h \
+    Sources/monkey.h \
     Sources/Motorist.h \
     Sources/padding.h \
     Sources/progress.h \

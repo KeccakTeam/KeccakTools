@@ -330,9 +330,8 @@ KeccakFanyRounds::KeccakFanyRounds(unsigned int aWidth)
 }
 
 KeccakPStar::KeccakPStar(unsigned int aWidth, unsigned int aNrRounds)
-: KeccakF(aWidth, 0, aNrRounds)
+: KeccakP(aWidth, aNrRounds)
 {
-    startRoundIndex = (int)nominalNrRounds - (int)nrRounds;
 }
 
 void KeccakPStar::operator()(UINT8 * state) const

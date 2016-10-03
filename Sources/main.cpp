@@ -28,6 +28,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include "Keccak-fTrailExtension.h"
 #include "Keccak-fTrails.h"
 #include "Keyakv2-test.h"
+#include "Ketjev2-test.h"
 
 using namespace std;
 
@@ -90,7 +91,7 @@ void testKeccakSponge()
     // Test messages from ShortMsgKAT.txt
     const char *message1 = "\x53\x58\x7B\x19"; // last byte aligned on LSB
     unsigned int message1Length = 29;
-    const char *message2 = 
+    const char *message2 =
         "\x83\xAF\x34\x27\x9C\xCB\x54\x30\xFE\xBE\xC0\x7A\x81\x95\x0D\x30"
         "\xF4\xB6\x6F\x48\x48\x26\xAF\xEE\x74\x56\xF0\x07\x1A\x51\xE1\xBB"
         "\xC5\x55\x70\xB5\xCC\x7E\xC6\xF9\x30\x9C\x17\xBF\x5B\xEF\xDD\x7C"
@@ -217,7 +218,7 @@ void testKeccakFDCLC()
     keccakFDCLC.displayAll(fout, &DC, &LC);
 }
 
-/** Example function that produces the text files 
+/** Example function that produces the text files
   * in <code>Example trails</code>.
   */
 void displayTrails()
@@ -237,7 +238,7 @@ void displayTrails()
     }
 }
 
-/** Example function that uses the affine base representation 
+/** Example function that uses the affine base representation
   * to extend a trail forward.
   */
 void extendTrailAtTheEnd()
@@ -349,13 +350,13 @@ void generateDCTrailEquations()
 }
 
 /** Example function that generates a trail from a pair of inputs.
-  * In this example, we use the messages found by I. Dinur, O. Dunkelman 
+  * In this example, we use the messages found by I. Dinur, O. Dunkelman
   * and A. Shamir to produce a collision on Keccak[r=1088, c=512] reduced
   * to 4 rounds.
   */
 void generateTrailFromDinurDunkelmanShamirCollision()
 {
-    const UINT8 M1[] = 
+    const UINT8 M1[] =
         "\x32\x1c\xf3\xc4\x6d\xae\x59\x4c\xf4\xf0\x19\x5d\x4b\xe4\xc4\x25"
         "\x32\x30\x85\xd8\xf2\x12\x5e\x8d\xe2\x6e\x6e\xbb\x1e\x3b\xc3\x27"
         "\x58\x10\x09\x6c\xd5\x02\x90\xeb\x6f\xa0\xa4\x3b\xf1\xc7\x0c\x4a"
@@ -426,14 +427,14 @@ void generateTrailFromDinurDunkelmanShamirCollision()
     }
 }
 
-/** Example function that takes trails from a file and extends them 
+/** Example function that takes trails from a file and extends them
   * forward or backward up to a given weight and given number of rounds.
   * @param  DCLC    Whether linear or differential trails are processed.
   * @param  width   The Keccak-f width.
   * @param  inFileName  The name of the file containing trails.
   * @param  nrRounds    The target number of rounds.
   * @param  maxWeight   The maximum weight of the trails to be produced.
-  * @param  reverse If true, it does backward extension. 
+  * @param  reverse If true, it does backward extension.
   *                 If false, it does forward extension.
   * @param  allPrefixes If true, the backward extension of trail cores
   *                     looks for all prefixes, not just trail cores.
@@ -513,6 +514,7 @@ int main(int argc, char *argv[])
         //generateTrailFromDinurDunkelmanShamirCollision();
         //extendTrails();
         //testAllKeyakv2Instances();
+        //testAllKetjev2Instances();
     }
     catch(Exception e) {
         cout << e.reason << endl;
