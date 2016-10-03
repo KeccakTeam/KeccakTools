@@ -21,7 +21,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 using namespace std;
 
 Trail::Trail()
-    : totalWeight(0), firstStateSpecified(true), stateAfterLastChiSpecified(false)
+    : firstStateSpecified(true), stateAfterLastChiSpecified(false), totalWeight(0)
 {
 }
 
@@ -86,7 +86,7 @@ void Trail::display(const KeccakFPropagation& DCorLC, ostream& fout) const
     else
         fout << "linear ";
     if (firstStateSpecified) {
-        if (stateAfterLastChiSpecified) 
+        if (stateAfterLastChiSpecified)
             fout << "fully specified trail ";
         else
             fout << "trail prefix ";
@@ -156,7 +156,7 @@ void Trail::display(const KeccakFPropagation& DCorLC, ostream& fout) const
     }
     fout << endl;
 
-    if (!firstStateSpecified) 
+    if (!firstStateSpecified)
         fout << "Round 0 would have weight at least " << weights[0] << endl;
     for(unsigned int i=offsetIndex; i<states.size(); i++) {
         fout << "Round " << dec << i << " (weight " << weights[i];
@@ -203,7 +203,7 @@ void Trail::save(ostream& fout) const
         if (!stateAfterLastChiSpecified)
             fout << "p";
     }
-    else 
+    else
         fout << "c";
     if (stateAfterLastChiSpecified) fout << "l";
     fout << " ";
@@ -258,8 +258,8 @@ void Trail::load(istream& fin)
             vector<SliceValue> state(laneSize);
             for(unsigned int j=0; j<laneSize; j++)
                 fin >> state[j];
-            states.push_back(state);    
-        }       
+            states.push_back(state);
+        }
         fin >> size;
         if (size == 1) {
             stateAfterLastChi.resize(laneSize);
@@ -276,7 +276,7 @@ void Trail::load(istream& fin)
             vector<SliceValue> state(laneSize);
             for(unsigned int j=0; j<laneSize; j++)
                 fin >> state[j];
-            states.push_back(state);    
+            states.push_back(state);
         }
     }
 }
@@ -305,7 +305,7 @@ UINT64 Trail::produceHumanReadableFile(const KeccakFPropagation& DCorLC, const s
 //
 // -------------------------------------------------------------
 
-TrailFilterAND::TrailFilterAND() 
+TrailFilterAND::TrailFilterAND()
 {
 }
 
@@ -332,7 +332,7 @@ bool TrailFilterAND::filter(const KeccakFPropagation& DCorLC, const Trail& trail
 //
 // -------------------------------------------------------------
 
-TrailFileIterator::TrailFileIterator(const string& aFileName, const KeccakFPropagation& aDCorLC, 
+TrailFileIterator::TrailFileIterator(const string& aFileName, const KeccakFPropagation& aDCorLC,
                                      bool aPrefetch)
     : TrailIterator(aDCorLC), fileName(aFileName), prefetch(aPrefetch)
 {
@@ -340,7 +340,7 @@ TrailFileIterator::TrailFileIterator(const string& aFileName, const KeccakFPropa
     next();
 }
 
-TrailFileIterator::TrailFileIterator(const string& aFileName, const KeccakFPropagation& aDCorLC, 
+TrailFileIterator::TrailFileIterator(const string& aFileName, const KeccakFPropagation& aDCorLC,
                                      TrailFilter *aFilter, bool aPrefetch)
     : TrailIterator(aDCorLC, aFilter), fileName(aFileName), prefetch(aPrefetch)
 {
@@ -348,7 +348,7 @@ TrailFileIterator::TrailFileIterator(const string& aFileName, const KeccakFPropa
     next();
 }
 
-TrailFileIterator::TrailFileIterator(const string& aFileName, const KeccakFPropagation& aDCorLC, 
+TrailFileIterator::TrailFileIterator(const string& aFileName, const KeccakFPropagation& aDCorLC,
                                      TrailFilter *aFilter1, TrailFilter *aFilter2, bool aPrefetch)
     : TrailIterator(aDCorLC, aFilter1, aFilter2), fileName(aFileName), prefetch(aPrefetch)
 {

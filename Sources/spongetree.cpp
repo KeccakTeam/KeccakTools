@@ -16,7 +16,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include "spongetree.h"
 
 ShortLeafInterleavedSpongeTree::ShortLeafInterleavedSpongeTree(const SpongeFactory& aFactory, const int aD, const int aB)
-    : factory(aFactory), D(aD), B(aB), absorbQueue(aB)
+    : factory(aFactory), absorbQueue(aB), D(aD), B(aB)
 {
     for(int i=0; i<D; i++)
         leaves.push_back(factory.newSponge());

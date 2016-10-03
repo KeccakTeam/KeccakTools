@@ -39,8 +39,8 @@ string Keccak::getDescription() const
 
 ReducedRoundKeccak::ReducedRoundKeccak(unsigned int aRate, unsigned int aCapacity, int aStartRoundIndex, unsigned int aNrRounds)
     : Sponge(new KeccakFanyRounds(aRate+aCapacity, aStartRoundIndex, aNrRounds), new MultiRatePadding(), aRate),
-    startRoundIndex(aStartRoundIndex),
-    nrRounds(aNrRounds)
+    nrRounds(aNrRounds),
+    startRoundIndex(aStartRoundIndex)
 {
 }
 

@@ -134,10 +134,10 @@ int KeccakFTwoRoundTrailCoreWithGivenParityIterator::setBitInUnaffectedColumnAnd
 
 int KeccakFTwoRoundTrailCoreWithGivenParityIterator::setOrbitalInUnaffectedColumnAndGetDeltaTotalWeight(vector<SliceValue>& stateAtA, vector<SliceValue>& stateAtB, const OrbitalPosition& orbital) const
 {
-    return 
-        setBitInUnaffectedColumnAndGetDeltaTotalWeight(stateAtA, stateAtB, 
+    return
+        setBitInUnaffectedColumnAndGetDeltaTotalWeight(stateAtA, stateAtB,
             orbital.x, orbital.y0, orbital.z)
-    +   setBitInUnaffectedColumnAndGetDeltaTotalWeight(stateAtA, stateAtB, 
+    +   setBitInUnaffectedColumnAndGetDeltaTotalWeight(stateAtA, stateAtB,
             orbital.x, orbital.y1, orbital.z);
 }
 
@@ -150,7 +150,7 @@ const ColumnValue KeccakFTrailWithGivenParityIterator::oddValues[16] = {
 
 KeccakFTrailWithGivenParityIterator::KeccakFTrailWithGivenParityIterator(const KeccakFPropagation& aDCorLC,
         const vector<RowValue>& aParity, bool aOrbitals)
-    : TrailIterator(aDCorLC), laneSize(DCorLC.laneSize), C(aParity), initialized(false), orbitals(aOrbitals)
+    : TrailIterator(aDCorLC), laneSize(DCorLC.laneSize), orbitals(aOrbitals), C(aParity), initialized(false)
 {
     DCorLC.directThetaEffectFromParities(C, D);
     S3_yMin.assign(5*laneSize, 0);
@@ -171,7 +171,7 @@ KeccakFTrailWithGivenParityIterator::KeccakFTrailWithGivenParityIterator(const K
     S2_height = 0;
     S3_height = 0;
 }
-   
+
 void KeccakFTrailWithGivenParityIterator::initialize()
 {
     index = 0;

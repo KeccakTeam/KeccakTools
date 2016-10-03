@@ -68,11 +68,13 @@ void KeccakFPropagation::directRhoPiAfterTheta(BitPosition& point) const
 }
 
 KeccakFPropagation::KeccakFPropagation(const KeccakFDCLC& aParent, KeccakFPropagation::DCorLC aDCorLC)
-    : name((aDCorLC == DC) ? "DC" : "LC"), parent(aParent), laneSize(parent.getWidth()/25),
+    : directRowOutputListPerInput((aDCorLC == DC) ? aParent.diffChi : aParent.corrInvChi),
+        reverseRowOutputListPerInput((aDCorLC == DC) ? aParent.diffInvChi : aParent.corrChi),
+        parent(aParent),
+        laneSize(parent.getWidth()/25),
+        name((aDCorLC == DC) ? "DC" : "LC"),
         lambdaMode((aDCorLC == DC) ? KeccakFDCLC::Straight : KeccakFDCLC::Transpose),
-        reverseLambdaMode((aDCorLC == DC) ? KeccakFDCLC::Inverse : KeccakFDCLC::Dual),
-        directRowOutputListPerInput((aDCorLC == DC) ? aParent.diffChi : aParent.corrInvChi),
-        reverseRowOutputListPerInput((aDCorLC == DC) ? aParent.diffInvChi : aParent.corrChi)
+        reverseLambdaMode((aDCorLC == DC) ? KeccakFDCLC::Inverse : KeccakFDCLC::Dual)
 {
     initializeAffine();
     initializeWeight();
@@ -117,20 +119,20 @@ void KeccakFPropagation::initializeAffine()
     else {
         for(RowValue row=0; row<(1<<nrRowsAndColumns); row++) {
             AffineSpaceOfRows a;
-            RowValue offs = 0;  
+            RowValue offs = 0;
             if (row == ((1<<nrRowsAndColumns)-1)) {
                 for(unsigned int i=0; i<nrRowsAndColumns-1; i++)
                     a.addGenerator(translateRowSafely(0x5, i));
-                offs = 1;    
+                offs = 1;
             }
             else if (row != 0){
-                RowValue t = row;  
+                RowValue t = row;
                 int strt = 0;
                 while ( (t&0x1) != 0){
                       strt++ ;
                       t = translateRowSafely(row,-strt);
                 }
-                int i=0;      
+                int i=0;
                 while (i<nrRowsAndColumns){
                       if ( (t&0x3) == 0x0 ){
                         t = translateRowSafely(t,-1);
@@ -521,7 +523,7 @@ UINT64 KeccakFPropagation::displayTrailsAndCheck(const string& fileNameIn, ostre
             if (countPerLength[i] > 0)
                 fout << dec << countPerLength[i] << " trails of length " << dec << i << " read and checked." << endl;
         fout << "Minimum weight: " << dec << minWeight << endl;
-        for(unsigned int i=minWeight; i<countPerWeight.size(); i++) 
+        for(unsigned int i=minWeight; i<countPerWeight.size(); i++)
             if (countPerWeight[i] > 0) {
                 fout.width(8); fout.fill(' ');
                 fout << dec << countPerWeight[i] << " trails of weight ";
@@ -563,7 +565,7 @@ void KeccakFPropagation::initializeChiCompatibilityTable()
     chiCompatibilityTable.assign(32*32, false);
     for(RowValue a=0; a<32; a++) for(RowValue b=0; b<32; b++) {
         const vector<RowValue>& values = directRowOutputListPerInput[a].values;
-        chiCompatibilityTable[a+32*b] = 
+        chiCompatibilityTable[a+32*b] =
             find(values.begin(), values.end(), b) != values.end();
     }
 }
@@ -597,24 +599,24 @@ string KeccakFPropagation::buildFileName(const string& prefix, const string& suf
 unsigned int KeccakFPropagation::getLowerBoundOnWeightGivenHammingWeight(unsigned int hammingWeight) const
 {
     if (getPropagationType() == KeccakFPropagation::DC)
-        return hammingWeight - (hammingWeight/nrRowsAndColumns) 
+        return hammingWeight - (hammingWeight/nrRowsAndColumns)
             + ((hammingWeight%nrRowsAndColumns==1)?1:0)
             + ((hammingWeight%nrRowsAndColumns==2)?1:0);
     else
-        return hammingWeight - (hammingWeight/nrRowsAndColumns) 
+        return hammingWeight - (hammingWeight/nrRowsAndColumns)
             + ((hammingWeight%nrRowsAndColumns==1)?1:0);
 }
 
 unsigned int KeccakFPropagation::getLowerBoundOnWeightGivenHammingWeightAndNrActiveRows(unsigned int hammingWeight, unsigned int nrActiveRows) const
 {
     if (getPropagationType() == KeccakFPropagation::DC) {
-        if (nrActiveRows >= hammingWeight) 
+        if (nrActiveRows >= hammingWeight)
             return 2*nrActiveRows;
         else if (5*nrActiveRows > hammingWeight) {
             unsigned int doubleWeight = 3*nrActiveRows + hammingWeight;
             return (doubleWeight+1)/2;
         }
-        else 
+        else
             return getLowerBoundOnWeightGivenHammingWeight(hammingWeight);
     }
     else {
@@ -670,17 +672,17 @@ SliceValue KeccakFPropagation::getMinimumInKernelSliceAfterChi(const SliceValue&
 {
    const RowValue minRowInKernelDC[32] = {0x00,0x01,0x02,0x02, 0x04,0x04,0x04,0x04, 0x08,0x01,0x08,0x00, 0x08,0x00,0x08,0x00,
                                           0x10,0x01,0x02,0x02, 0x10,0x00,0x00,0x00, 0x10,0x01,0x00,0x00, 0x10,0x00,0x00,0x00};
-//  minRowInKernel[0x01] = 0x01; minRowInKernel[0x02] = 0x02; minRowInKernel[0x04] = 0x04; minRowInKernel[0x08] = 0x08; minRowInKernel[0x10] = 0x10; 
-//  minRowInKernel[0x03] = 0x02; minRowInKernel[0x06] = 0x04; minRowInKernel[0x0C] = 0x08; minRowInKernel[0x18] = 0x10; minRowInKernel[0x11] = 0x01; 
-//  minRowInKernel[0x05] = 0x04; minRowInKernel[0x0A] = 0x08; minRowInKernel[0x14] = 0x10; minRowInKernel[0x09] = 0x01; minRowInKernel[0x12] = 0x02; 
-//  minRowInKernel[0x07] = 0x04; minRowInKernel[0x0E] = 0x08; minRowInKernel[0x1C] = 0x10; minRowInKernel[0x19] = 0x01; minRowInKernel[0x13] = 0x02; 
+//  minRowInKernel[0x01] = 0x01; minRowInKernel[0x02] = 0x02; minRowInKernel[0x04] = 0x04; minRowInKernel[0x08] = 0x08; minRowInKernel[0x10] = 0x10;
+//  minRowInKernel[0x03] = 0x02; minRowInKernel[0x06] = 0x04; minRowInKernel[0x0C] = 0x08; minRowInKernel[0x18] = 0x10; minRowInKernel[0x11] = 0x01;
+//  minRowInKernel[0x05] = 0x04; minRowInKernel[0x0A] = 0x08; minRowInKernel[0x14] = 0x10; minRowInKernel[0x09] = 0x01; minRowInKernel[0x12] = 0x02;
+//  minRowInKernel[0x07] = 0x04; minRowInKernel[0x0E] = 0x08; minRowInKernel[0x1C] = 0x10; minRowInKernel[0x19] = 0x01; minRowInKernel[0x13] = 0x02;
 // all others are zero
    const RowValue minRowInKernelLC[32] = {0x00,0x01,0x02,0x01, 0x04,0x01,0x02,0x01, 0x08,0x08,0x02,0x00, 0x04,0x00,0x02,0x00,
                                           0x10,0x10,0x10,0x10, 0x04,0x00,0x00,0x00, 0x08,0x08,0x00,0x00, 0x04,0x00,0x00,0x00};
-//  minRowInKernel[0x01] = 0x01; minRowInKernel[0x02] = 0x02; minRowInKernel[0x04] = 0x04; minRowInKernel[0x08] = 0x08; minRowInKernel[0x10] = 0x10; 
-//  minRowInKernel[0x03] = 0x01; minRowInKernel[0x06] = 0x02; minRowInKernel[0x0C] = 0x04; minRowInKernel[0x18] = 0x08; minRowInKernel[0x11] = 0x10; 
-//  minRowInKernel[0x05] = 0x01; minRowInKernel[0x0A] = 0x02; minRowInKernel[0x14] = 0x04; minRowInKernel[0x09] = 0x08; minRowInKernel[0x12] = 0x10; 
-//  minRowInKernel[0x07] = 0x01; minRowInKernel[0x0E] = 0x02; minRowInKernel[0x1C] = 0x04; minRowInKernel[0x19] = 0x08; minRowInKernel[0x13] = 0x10; 
+//  minRowInKernel[0x01] = 0x01; minRowInKernel[0x02] = 0x02; minRowInKernel[0x04] = 0x04; minRowInKernel[0x08] = 0x08; minRowInKernel[0x10] = 0x10;
+//  minRowInKernel[0x03] = 0x01; minRowInKernel[0x06] = 0x02; minRowInKernel[0x0C] = 0x04; minRowInKernel[0x18] = 0x08; minRowInKernel[0x11] = 0x10;
+//  minRowInKernel[0x05] = 0x01; minRowInKernel[0x0A] = 0x02; minRowInKernel[0x14] = 0x04; minRowInKernel[0x09] = 0x08; minRowInKernel[0x12] = 0x10;
+//  minRowInKernel[0x07] = 0x01; minRowInKernel[0x0E] = 0x02; minRowInKernel[0x1C] = 0x04; minRowInKernel[0x19] = 0x08; minRowInKernel[0x13] = 0x10;
 // all others are zero
 
    SliceValue sliceAfterChi = 0;
@@ -705,7 +707,7 @@ SliceValue KeccakFPropagation::getMinimumInKernelSliceBeforeChi(const SliceValue
 {
    const RowValue minRowInKernel[32] = {0x00,0x01,0x02,0x00, 0x04,0x00,0x00,0x00, 0x08,0x00,0x00,0x00, 0x00,0x00,0x00,0x00,
                                         0x10,0x00,0x00,0x00, 0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00};
-//  minRowInKernel[0x01] = 0x01; minRowInKernel[0x02] = 0x02; minRowInKernel[0x04] = 0x04; minRowInKernel[0x08] = 0x08; minRowInKernel[0x10] = 0x10; 
+//  minRowInKernel[0x01] = 0x01; minRowInKernel[0x02] = 0x02; minRowInKernel[0x04] = 0x04; minRowInKernel[0x08] = 0x08; minRowInKernel[0x10] = 0x10;
 // all others are zero
 
    SliceValue sliceBeforeChi = 0;
@@ -814,7 +816,7 @@ void ReverseStateIterator::initialize(const vector<SliceValue>& stateAfterChi, c
     }
     currentWeight = minWeight;
     end = isEmpty();
-}    
+}
 
 bool ReverseStateIterator::isEnd() const
 {

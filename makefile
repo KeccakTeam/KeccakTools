@@ -78,7 +78,7 @@ $(BINDIR):
 
 OBJECTS = $(addprefix $(BINDIR)/, $(notdir $(patsubst %.cpp,%.o,$(SOURCES))))
 
-CFLAGS = -O3 -g0
+CFLAGS = -O3 -g0 -Wreorder
 
 VPATH = Sources
 

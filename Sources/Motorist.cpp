@@ -196,9 +196,14 @@ ostream& operator<<(ostream& a, const Engine& engine)
 }
 
 Motorist::Motorist(const Permutation *f, unsigned int aPi, unsigned int aW, unsigned int ac, unsigned int atau):
-    Pi(aPi), W(aW), c(ac),
+    Pi(aPi),
     Pistons(aPi, Piston(f, aW/8*((f->getWidth() - max(ac, (unsigned int)32))/aW), aW/8*((f->getWidth() - 32)/aW))),
-    engine(Pistons), cprime(aW*((ac + aW - 1)/aW)), tau(atau), phase(ready)
+    engine(Pistons),
+    W(aW),
+    c(ac),
+    cprime(aW*((ac + aW - 1)/aW)),
+    tau(atau),
+    phase(ready)
 {
 }
 
