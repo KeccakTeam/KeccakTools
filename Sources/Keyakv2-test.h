@@ -17,5 +17,6 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #define _KEYAKV2TEST_H_
 
 int testAllKeyakv2Instances();
+int testAllKeyakv2InstancesOneBlockSUV();
 
 #endif

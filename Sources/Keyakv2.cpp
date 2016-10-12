@@ -17,8 +17,13 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 UINT8 enc8(unsigned int x);
 
-Keyak::Keyak(unsigned int b, unsigned int nr, unsigned int aPi, unsigned int ac, unsigned int atau)
-    : f(b, nr), W(max((int)b/25, 8)), Pi(aPi), c(ac), tau(atau), motorist(&f, Pi, W, c, tau)
+Keyak::Keyak(unsigned int b, unsigned int nr, unsigned int Pi, unsigned int c, unsigned int tau)
+    : f(b, nr), W(max((int)b/25, 8)), Pi(Pi), c(c), tau(tau), motorist(&f, Pi, W, c, tau)
+{
+}
+
+Keyak::Keyak(const Keyak& keyak)
+    : f(keyak.f), W(keyak.W), Pi(keyak.Pi), c(keyak.c), tau(keyak.tau), motorist(&f, Pi, W, c, tau)
 {
 }
 
@@ -52,3 +57,14 @@ ostream& operator<<(ostream& a, const Keyak& keyak)
         << ", c=" << keyak.c
         << ", \317\204=" << keyak.tau << "]";
 }
+
+unsigned int Keyak::getWidth() const
+{
+    return f.getWidth();
+}
+
+unsigned int Keyak::getPi() const
+{
+    return Pi;
+}
+

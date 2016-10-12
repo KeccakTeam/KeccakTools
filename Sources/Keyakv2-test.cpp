@@ -98,9 +98,12 @@ void testKeyakWrapUnwrap(Keyak& global, Keyak& wrap, Keyak& unwrap, ofstream& fo
     assert(plaintext.str() == plaintextPrime.str(), "The plaintexts do not match.");
 }
 
-int testKeyak(ofstream& fout, unsigned int b, unsigned int nr, unsigned int Pi, unsigned int c, unsigned int tau, const string& expectedGlobalTag)
+int testKeyak(ofstream& fout, Keyak keyak, bool oneBlockSUV, const string& expectedGlobalTag)
 {
-    Keyak global(b, nr, Pi, c, tau);
+    unsigned int b=keyak.getWidth();
+    unsigned int Pi=keyak.getPi();
+
+    Keyak global(keyak);
     cout << global << endl;
     {
         stringstream dummy;
@@ -110,14 +113,15 @@ int testKeyak(ofstream& fout, unsigned int b, unsigned int nr, unsigned int Pi, 
     unsigned int Rs = (b == 1600) ? 168 : 68;
     unsigned int Ra = (b == 1600) ? 192 : 96;
     unsigned int W = (b == 1600) ? 8 : 4;
+    unsigned int NlenMax = oneBlockSUV ? ((b == 1600) ? 150 : 58) : 200;
 
     for(unsigned int Klen=16; Klen<=32; Klen++)
-    for(unsigned int Nlen=0; Nlen<=200; Nlen += (Klen == 16) ? 1 : 200)
+    for(unsigned int Nlen=0; Nlen<=NlenMax; Nlen += (Klen == 16) ? 1 : NlenMax)
     for(unsigned int forgetFlag = 0; forgetFlag < 2; ++forgetFlag)
     for(unsigned int tagFlag = 0; tagFlag < 2; ++tagFlag)
     {
-        Keyak wrap(b, nr, Pi, c, tau);
-        Keyak unwrap(b, nr, Pi, c, tau);
+        Keyak wrap(keyak);
+        Keyak unwrap(keyak);
 
         testKeyakStartEngine(global, wrap, unwrap, fout,
             generateSimpleRawMaterial(Klen, Klen+Nlen+0x12, 3),
@@ -141,8 +145,8 @@ int testKeyak(ofstream& fout, unsigned int b, unsigned int nr, unsigned int Pi, 
             unsigned int Klen = 16;
             unsigned int Nlen = (b == 1600) ? 150 : 58;
             unsigned int Alen = Alengths[Aleni];
-            Keyak wrap(b, nr, Pi, c, tau);
-            Keyak unwrap(b, nr, Pi, c, tau);
+            Keyak wrap(keyak);
+            Keyak unwrap(keyak);
 
             testKeyakStartEngine(global, wrap, unwrap, fout,
                 generateSimpleRawMaterial(Klen, 0x23+Mlen+Alen, 4),
@@ -174,8 +178,8 @@ int testKeyak(ofstream& fout, unsigned int b, unsigned int nr, unsigned int Pi, 
             unsigned int Klen = 16;
             unsigned int Nlen = (b == 1600) ? 150 : 58;
             unsigned int Mlen = Mlengths[Mleni];
-            Keyak wrap(b, nr, Pi, c, tau);
-            Keyak unwrap(b, nr, Pi, c, tau);
+            Keyak wrap(keyak);
+            Keyak unwrap(keyak);
 
             testKeyakStartEngine(global, wrap, unwrap, fout,
                 generateSimpleRawMaterial(Klen, 0x34+Mlen+Alen, 5),
@@ -201,8 +205,8 @@ int testKeyak(ofstream& fout, unsigned int b, unsigned int nr, unsigned int Pi, 
             unsigned int Nlen = (b == 1600) ? 150 : 58;
             unsigned int Alen;
             unsigned int Mlen;
-            Keyak wrap(b, nr, Pi, c, tau);
-            Keyak unwrap(b, nr, Pi, c, tau);
+            Keyak wrap(keyak);
+            Keyak unwrap(keyak);
 
             testKeyakStartEngine(global, wrap, unwrap, fout,
                 generateSimpleRawMaterial(Klen, forgetFlag*2+tagFlag, 1),
@@ -241,23 +245,55 @@ int testAllKeyakv2Instances()
     try {
         { // River Keyak
             ofstream fout("RiverKeyak.txt");
-            errors += testKeyak(fout, 800, 12, 1, 256, 128, string("\x6e\xba\x81\x33\x0b\xb8\x5a\x4d\x8d\xb3\x7f\xde\x4d\x67\xcd\x0e", 16));;
+            errors += testKeyak(fout, RiverKeyak(), false, string("\x6e\xba\x81\x33\x0b\xb8\x5a\x4d\x8d\xb3\x7f\xde\x4d\x67\xcd\x0e", 16));;
         }
         { // Lake Keyak
             ofstream fout("LakeKeyak.txt");
-            errors += testKeyak(fout, 1600, 12, 1, 256, 128, string("\x83\x95\xc6\x41\x22\xbb\x43\x04\x32\xd8\xb0\x29\x82\x09\xb7\x36", 16));
+            errors += testKeyak(fout, LakeKeyak(), false, string("\x83\x95\xc6\x41\x22\xbb\x43\x04\x32\xd8\xb0\x29\x82\x09\xb7\x36", 16));
         }
         { // Sea Keyak
             ofstream fout("SeaKeyak.txt");
-            errors += testKeyak(fout, 1600, 12, 2, 256, 128, string("\xb8\xc0\xe2\x35\x22\xcc\x1d\xe1\x4c\x22\xd0\xb8\xaf\x73\x8e\x33", 16));
+            errors += testKeyak(fout, SeaKeyak(), false, string("\xb8\xc0\xe2\x35\x22\xcc\x1d\xe1\x4c\x22\xd0\xb8\xaf\x73\x8e\x33", 16));
         }
         { // Ocean Keyak
             ofstream fout("OceanKeyak.txt");
-            errors += testKeyak(fout, 1600, 12, 4, 256, 128, string("\x70\x7c\x06\x47\xf9\xe8\x52\xb6\x00\xee\xd0\xf1\x1c\x66\xe1\x1d", 16));
+            errors += testKeyak(fout, OceanKeyak(), false, string("\x70\x7c\x06\x47\xf9\xe8\x52\xb6\x00\xee\xd0\xf1\x1c\x66\xe1\x1d", 16));
         }
         { // Lunar Keyak
             ofstream fout("LunarKeyak.txt");
-            errors += testKeyak(fout, 1600, 12, 8, 256, 128, string("\xb7\xec\x21\x1d\xc0\x30\xd2\x4d\x66\x70\x44\xc2\xed\x34\x52\x11", 16));
+            errors += testKeyak(fout, LunarKeyak(), false, string("\xb7\xec\x21\x1d\xc0\x30\xd2\x4d\x66\x70\x44\xc2\xed\x34\x52\x11", 16));
+        }
+    }
+    catch(Exception e) {
+        cout << e.reason << endl;
+        errors++;
+    }
+    return errors;
+}
+
+int testAllKeyakv2InstancesOneBlockSUV()
+{
+    int errors = 0;
+    try {
+        { // River Keyak
+            ofstream fout("RiverKeyak.txt");
+            errors += testKeyak(fout, RiverKeyak(), true, string("\xa7\xce\x27\x81\x19\x38\x13\x11\xa1\x1f\x8f\xac\x84\xcb\x6b\x24", 16));;
+        }
+        { // Lake Keyak
+            ofstream fout("LakeKeyak.txt");
+            errors += testKeyak(fout, LakeKeyak(), true, string("\x73\x03\xc4\xba\x1e\xff\xc3\x9d\x48\x80\x65\xc2\xfd\x05\xf7\x52", 16));
+        }
+        { // Sea Keyak
+            ofstream fout("SeaKeyak.txt");
+            errors += testKeyak(fout, SeaKeyak(), true, string("\xc4\xaa\x23\x13\x54\x88\x8d\xb6\xdc\x5c\xc3\xc8\xe9\xba\x86\x76", 16));
+        }
+        { // Ocean Keyak
+            ofstream fout("OceanKeyak.txt");
+            errors += testKeyak(fout, OceanKeyak(), true, string("\xd2\xff\x93\x7a\xf6\x17\x48\xe9\xfb\x90\xee\x46\x37\x9c\x5b\x02", 16));
+        }
+        { // Lunar Keyak
+            ofstream fout("LunarKeyak.txt");
+            errors += testKeyak(fout, LunarKeyak(), true, string("\xed\xa4\x43\xe6\xe2\xf8\x36\xb4\x58\xce\xe2\x93\xdf\xb6\xc6\x60", 16));
         }
     }
     catch(Exception e) {

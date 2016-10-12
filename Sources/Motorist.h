@@ -31,29 +31,24 @@ protected:
     auto_ptr<UINT8> state;
     unsigned int Rs, Ra;
     unsigned int EOM, CryptEnd, InjectStart, InjectEnd;
+	unsigned int OmegaC, OmegaI;
 public:
-    Piston(const Permutation *aF, unsigned int aRs, unsigned int aRa);
+    Piston(const Permutation *f, unsigned int Rs, unsigned int Ra);
     Piston(const Piston& other);
-    void Crypt(istream& I, ostream& O, unsigned int omega, bool unwrapFlag);
-    void Inject(istream& X, bool cryptingFlag);
-    void Spark(bool eomFlag, unsigned int l);
-    void GetTag(ostream& T, unsigned int l) const;
+    void Crypt(istream& I, ostream& O, bool decryptFlag);
+    void Inject(istream& X);
+    void Spark(void);
+    void GetTag(ostream& T, unsigned int l);
     friend ostream& operator<<(ostream& a, const Piston& piston);
 };
 
 class Engine {
 protected:
-    unsigned int Pi;
     vector<Piston>& Pistons;
-    enum { fresh, crypted, endOfCrypt, endOfMessage } phase;
-    vector<unsigned int> Et;
 public:
-    Engine(vector<Piston>& aPistons);
-protected:
-    void Spark(bool eomFlag, const vector<unsigned int>& l);
+    Engine(vector<Piston>& Pistons);
 public:
-    void Crypt(istream& I, ostream& O, bool unwrapFlag);
-    void Inject(istream& A);
+    void Wrap(istream& I, ostream& O, istream& A, bool decryptFlag);
     void GetTags(ostream& T, const vector<unsigned int>& l);
     void InjectCollective(istream& X, bool diversifyFlag);
     friend ostream& operator<<(ostream& a, const Engine& engine);
@@ -62,20 +57,20 @@ public:
 class Motorist {
 protected:
     unsigned int Pi;
-    vector<Piston> Pistons;
-    Engine engine;
     unsigned int W;
     unsigned int c;
     unsigned int cprime;
     unsigned int tau;
+    vector<Piston> Pistons;
+    Engine engine;
     enum { ready, riding, failed } phase;
 public:
-    Motorist(const Permutation *aF, unsigned int aPi, unsigned int aW, unsigned int ac, unsigned int atau);
-    bool StartEngine(istream& SUV, bool tagFlag, stringstream& T, bool unwrapFlag, bool forgetFlag);
-    bool Wrap(istream& I, stringstream& O, istream& A, stringstream& T, bool unwrapFlag, bool forgetFlag);
+    Motorist(const Permutation *f, unsigned int Pi, unsigned int W, unsigned int c, unsigned int tau);
+    bool StartEngine(istream& SUV, bool tagFlag, stringstream& T, bool decryptFlag, bool forgetFlag);
+    bool Wrap(istream& I, stringstream& O, istream& A, stringstream& T, bool decryptFlag, bool forgetFlag);
 protected:
-    void MakeKnot();
-    bool HandleTag(bool tagFlag, stringstream& T, bool unwrapFlag);
+    void MakeKnot(void);
+    bool HandleTag(bool tagFlag, stringstream& T, bool decryptFlag);
 public:
     friend ostream& operator<<(ostream& a, const Motorist& motorist);
 };

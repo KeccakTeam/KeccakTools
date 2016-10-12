@@ -32,10 +32,13 @@ protected:
     unsigned int tau;
     Motorist motorist;
 public:
-    Keyak(unsigned int b, unsigned int nr, unsigned int aPi, unsigned int ac, unsigned int atau);
+    Keyak(unsigned int b, unsigned int nr, unsigned int Pi, unsigned int c, unsigned int tau);
+    Keyak(const Keyak& keyak);
     bool StartEngine(const string& K, const string& N, bool tagFlag, stringstream& T, bool unwrapFlag, bool forgetFlag);
     bool Wrap(istream& I, stringstream& O, istream& A, stringstream& T, bool unwrapFlag, bool forgetFlag);
     friend ostream& operator<<(ostream& a, const Keyak& piston);
+    unsigned int getWidth() const;
+    unsigned int getPi() const;
 };
 
 class RiverKeyak : public Keyak {
