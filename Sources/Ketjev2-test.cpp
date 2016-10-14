@@ -23,7 +23,7 @@ static string generateSimpleRawMaterial(unsigned int length, UINT8 seed1, unsign
 
     for ( unsigned int i = 0; i < length; i++ ) {
         UINT8  iRolled = ((UINT8)i << seed2) | ((UINT8)i >> (8 - seed2));
-        UINT8  byte    = seed1 + 161 * length - iRolled + i;
+        UINT8  byte    = seed1 + 161 * (length - iRolled + i);
         s += char(byte);
     }
     return s;
@@ -56,8 +56,8 @@ void testKetje(ostream &fout, Ketje ketje, const string &Texpected)
     for ( int Klen = (width - 18) / 8; Klen >= 12; Klen -= (Klen > 47) ? 25 : ((Klen > 22) ? 5 : ((Klen > 14) ? 2 : 1))) {
         int  NlenMax = (width - 18) / 8 - Klen;
         for ( int Nlen = ((Klen == 16) ? 0 : NlenMax); Nlen <= NlenMax; Nlen += width <= 400 ? 1 : (width / 200)) {
-            string  K = generateSimpleRawMaterial(Klen, 0x12 + Nlen * 8, width);
-            string  N = generateSimpleRawMaterial(Nlen, 0x23 + Klen * 8, width);
+            string  K = generateSimpleRawMaterial(Klen, 0x12 + Nlen + Klen, 3);
+            string  N = generateSimpleRawMaterial(Nlen, 0x23 + Nlen + Klen, 6);
 
             cout << "Ketje(" << dec << width << "), key length is " << dec << (Klen * 8) << " bits, nonce length is " << dec <<
             (Nlen * 8) << " bits" << endl;
@@ -78,8 +78,8 @@ void testKetje(ostream &fout, Ketje ketje, const string &Texpected)
                       Blen <= 50;
                       Blen += Blen / 2 + 1 + Alen + ((Alen == 0) ? (Klen - 12) : (Nlen / 32 + Klen / 2))) {
                     for ( unsigned int ell = ((Klen == 16) ? 0 : 128); ell <= ((Klen == 16) ? 256 : 128); ell += 64 ) {
-                        string  A = generateSimpleRawMaterial(Alen, 0x34 + Blen, 3);
-                        string  B = generateSimpleRawMaterial(Blen, 0x45 + Alen, 4);
+                        string  A = generateSimpleRawMaterial(Alen, 0x34 + Alen + Blen + (ell / 8), 4);
+                        string  B = generateSimpleRawMaterial(Blen, 0x45 + Alen + Blen + (ell / 8), 7);
                         string  Bprime;
                         string  C;
                         string  T;
@@ -144,19 +144,19 @@ int testAllKetjev2Instances(void)
     int  errors = 0;
     {
         ofstream  fout("KetjeJr.txt");
-        errors += tryTestKetje(fout, KetjeJr(), string("\xde\xd0\xa0\x53\xa5\x5c\xbb\x73\xba\x2b\x3a\xb9\x16\x76\x62\xc7"));
+        errors += tryTestKetje(fout, KetjeJr(), string("\x6b\x2d\xb5\xc5\x76\x51\x36\x6c\xf8\x3e\x42\xdc\xb3\x69\x0e\x51"));
     }
     {
         ofstream  fout("KetjeSr.txt");
-        errors += tryTestKetje(fout, KetjeSr(), string("\x32\x58\xf4\x15\x47\x45\x84\x64\x3b\x52\x43\x50\x3b\x1a\x25\x41"));
+        errors += tryTestKetje(fout, KetjeSr(), string("\x92\xaf\x55\x88\x48\xdf\x0a\x4e\x9b\x94\xf6\x33\xee\x2f\xe9\x71"));
     }
     {
         ofstream  fout("KetjeMn.txt");
-        errors += tryTestKetje(fout, KetjeMinor(), string("\x2d\xd3\x9e\xb2\xa3\xfd\x61\xf9\x54\x0c\xf5\x5d\xc8\x37\xb2\x14"));
+        errors += tryTestKetje(fout, KetjeMinor(), string("\xae\x36\xc9\xe0\xea\xbc\x11\x92\xf6\x7a\x9f\xb6\x93\x8a\xe3\x58"));
     }
     {
         ofstream  fout("KetjeMj.txt");
-        errors += tryTestKetje(fout, KetjeMajor(), string("\x17\x66\xc5\x9c\xa6\x0e\x3d\x28\xc6\xa8\x87\x72\xe1\x9d\xf4\x95"));
+        errors += tryTestKetje(fout, KetjeMajor(), string("\x1e\x7c\x6c\x56\x42\x4f\x8c\x1f\xe0\xbd\x04\x2d\x03\xda\x3a\x1e"));
     }
 
     cout << __FUNCTION__ << ": " << errors << " error(s)." << endl;
