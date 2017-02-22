@@ -24,24 +24,24 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include <set>
 
 
-/** Struct that groups information about knots, useful in generating light 3-round trails. 
+/** Struct that groups information about knots, useful in generating light 3-round trails.
   */
 struct KnotInformation {
-   /** Whether the knot is an orbital. 
+   /** Whether the knot is an orbital.
      */
-    bool isOrbital;                      
-   /** Number of active rows in the knot. 
+    bool isOrbital;
+   /** Number of active rows in the knot.
      */
-    unsigned int nrActiveRows;           
-   /** Mininum number of knot points to add to make this a tame knot. 
+    unsigned int nrActiveRows;
+   /** Mininum number of knot points to add to make this a tame knot.
      */
-    unsigned int knotPointDeficit;       
+    unsigned int knotPointDeficit;
    /** Minimum increase in weight due to the knot points that must be added before this knot is tame.
      */
-    unsigned int knotWeightAtBDeficit; 
+    unsigned int knotWeightAtBDeficit;
 };
 
-/** Class that implements an iterator over trail seeds for light 3-round trails, given a background. 
+/** Class that implements an iterator over trail seeds for light 3-round trails, given a background.
   */
 class TrailCore3Rounds  : public KeccakFPropagation
 {
@@ -59,24 +59,24 @@ protected:
       */
     map<unsigned int,KnotInformation> knots;
 
-    /** Contains the z coordinates of the knots that are there due to the background. 
+    /** Contains the z coordinates of the knots that are there due to the background.
       * They qualify as tame knots if they contain an orbital while knots without background don't.
       */
     set<unsigned int> knotsWithBackground;
-    
+
     /** Vector of chains, where each chain is actually a vector of bit positions at B.
       * All chains are between knots, except the last chain that may be incomplete.
       * If the last chain is incomplete, it is called the working chain.
-      * The chains respect an order: 
+      * The chains respect an order:
       * - later chains are never shorter than earlier chains, with the exception of the working chain
       * - when chains have the same length, the starting bit position of the earlier chain is smaller than that of the later.
       */
     vector<vector<BitPosition> > chains;
 
     /** y-offset accompanying the chains, required in the iteration process.
-      * yOffset[i][j] gives information on how to compute chains[i][j+1] from chains[i][j]. 
+      * yOffset[i][j] gives information on how to compute chains[i][j+1] from chains[i][j].
       * If j is even, this is the y offset at A, otherwise it is the y offset at B.
-      * For the last point of working chain, yOffset[i].back() can be used as the current index when extending it. 
+      * For the last point of working chain, yOffset[i].back() can be used as the current index when extending it.
       */
     vector<vector<unsigned int> > yOffsets;
 
@@ -108,7 +108,7 @@ protected:
       * It is redundant and there for optimization.
       */
     unsigned int minimumWorkingChainLength;
-    
+
     /** This attribute keeps track of whether the start point of the working chain is free.
       * It is redundant and there for optimization.
       */
@@ -117,20 +117,20 @@ protected:
     /** This attribute keeps track of the number of active rows in stateAtA.
       * It is redundant and there for optimization.
       */
-    unsigned int nrActiveRowsAtA; 
+    unsigned int nrActiveRowsAtA;
 
     /** This attribute keeps track of the Hamming weight of stateAtA.
       * It is redundant and there for optimization.
       */
     unsigned int hammingWeightAtA;
 
-    /** Struct that groups information about a vortex, useful when adding vortices to tame tame states. 
+    /** Struct that groups information about a vortex, useful when adding vortices to tame tame states.
       */
     struct VortexInfo {
-        /** State at B. 
+        /** State at B.
           */
         SparseStateAsSlices stateAtB;
-        /** Number of active rows at A. 
+        /** Number of active rows at A.
           */
         unsigned int nrActiveRowsAtA;
         /** Number of active rows at D, assuming C is in the kernel.
@@ -144,7 +144,7 @@ protected:
     vector<vector<VortexInfo> > vortexBase;
 
 protected:
-    /** This method builds the table knotInfoLUT 
+    /** This method builds the table knotInfoLUT
       */
     void initializeKnotInfoLUT();
 
@@ -153,13 +153,13 @@ protected:
       */
     UINT8 packKnotInfo(unsigned int knotPointDeficit, unsigned int knotWeightAtBDeficit, unsigned int nrActiveRows, bool isOrbital) const;
 
-    /** This method returns a Boolean indicating whether the current weight allows adding a point 
+    /** This method returns a Boolean indicating whether the current weight allows adding a point
       * to the working chain.
       * @return        Whether a point may be added to the working chain.
       */
     bool canAffordExtendingChain() const;
 
-    /** This method returns a Boolean indicating whether the current weight allows adding a chain (true) or not (false). 
+    /** This method returns a Boolean indicating whether the current weight allows adding a chain (true) or not (false).
       * @return        Whether a chain may be added.
       */
     bool canAffordAddingChain() const;
@@ -211,10 +211,10 @@ protected:
 
     /** This virtual method returns whether the state is well formed corresponding to the subclass.
       * @return        Whether the state is well formed.
-      */ 
+      */
     virtual bool isStateAtBWellFormed() const = 0;
 
-    /** This virtual method indicates whether iteration can be continued given some assumptions that are specified 
+    /** This virtual method indicates whether iteration can be continued given some assumptions that are specified
       * in the parameters.
       * @param   deltaNrKnotPointsWorkingChain      Number of knot points that will be added by the working chain.
       * @param   minDeltaNrKnotsOrRuns              Minimum number of knots (in kernel at C) or runs (out kernel at C) that will be added.
@@ -228,7 +228,7 @@ protected:
                                     unsigned int deltaNrOrbitalPointsWorkingChain) const = 0;
 
     /** This virtual method adds the point with bit position at B given in parameter.
-      * It also adapts all the weight stacks. 
+      * It also adapts all the weight stacks.
       * As the processing is different between knot points and orbital points, this is indicated in parameter.
       * @param   pB             Bit position at B of the point to be added.
       * @param   toKnotSlice    Whether it is a knot point (true) or an orbital point (false).
@@ -248,21 +248,21 @@ protected:
       */
     virtual void convertKnotPointToOrbitalPoint() = 0;
 
-    /** This virtual method indicates whether the bit position in parameter may be 
+    /** This virtual method indicates whether the bit position in parameter may be
       * an end point given the current weights and maxWeight.
       * @return       Whether the point in parameter may be an endpoint
       */
     virtual bool mayBeEndPoint(const BitPosition& pB) = 0;
 
-    /** This virtual method attempts to find the z coordinate larger than that of in parameter (or the first one) 
+    /** This virtual method attempts to find the z coordinate larger than that of in parameter (or the first one)
       * from which the working chain may start.
       * If successful, the z coordinate in parameter will have the correct z value and the method returns true.
       * If unsuccessful, it returns false.
       * @param   z      The z coordinate where the working chain may start.
-      *                             If @a zIsInitialized is true, this parameter contains 
-      *                             the current bit position from where the search 
+      *                             If @a zIsInitialized is true, this parameter contains
+      *                             the current bit position from where the search
       *                             for a new start slice starts.
-      * @param  zIsInitialized  Whether z is already initialized. 
+      * @param  zIsInitialized  Whether z is already initialized.
       *                         If set to false, it looks for the first z coordinate.
       * @return        Whether a next chain may start.
       */
@@ -275,7 +275,7 @@ protected:
     bool completeChain();
 
     /** This method iterates the working chain to the next one compatible with maxWeight.
-      * It successful, it returns true. 
+      * It successful, it returns true.
       * if unsuccessful, it returns false and the working chain is removed.
       * @return        Whether finding a next chain was successful.
       */
@@ -288,7 +288,7 @@ protected:
     /** This method attempts to find the next 3-round trail core state with at least one knot, respecting the maximum weight.
       * if unsuccessful, the number of chains is zero.
       * @return        Whether finding a next 3-round trail core state was successful.
-      */ 
+      */
     bool nextWithKnots();
 
     /** This method populates the knot information instance in parameter based on the slice value in parameter.
@@ -297,12 +297,12 @@ protected:
       * @param   aSliceValue        Slice value of the knot to be reported on in the knot information.
       * @param   knotHasSinglePoint Indicates whether the knot has a single point.
       * @param   hasBackground      Indicates whether the knot has a background knot point or not.
-      */ 
+      */
     void populateKnotInfo(KnotInformation& aKnotInformation,const SliceValue& aSliceValue, bool knotHasSinglePoint, bool hasBackground) const;
 
 public:
 
-    /** Constructor that initializes the attributes. 
+    /** Constructor that initializes the attributes.
       * An initial call to next() is necessary for having the first valid state.
       * @param   backgroundAtA  The background at A.
       * @param   aTabooAtB      State indicating the bits at B where no active points may be put.

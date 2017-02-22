@@ -24,11 +24,11 @@ class KeccakFPropagation;
 
 typedef Exception TrailException;
 
-/** This class implements a container for a differential or linear trail. 
+/** This class implements a container for a differential or linear trail.
   * A trail makes sense only in the context of a KeccakFPropagation object.
-  * The main attribute of the class is the sequence of state values before χ. 
-  * If S<sub>i</sub> = @a states[i], the trail is: 
-  * S<sub>0</sub> χλ S<sub>1</sub> χλ S<sub>2</sub> χλ ... 
+  * The main attribute of the class is the sequence of state values before χ.
+  * If S<sub>i</sub> = @a states[i], the trail is:
+  * S<sub>0</sub> χλ S<sub>1</sub> χλ S<sub>2</sub> χλ ...
   * χλ S<sub><i>n</i>-1</sub>,
   * with <i>n</i> = @a states.size().
   */
@@ -50,8 +50,8 @@ public:
       *  If stateAfterLastChiSpecified==true, this attribute contains the state after the last χ.
       */
     vector<SliceValue> stateAfterLastChi;
-    /** This attribute contains the propagation weights of the states 
-      * in @a states. So, @a weights has the same size 
+    /** This attribute contains the propagation weights of the states
+      * in @a states. So, @a weights has the same size
       * as @a states.
       */
     vector<unsigned int> weights;
@@ -72,7 +72,7 @@ public:
       */
     Trail(const Trail& other)
         : firstStateSpecified(other.firstStateSpecified),
-        states(other.states), 
+        states(other.states),
         stateAfterLastChiSpecified(other.stateAfterLastChiSpecified),
         stateAfterLastChi(other.stateAfterLastChi),
         weights(other.weights),
@@ -89,7 +89,7 @@ public:
       * @param   weight The minimum reverse weight.
       */
     void setFirstStateReverseMinimumWeight(unsigned int weight);
-    /** This method appends a state to the end of @a states, 
+    /** This method appends a state to the end of @a states,
       * with its corresponding propagation weight.
       * @param   state  The state to add.
       * @param   weight The propagation weight.
@@ -99,14 +99,14 @@ public:
       * @param   otherTrail The trail to append.
       */
     void append(const Trail& otherTrail);
-    /** This method inserts a state at the beginning of @a states, 
+    /** This method inserts a state at the beginning of @a states,
       * with its corresponding propagation weight.
       * @param   state  The state to add.
       * @param   weight The propagation weight.
       */
     void prepend(const vector<SliceValue>& state, unsigned int weight);
     /** This method displays the trail for in a human-readable form.
-      * @param   DCorLC The propagation context of the trail, 
+      * @param   DCorLC The propagation context of the trail,
       *                 as a reference to a KeccakFPropagation object.
       * @param  fout    The stream to display to.
       */
@@ -123,7 +123,7 @@ public:
       * and then produces a report.
       * The report is output in a file with the same file name plus ".txt".
       * See also KeccakFPropagation::displayTrailsAndCheck().
-      * @param   DCorLC     The propagation context of the trails, 
+      * @param   DCorLC     The propagation context of the trails,
       *                     as a reference to a KeccakFPropagation object.
       * @param   fileName   The name of the file containing the trails.
       * @param   verbose    If true, the function will display the name of
@@ -142,7 +142,7 @@ class TrailFilter
 {
 public:
     /** This method tells whether to keep (true) or discard (false) the given trail.
-      * @param   DCorLC     The propagation context of the trails, 
+      * @param   DCorLC     The propagation context of the trails,
       *                     as a reference to a KeccakFPropagation object.
       * @param  trail   The trail to consider.
       * @return The result of the filter: whether to keep (true) or discard (false) the given trail.
@@ -181,20 +181,20 @@ protected:
     TrailFilter *filter;
 public:
     /** The default constructor.
-      * @param   DCorLC     The propagation context of the trails, 
+      * @param   DCorLC     The propagation context of the trails,
       *                     as a reference to a KeccakFPropagation object.
       */
     TrailIterator(const KeccakFPropagation& aDCorLC)
         : DCorLC(aDCorLC), filter(0) {}
     /** The constructor with one filter.
-      * @param   DCorLC     The propagation context of the trails, 
+      * @param   DCorLC     The propagation context of the trails,
       *                     as a reference to a KeccakFPropagation object.
       * @param  aFilter     A pointer to the filter.
       */
     TrailIterator(const KeccakFPropagation& aDCorLC, TrailFilter *aFilter)
         : DCorLC(aDCorLC), filter(aFilter) {}
     /** The constructor with two filters.
-      * @param   DCorLC     The propagation context of the trails, 
+      * @param   DCorLC     The propagation context of the trails,
       *                     as a reference to a KeccakFPropagation object.
       * @param  aFilter1    A pointer to the first filter.
       * @param  aFilter2    A pointer to the second filter.
@@ -244,33 +244,33 @@ protected:
 public:
     /** The constructor of the iterator.
       * @param  aFileName   The name of the file to read from.
-      * @param   DCorLC     The propagation context of the trails, 
+      * @param   DCorLC     The propagation context of the trails,
       *                     as a reference to a KeccakFPropagation object.
       * @param  aPrefetch   Whether the file has to be first read to determine
       *                     the number of trails in the file.
       */
-    TrailFileIterator(const string& aFileName, const KeccakFPropagation& aDCorLC, 
+    TrailFileIterator(const string& aFileName, const KeccakFPropagation& aDCorLC,
         bool aPrefetch = true);
     /** The constructor of the iterator, with one filter.
       * @param  aFileName   The name of the file to read from.
-      * @param   DCorLC     The propagation context of the trails, 
+      * @param   DCorLC     The propagation context of the trails,
       *                     as a reference to a KeccakFPropagation object.
       * @param  aFilter A pointer to the filter.
       * @param  aPrefetch   Whether the file has to be first read to determine
       *                     the number of trails in the file.
       */
-    TrailFileIterator(const string& aFileName, const KeccakFPropagation& aDCorLC, 
+    TrailFileIterator(const string& aFileName, const KeccakFPropagation& aDCorLC,
         TrailFilter *aFilter, bool aPrefetch = true);
     /** The constructor of the iterator, with two filters.
       * @param  aFileName   The name of the file to read from.
-      * @param   DCorLC     The propagation context of the trails, 
+      * @param   DCorLC     The propagation context of the trails,
       *                     as a reference to a KeccakFPropagation object.
       * @param  aFilter1    A pointer to the first filter.
       * @param  aFilter2    A pointer to the second filter.
       * @param  aPrefetch   Whether the file has to be first read to determine
       *                     the number of trails in the file.
       */
-    TrailFileIterator(const string& aFileName, const KeccakFPropagation& aDCorLC, 
+    TrailFileIterator(const string& aFileName, const KeccakFPropagation& aDCorLC,
         TrailFilter *aFilter1, TrailFilter *aFilter2, bool aPrefetch = true);
     /** This method displays information about the file being read.
       * @param  fout    The stream to display to.
@@ -300,8 +300,8 @@ protected:
     void next();
 };
 
-/** This base class represents the output of trails, which can be 
-  * for instance saved or further processed. 
+/** This base class represents the output of trails, which can be
+  * for instance saved or further processed.
   */
 class TrailFetcher {
 public:

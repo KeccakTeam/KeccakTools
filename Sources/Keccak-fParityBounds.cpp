@@ -24,18 +24,18 @@ using namespace std;
 unsigned int getBoundOfTotalWeightGivenTotalHammingWeight(const KeccakFPropagation& DCorLC, unsigned int totalHW)
 {
     return DCorLC.getLowerBoundOnReverseWeightGivenHammingWeight(totalHW);
-    // It has been explicitly checked that putting all the Hamming weight 
+    // It has been explicitly checked that putting all the Hamming weight
     // before λ always gives the minimum lower bound.
     // The check was done both for DC and LC.
 }
 
-unsigned int getLowerBoundTotalActiveRowsFromACandUOC(const KeccakFPropagation& DCorLC, 
+unsigned int getLowerBoundTotalActiveRowsFromACandUOC(const KeccakFPropagation& DCorLC,
     const vector<ColumnPosition>& xzAC, const vector<ColumnPosition>& xzUOC)
 {
     unsigned int activeRows = 0;
     vector<vector<bool> > rowTakenLeft(5, vector<bool>(DCorLC.laneSize, false));
     vector<vector<bool> > rowTakenRight(5, vector<bool>(DCorLC.laneSize, false));
-    
+
     for(unsigned int i=0; i<xzAC.size(); i++) {
         unsigned int x = xzAC[i].x;
         unsigned int z = xzAC[i].z;
@@ -51,7 +51,7 @@ unsigned int getLowerBoundTotalActiveRowsFromACandUOC(const KeccakFPropagation& 
             }
         }
     }
-    
+
     for(unsigned int i=0; i<xzUOC.size(); i++) {
         unsigned int x = xzUOC[i].x;
         unsigned int z = xzUOC[i].z;
@@ -86,7 +86,7 @@ unsigned int getLowerBoundTotalActiveRowsFromACandUOC(const KeccakFPropagation& 
     return activeRows;
 }
 
-unsigned int getLowerBoundTotalActiveRows(const KeccakFPropagation& DCorLC, 
+unsigned int getLowerBoundTotalActiveRows(const KeccakFPropagation& DCorLC,
     const vector<RowValue>& C, const vector<RowValue>& D)
 {
     vector<ColumnPosition> xzAC, xzUOC;
@@ -229,7 +229,7 @@ void lookForRunsBelowTargetWeight(const KeccakFPropagation& DCorLC, ostream& out
             }
         }
         progress.stack("Adding runs to "+parity.display());
-        for(unsigned int tStart=parity.runs.back().tStart+parity.runs.back().length+1; 
+        for(unsigned int tStart=parity.runs.back().tStart+parity.runs.back().length+1;
                 tStart<DCorLC.laneSize*5; tStart++) {
             unsigned int maxLength = DCorLC.laneSize*5-1-tStart+parity.runs[0].tStart;
             for(unsigned int length=1; length<=maxLength; length++) {
@@ -265,4 +265,4 @@ void lookForRunsBelowTargetWeight(const KeccakFPropagation& DCorLC, ostream& out
         ++progress;
     }
     progress.unstack();
-}    
+}

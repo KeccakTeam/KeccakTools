@@ -33,7 +33,7 @@ class LowWeightExclusion {
 protected:
     /** The explicitly excluded weights per number of rounds. */
     map<unsigned int, int> excludedWeight;
-    /** The interpolated minimum weights per number of rounds. 
+    /** The interpolated minimum weights per number of rounds.
       * Note that minWeight[nrRounds-1] contains the minimum weight
       * for nrRounds rounds.
       */
@@ -59,7 +59,7 @@ protected:
 };
 
 /** Class that contains all states C after χ such that D=λ(C) has low weight.
-  * This allows to quickly check whether a state B can be connected 
+  * This allows to quickly check whether a state B can be connected
   * to such a state C through χ.
   */
 class KnownSmallWeightStates {
@@ -68,7 +68,7 @@ protected:
       * is for the weight of D=λ(C). All states are stored up to translation in z.
       */
     vector<vector<vector<SliceValue> > > statesAfterChiPerWeight;
-    /** This attribute tells up to which weight the set of states in 
+    /** This attribute tells up to which weight the set of states in
      * statesAfterChiPerWeight is complete.
      */
     int maxCompleteWeight;
@@ -78,7 +78,7 @@ public:
       */
     KnownSmallWeightStates(int aMaxCompleteWeight);
     /** Constructor that initializes a set of states from a file.
-      * @param  DCorLC The propagation context, 
+      * @param  DCorLC The propagation context,
       *                 as a reference to a KeccakFPropagation object.
       * @param  fileName    The name of the file to extract states from.
       *     See loadFromFile() for more information.
@@ -86,7 +86,7 @@ public:
       */
     KnownSmallWeightStates(const KeccakFPropagation& DCorLC, const string& fileName, int aMaxCompleteWeight);
     /** Method that loads states from a file.
-      * @param  DCorLC The propagation context, 
+      * @param  DCorLC The propagation context,
       *                 as a reference to a KeccakFPropagation object.
       * @param  fileName    The name of the file to extract states from.
       *     The file has to contain trails (or trail cores or trail prefixes)
@@ -101,26 +101,26 @@ public:
     int getMaxCompleteWeight() const;
     /** Method that attempts at finding states D that are compatible
       * through λ after χ with the given state B.
-      * @param  DCorLC The propagation context, 
+      * @param  DCorLC The propagation context,
       *                 as a reference to a KeccakFPropagation object.
       * @param  inputState  The input state B.
-      * @param  maxWeightOut    The maximum weight of D that needs 
+      * @param  maxWeightOut    The maximum weight of D that needs
       *     to be considered.
       * @param  compatibleStates    The list of states D that are compatible
       *     with B.
       */
-    void connect(const KeccakFPropagation& DCorLC, const vector<SliceValue>& inputState, 
+    void connect(const KeccakFPropagation& DCorLC, const vector<SliceValue>& inputState,
         int maxWeightOut, vector<vector<SliceValue> >& compatibleStates) const;
-    /** Method that stores all the states in a file. 
+    /** Method that stores all the states in a file.
       * The states are saved as D=λ(C) in 1-round trail prefixes.
-      * @param  DCorLC The propagation context, 
+      * @param  DCorLC The propagation context,
       *                 as a reference to a KeccakFPropagation object.
       * @param  fileName    The name of the file to save to.
       */
     void saveToFile(const KeccakFPropagation& DCorLC, const string& fileName) const;
 protected:
     void addState(const KeccakFPropagation& DCorLC, const vector<SliceValue>& state);
-    void connect(const KeccakFPropagation& DCorLC, const vector<SliceValue>& inputState, 
+    void connect(const KeccakFPropagation& DCorLC, const vector<SliceValue>& inputState,
         const vector<SliceValue>& candidate, vector<vector<SliceValue> >& compatibleStates) const;
 };
 
@@ -139,12 +139,12 @@ public:
     bool allPrefixes;
     /** This LowWeightExclusion object specifies search areas to exclude,
       * primarily because bounds are known. For instance, this expresses
-      * that any 2-round trail in Keccak-f has at least weight 8, 
+      * that any 2-round trail in Keccak-f has at least weight 8,
       * and this knowledge can limit the weight of intermediate states
       * that are to be considered.
       */
     LowWeightExclusion knownBounds;
-    /** This optional KnownSmallWeightStates object pointer provides 
+    /** This optional KnownSmallWeightStates object pointer provides
       * a list of states with low weight. This is used to optimize forward
       * trail extension.
       */
@@ -155,13 +155,13 @@ protected:
 public:
     /** The constructor. See KeccakFPropagation::KeccakFPropagation(). */
     KeccakFTrailExtension(const KeccakFDCLC& aParent, KeccakFPropagation::DCorLC aDCorLC);
-    /** The destructor. 
-      * This frees the memory taken by @a knownSmallWeightStates. 
+    /** The destructor.
+      * This frees the memory taken by @a knownSmallWeightStates.
       */
     virtual ~KeccakFTrailExtension();
-    /** Starting from a given trail (prefix or core), this method 
+    /** Starting from a given trail (prefix or core), this method
       * appends states to it, and systematically looks
-      * for all trails with @a nrRounds rounds 
+      * for all trails with @a nrRounds rounds
       * up to total weight @a maxTotalWeight
       * that have the given trail as prefix.
       * @param  trail   The starting trail core or trail prefix.
@@ -178,12 +178,12 @@ public:
       * @param  maxTotalWeight  The maximum total weight to consider.
       */
     void forwardExtendTrails(TrailIterator& trailsIn, TrailFetcher& trailsOut, unsigned int nrRounds, int maxTotalWeight);
-    /** Starting from a given trail (prefix or core), this method 
+    /** Starting from a given trail (prefix or core), this method
       * prepends states to it, and systematically looks
-      * for all trails with @a nrRounds rounds 
+      * for all trails with @a nrRounds rounds
       * up to total weight @a maxTotalWeight
       * that have the given trail as suffix.
-      * If the given trail is a trail core, then the function looks for all trail cores, 
+      * If the given trail is a trail core, then the function looks for all trail cores,
       * unless @a allPrefixes is set to true, in which case all trail prefixes
       * are output.
       * Otherwise if the given trail is a trail prefix, then the function looks for all trail prefixes.
@@ -201,6 +201,9 @@ public:
       * @param  maxTotalWeight  The maximum total weight to consider.
       */
     void backwardExtendTrails(TrailIterator& trailsIn, TrailFetcher& trailsOut, unsigned int nrRounds, int maxTotalWeight);
+
+
+
 protected:
     void recurseForwardExtendTrail(const Trail& trail, TrailFetcher& trailsOut, unsigned int nrRounds, int maxTotalWeight);
     void recurseBackwardExtendTrail(const Trail& trail, TrailFetcher& trailsOut, unsigned int nrRounds, int maxTotalWeight, bool allPrefixes);

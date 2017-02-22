@@ -36,11 +36,11 @@ public:
       */
     virtual unsigned int getWidth() const = 0;
     /**
-      * Abstract method that applies the transformation onto the parameter 
+      * Abstract method that applies the transformation onto the parameter
       * @a state.
       *
       * @param  state   A buffer on which to apply the transformation.
-      *                 The state must have a size of at least 
+      *                 The state must have a size of at least
       *                 ceil(getWidth()/8.0) bytes.
       */
     virtual void operator()(UINT8 * state) const = 0;
@@ -61,11 +61,11 @@ class Permutation : public Transformation {
 public:
     Permutation() : Transformation() {};
     /**
-      * Abstract method that applies the <em>inverse</em> of the permutation 
+      * Abstract method that applies the <em>inverse</em> of the permutation
       * onto the parameter @a state.
       *
       * @param  state   A buffer on which to apply the inverse permutation.
-      *                 The state must have a size of at least 
+      *                 The state must have a size of at least
       *                 ceil(getWidth()/8.0) bytes.
       */
     virtual void inverse(UINT8 * state) const = 0;
@@ -80,9 +80,9 @@ protected:
 public:
     Identity(unsigned int aWidth) : Permutation(), width(aWidth) {};
     virtual unsigned int getWidth() const { return width; }
-    virtual void operator()(UINT8 * state) const {}
+    virtual void operator()(UINT8 * state) const {(void)state;}
     virtual string getDescription() const { return "Identity"; }
-    virtual void inverse(UINT8 * state) const {}
+    virtual void inverse(UINT8 * state) const {(void)state;}
 };
 
 #endif

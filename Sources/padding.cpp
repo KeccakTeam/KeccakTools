@@ -164,6 +164,7 @@ void MessageQueue::clear()
 
 bool PaddingRule::isRateValid(unsigned int rate) const
 {
+    (void)rate;
     return true;
 }
 

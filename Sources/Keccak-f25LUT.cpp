@@ -71,7 +71,7 @@ bool KeccakF25LUT::retrieveLUT()
     if (!fin) return false;
     LUT.resize(1<<25);
     for (SliceValue i=0 ; i<(1<<25); i++) {
-        static unsigned char tmp[4]; 
+        static unsigned char tmp[4];
         fin.read((char *)tmp, 4);
         LUT[i]  = tmp[3];  LUT[i] <<= 8;
         LUT[i] ^= tmp[2];  LUT[i] <<= 8;

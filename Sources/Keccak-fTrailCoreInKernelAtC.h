@@ -39,14 +39,14 @@ protected:
     /** This attribute keeps track of the propagation weight of stateAtB.
       * It is redundant and there for optimization.
       */
-    unsigned int weightAtB; 
+    unsigned int weightAtB;
 
-    /** This attribute keeps track of the minimum number of knot points 
+    /** This attribute keeps track of the minimum number of knot points
       * that must be added before the state at B is tame.
       */
-    unsigned int knotPointDeficit; 
+    unsigned int knotPointDeficit;
 
-    /** This attribute keeps track of the increase in weight due to the knot points that 
+    /** This attribute keeps track of the increase in weight due to the knot points that
       * must be added before the state at B is tame.
       */
     unsigned int knotWeightAtBDeficit;
@@ -66,7 +66,7 @@ protected:
     struct CoreInfo {
        /** Hamming weight of the state at A.
          */
-        unsigned int hammingWeightAtA; 
+        unsigned int hammingWeightAtA;
        /** Number of active rows of the state at A.
          */
         unsigned int nrActiveRowsAtA;
@@ -87,7 +87,7 @@ protected:
         unsigned int nrActiveRowsAtD;
        /** Weight of the trail core based on the state at B and partialStateAtC.
          */
-        unsigned int partialWeight; 
+        unsigned int partialWeight;
        /** Length of the vortex to be added.
          */
         unsigned int vortexLength;
@@ -109,7 +109,7 @@ protected:
 protected:
 
     /** See TrailCore3Rounds::isStateAtBWellFormed().
-      */ 
+      */
     bool isStateAtBWellFormed() const;
 
     /** See TrailCore3Rounds::canAffordGeneric().
@@ -140,7 +140,7 @@ protected:
       */
     bool mayBeStartPointSliceAndGoThere(unsigned int& z, bool zIsInitialized);
 
-    /** This method returns a lower bound for the weight of the state resulting from adding to the state at the back of outCore the 
+    /** This method returns a lower bound for the weight of the state resulting from adding to the state at the back of outCore the
       * vortex specified at the back of outCore. The lower bound is based on the propagation weight at B and the Hamming weights and
       * number of active rows at A and D.
       */
@@ -148,7 +148,7 @@ protected:
 
 public:
 
-    /** Constructor that initializes the attributes. 
+    /** Constructor that initializes the attributes.
       * An initial call to next() is necessary for having the first valid state.
       * @param   backgroundAtA  The background at A.
       * @param   aTabooAtB      State indicating the bits at B where no active points may be put.
@@ -163,13 +163,13 @@ public:
 
     /** This method generates the next three-round trail core inside the kernel at C with weight not above maxWeight.
       * @return  Whether a trail core was found.
-      */ 
+      */
     bool next();
 
     /** This method returns a constant reference to the current vortex being iterated.
      */
     const CoreInfo& getTopCoreInfo() const;
-    
+
     /** This function displays the attributes of the TrailCoreInKernelAtC object.
       */
     friend ostream& operator<<(ostream& fout, const TrailCoreInKernelAtC& aL);

@@ -17,24 +17,24 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include "Keccak-fTrailCoreInKernelAtC.h"
 #include "translationsymmetry.h"
 
-using namespace std; 
+using namespace std;
 
 TrailCoreInKernelAtC::TrailCoreInKernelAtC(const vector<SliceValue>& backgroundAtA,
                                            const vector<SliceValue>& aTabooAtB,
                                            unsigned int aMaxWeight,
                                            const KeccakFDCLC& aParent,
-                                           KeccakFPropagation::DCorLC aDCorLC) : 
+                                           KeccakFPropagation::DCorLC aDCorLC) :
     TrailCore3Rounds(backgroundAtA, aTabooAtB, aMaxWeight, aParent, aDCorLC)
 {
     partialStateAtD.assign(laneSize,0);
 
     weightAtB = 0;
 
-    knotPointDeficit = 0;  
-    knotWeightAtBDeficit = 0; 
+    knotPointDeficit = 0;
+    knotWeightAtBDeficit = 0;
 
-    partialHammingWeightAtD = 0; 
-    partialNrActiveRowsAtD = 0;  
+    partialHammingWeightAtD = 0;
+    partialNrActiveRowsAtD = 0;
 
     populateStatesWithBackground(backgroundAtA);
 
@@ -44,10 +44,10 @@ TrailCoreInKernelAtC::TrailCoreInKernelAtC(const vector<SliceValue>& backgroundA
     if (weightAtB == 0) {
         CoreInfo workCoreInfo;
 
-        workCoreInfo.hammingWeightAtA = 0; 
-        workCoreInfo.hammingWeightAtA = 0; 
+        workCoreInfo.hammingWeightAtA = 0;
+        workCoreInfo.hammingWeightAtA = 0;
         workCoreInfo.nrActiveRowsAtA = 0;
-    
+
         workCoreInfo.stateAtB.assign(laneSize,0);
         workCoreInfo.weightAtB = 0;
 
@@ -80,23 +80,23 @@ bool TrailCoreInKernelAtC::canAffordGeneric(unsigned int deltaNrKnotPointsWorkin
 
     chainDeficit = max(0, (int)chainDeficit-(int)deltaNrKnotPointsWorkingChain);
     chainDeficit = (chainDeficit + 1)/2;
-    
+
     // The number of orbital points that still have to be added has two contributions. The first one is the orbitals that have yet to be added to the working chain. And the second one is the number of orbitals for each chain that still has to be added.
     unsigned int orbitalPointDeficit = nrOrbitalPointsPerDeltaChain*chainDeficit + deltaNrOrbitalPointsWorkingChain;
 
     // The projected Hamming weight at A is augmented with the number of orbital points and knot points still to be added.
     unsigned int projectedHammingWeightAtA = hammingWeightAtA + orbitalPointDeficit + knotPointDeficit;
-    
+
     // The projected weight at B is augmented with the orbital points (each contributing a weight 2 because in different rows) and the knot points still to be added.
     unsigned int projectedWeightAtB = weightAtB + (2*orbitalPointDeficit) + knotWeightAtBDeficit;
-    
+
     // The projected Hamming weight at A is augmented with the number of orbital points still to be added. The knot points do not necessarily survive through χ, hence they are not counted.
     unsigned int projectedPartialHammingWeightAtD = partialHammingWeightAtD + orbitalPointDeficit;
-    
+
     unsigned int lowerWeight = getLowerBoundOnReverseWeightGivenHammingWeightAndNrActiveRows(projectedHammingWeightAtA, nrActiveRowsAtA)
                                 + projectedWeightAtB
                                 + getLowerBoundOnWeightGivenHammingWeightAndNrActiveRows(projectedPartialHammingWeightAtD, partialNrActiveRowsAtD);
-    
+
     return (lowerWeight <= maxWeight);
 }
 
@@ -105,7 +105,7 @@ void TrailCoreInKernelAtC::addPoint(const BitPosition& pB, bool toKnotSlice, boo
     if (!isBackgroundPoint){
         yOffsets.back().push_back(0);
         chains.back().push_back(pB);
-        
+
         // Dealing with the impact at A
         BitPosition pA(pB);
         reverseRhoPi(pA);
@@ -159,8 +159,8 @@ void TrailCoreInKernelAtC::addPoint(const BitPosition& pB, bool toKnotSlice, boo
         // Dealing with the impact at D
         BitPosition pD(pB);
         directRhoPi(pD);
-        partialHammingWeightAtD += 1; 
-        if (getRow(partialStateAtD, RowPosition(pD)) == 0) partialNrActiveRowsAtD += 1; 
+        partialHammingWeightAtD += 1;
+        if (getRow(partialStateAtD, RowPosition(pD)) == 0) partialNrActiveRowsAtD += 1;
         setBitToOne(partialStateAtD, pD);
     }
 }
@@ -181,7 +181,7 @@ void TrailCoreInKernelAtC::removePoint(bool fromKnotSlice)
         if (knotPointAddedKnot.top()) {
             setBitToZero(stateAtB, pB);
             weightAtB               -= 2;
-            knotPointDeficit        -= 2;  
+            knotPointDeficit        -= 2;
             knotWeightAtBDeficit    -= 3;
             partialHammingWeightAtD -= 1;
             knots.erase(pB.z);
@@ -210,7 +210,7 @@ void TrailCoreInKernelAtC::removePoint(bool fromKnotSlice)
         directRhoPi(pD);
         setBitToZero(partialStateAtD, pD);
         partialHammingWeightAtD -= 1;
-        if (getRow(partialStateAtD, RowPosition(pD)) == 0) partialNrActiveRowsAtD -= 1; 
+        if (getRow(partialStateAtD, RowPosition(pD)) == 0) partialNrActiveRowsAtD -= 1;
     }
 }
 
@@ -226,14 +226,15 @@ void TrailCoreInKernelAtC::convertKnotPointToOrbitalPoint()
 
     BitPosition pD(pB);
     directRhoPi(pD);
-        
+
     // A knot point does not count for partialStateAtD or partialNrActiveRowsAtD, but an orbital point does.
-    if (getRow(partialStateAtD, RowPosition(pD)) == 0) partialNrActiveRowsAtD += 1; 
+    if (getRow(partialStateAtD, RowPosition(pD)) == 0) partialNrActiveRowsAtD += 1;
     setBitToOne(partialStateAtD, pD);
 }
 
 bool TrailCoreInKernelAtC::mayBeEndPoint(const BitPosition& pB)
 {
+    (void)pB;
     // This method is called when a chain arrives in a slice that is not yet a knot. So the question to be answered is:
     // does the current weight allow adding a knot?
     // As the chain is not yet complete, there is still one knot point to be added. Assuming the knot point introduces a new knot, it will create a new knot.
@@ -245,7 +246,7 @@ bool TrailCoreInKernelAtC::mayBeStartPointSliceAndGoThere(unsigned int& z, bool 
     map<unsigned int,KnotInformation>::const_iterator it;
     if (zIsInitialized)
         it = knots.upper_bound(z);
-    else 
+    else
         it = knots.begin();
     if (it == knots.end()) return false;
     z = it->first;
@@ -258,7 +259,7 @@ unsigned int TrailCoreInKernelAtC::computeLowerWeightAssumingVortexIsAdded()
 
     unsigned int localNrActiveRowsAtA = max(outCore.back().nrActiveRowsAtA, v.nrActiveRowsAtA);
     unsigned int localLowerWeight = getLowerBoundOnReverseWeightGivenHammingWeightAndNrActiveRows(
-        outCore.back().hammingWeightAtA + outCore.back().vortexLength, 
+        outCore.back().hammingWeightAtA + outCore.back().vortexLength,
         localNrActiveRowsAtA);
 
     localLowerWeight += outCore.back().weightAtB + 2*outCore.back().vortexLength;
@@ -277,7 +278,7 @@ bool TrailCoreInKernelAtC::next()
         if (outCore.empty()){
             if (!nextWithKnots()) return false;
             CoreInfo workCoreInfo;
-            
+
             workCoreInfo.hammingWeightAtA = hammingWeightAtA;
             workCoreInfo.hammingWeightAtA = hammingWeightAtA;
             workCoreInfo.nrActiveRowsAtA = nrActiveRowsAtA;
@@ -310,10 +311,10 @@ bool TrailCoreInKernelAtC::next()
             bool foundGoodVortexToAdd = true;
             if ((!knots.empty() || (outCore.size() > 1)) && // In absence of knots, the first vortex has a fixed position: vortexZOffset = 0
                     (outCore.back().vortexIndex < vortexBase[outCore.back().vortexLength/2].size()) &&  // vortexIndex must point to an existing entry
-                    (outCore.back().vortexZOffset < laneSize-1)) { 
+                    (outCore.back().vortexZOffset < laneSize-1)) {
                 outCore.back().vortexZOffset += 1;
-                if ((outCore.size() > 1) && 
-                        (outCore[0].vortexLength == outCore.back().vortexLength) && 
+                if ((outCore.size() > 1) &&
+                        (outCore[0].vortexLength == outCore.back().vortexLength) &&
                         (outCore[0].vortexIndex  == outCore.back().vortexIndex ))   {
                     vector<unsigned int> zPattern(laneSize, 0);
                     for (unsigned int i=0 ; i<outCore.size() ; i++)
@@ -341,7 +342,7 @@ bool TrailCoreInKernelAtC::next()
                 }
             }
 
-            if (foundGoodVortexToAdd) { 
+            if (foundGoodVortexToAdd) {
                 foundGoodVortexToAdd = foundGoodVortexToAdd && (computeLowerWeightAssumingVortexIsAdded() <= maxWeight);
                 const VortexInfo& v = vortexBase[outCore.back().vortexLength/2][outCore.back().vortexIndex];
                 if (foundGoodVortexToAdd) { // Now test the vortex to add for overlap with the state up to now and its tabooAtB
@@ -363,15 +364,15 @@ bool TrailCoreInKernelAtC::next()
                         it++;
                     }
                     outCore.back().weightAtB += 2*outCore.back().vortexLength;
-                    
+
                     vector<SliceValue> localStateAtA(laneSize);
                     reverseLambda(outCore.back().stateAtB,localStateAtA);
                     outCore.back().hammingWeightAtA = getHammingWeight(localStateAtA);
                     outCore.back().nrActiveRowsAtA = getNrActiveRows(localStateAtA);
-                    
+
                     vector<SliceValue> localStateAtD(laneSize);
                     directLambdaAfterTheta(outCore.back().partialStateAtC,localStateAtD);
-                    
+
                     outCore.back().hammingWeightAtD = getHammingWeight(localStateAtD);
                     outCore.back().nrActiveRowsAtD = getNrActiveRows(localStateAtD);
                     outCore.back().partialWeight = getMinReverseWeight(localStateAtA) + outCore.back().weightAtB + getWeight(localStateAtD);
@@ -383,7 +384,7 @@ bool TrailCoreInKernelAtC::next()
             }
         }
     }
-    while(true); 
+    while(true);
 }
 
 const TrailCoreInKernelAtC::CoreInfo& TrailCoreInKernelAtC::getTopCoreInfo() const

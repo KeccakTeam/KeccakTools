@@ -230,7 +230,6 @@ unsigned int getNumberOfDelimitedBits(unsigned char delimitedSuffix)
 
 STATUS_CODES genShortMsgHash(unsigned int rate, unsigned int capacity,  unsigned char delimitedSuffix, unsigned int hashbitlen, unsigned int squeezedOutputLength, const std::string& fileName, const std::string& description)
 {
-    char        line[SUBMITTER_INFO_LEN];
     int         msglen, msgbytelen, done;
     BitSequence Msg[256];
     BitSequence Squeezed[SqueezingOutputLength/8];
@@ -390,7 +389,7 @@ STATUS_CODES genDuplexKAT(Duplex& duplex, const std::string& suffix)
             printf("ERROR: unable to read 'In' from <DuplexKAT.txt>\n");
             return KAT_DATA_ERROR;
         }
-        if (inLen <= duplex.getMaximumInputLength()) {
+        if (inLen <= (int)duplex.getMaximumInputLength()) {
             fprintf(fp_out, "\nInLen = %d\n", inLen);
             fprintBstr(fp_out, "In = ", in, inByteLen);
             duplex.duplexing((const UINT8 *)in, inLen, (UINT8 *)out, outLen);
@@ -446,7 +445,7 @@ int
 ReadHex(FILE *infile, BitSequence *A, int Length, const char *str)
 {
     int         i, ch, started;
-    BitSequence ich;
+    BitSequence ich=0;
 
     if ( Length == 0 ) {
         A[0] = 0x00;

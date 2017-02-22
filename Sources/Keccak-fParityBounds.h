@@ -24,21 +24,21 @@ http://creativecommons.org/publicdomain/zero/1.0/
   * a lower bound on the total number of active rows before and after λ.
   * This follows the algorithm in the paper "Differential propagation of Keccak"
   * at Fast Software Encryption 2012.
-  * @param   DCorLC The propagation context of the trail, 
+  * @param   DCorLC The propagation context of the trail,
   *                 as a reference to a KeccakFPropagation object.
   * @param  C   The parity as a vector or row values.
   * @param  D   The θ-effect as a vector or row values.
   * @return A lower bound on the number of total active rows a state
   *     has before and after λ if it has the given parity and θ-effect.
   */
-unsigned int getLowerBoundTotalActiveRows(const KeccakFPropagation& DCorLC, 
+unsigned int getLowerBoundTotalActiveRows(const KeccakFPropagation& DCorLC,
     const vector<RowValue>& C, const vector<RowValue>& D);
 
-/** Given the total Hamming weight of a state before and after λ, this 
+/** Given the total Hamming weight of a state before and after λ, this
   * function computes a lower bound on the total weight
   * before and after λ, i.e., the minimum reverse weight before λ
   * plus the propagation weight after λ.
-  * @param   DCorLC The propagation context of the trail, 
+  * @param   DCorLC The propagation context of the trail,
   *                 as a reference to a KeccakFPropagation object.
   * @param  totalHW The total Hamming weight before and after λ.
   * @return A lower bound on the minimum reverse weight before λ
@@ -48,7 +48,7 @@ unsigned int getLowerBoundTotalActiveRows(const KeccakFPropagation& DCorLC,
 unsigned int getBoundOfTotalWeightGivenTotalHammingWeight(const KeccakFPropagation& DCorLC, unsigned int totalHW);
 
 /** Class representing a parity run, with its starting coordinate and its length.
-  */ 
+  */
 class Run
 {
 public:
@@ -59,7 +59,7 @@ public:
 public:
     /** This constructor creates an empty run. */
     Run() : tStart(0), length(0) {}
-    /** This constructor creates a run. 
+    /** This constructor creates a run.
       * @param  aTStart The @a t coordinate of the starting point.
       * @param  aLength The length of the run.
       */
@@ -78,9 +78,9 @@ public:
 public:
     /** This constructor initializes to the all-zero parity (no runs). */
     ParityAsRuns() {}
-    /** Method to convert the runs into a parity expressed as vector of 
+    /** Method to convert the runs into a parity expressed as vector of
       * row values and its associated θ-effect.
-      * @param   DCorLC The propagation context , 
+      * @param   DCorLC The propagation context ,
       *                 as a reference to a KeccakFPropagation object.
       * @param  C   The parity to be stored as a vector or row values.
       * @param  D   The θ-effect to be stored as a vector or row values.
@@ -88,25 +88,25 @@ public:
     void toParityAndParityEffect(const KeccakFPropagation& DCorLC, vector<RowValue>& C, vector<RowValue>& D) const;
     /** Function that returns a string describing the runs. */
     string display() const;
-    /** This method returns a lower bound 
+    /** This method returns a lower bound
       * on the total Hamming weight before and after λ
       * for any state having this parity.
       * This is 10 per affected column and 2 per unaffected odd column.
-      * @param   DCorLC The propagation context , 
+      * @param   DCorLC The propagation context ,
       *                 as a reference to a KeccakFPropagation object.
       *  @return    The lower bound on the total Hamming weight.
       */
     unsigned int getLowerBoundTotalHammingWeight(const KeccakFPropagation& DCorLC) const;
-    /** This method returns a lower bound 
+    /** This method returns a lower bound
       * on the total number of active rows before and after λ
       * for any state having this parity.
       * See also ::getLowerBoundTotalActiveRows().
-      * @param   DCorLC The propagation context , 
+      * @param   DCorLC The propagation context ,
       *                 as a reference to a KeccakFPropagation object.
       *  @return    The lower bound on the total number of active rows.
       */
     unsigned int getLowerBoundTotalActiveRows(const KeccakFPropagation& DCorLC) const;
-    /** This method is like getLowerBoundTotalActiveRows(), 
+    /** This method is like getLowerBoundTotalActiveRows(),
       * except that the bound does not take into account the contribution
       * of unaffected odd columns.
       */
@@ -114,15 +114,15 @@ public:
 };
 
 /** This function looks for all parities (up to translation in z) such that
-  * the lower bound provided by ::getLowerBoundTotalActiveRows() is not 
+  * the lower bound provided by ::getLowerBoundTotalActiveRows() is not
   * higher than a given target.
-  * The target is given as total weight 
+  * The target is given as total weight
   * (the minimum reverse weight before λ
   * plus the propagation weight after λ), which is lower bounded
   * by 2 times the total number of active rows.
   * The search is done as explained in the paper "Differential propagation of Keccak"
   * at Fast Software Encryption 2012.
-  * @param   DCorLC The propagation context , 
+  * @param   DCorLC The propagation context ,
   *                 as a reference to a KeccakFPropagation object.
   * @param  out The output file where to store the found parities.
   * @param  targetWeight    The target total weight.

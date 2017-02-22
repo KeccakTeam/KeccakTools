@@ -40,14 +40,14 @@ public:
       * @return The slice value as a constant reference.
       */
     inline const SliceValue& operator[](unsigned int z) const { return slices[z]; }
-    
+
     /** This method returns the value of a given slice in a state.
       *
       * @param  z   The z coordinate.
       * @return The slice value as a non-constant reference.
       */
     inline SliceValue& operator[](unsigned int z) { return slices[z]; }
-    
+
     /** This method returns the value of a given bit in a state.
       *
       * @param  x   The x coordinate.
@@ -129,13 +129,13 @@ public:
     {
         invertBit(p.x, p.y, p.z);
     }
-    
+
 };
 
 /** The SparseState type codes a state as map of z-coordinate, SliceValue couples.
   * It is compact for sparse states as it only stores the nonzero slices.
-  * The convention used and maintained by the getSlice(), setSlice(), getBit(), 
-  * setBitToZero() and invertBit() functions is that a slice with value zero 
+  * The convention used and maintained by the getSlice(), setSlice(), getBit(),
+  * setBitToZero() and invertBit() functions is that a slice with value zero
   * does not appear in the map.
   */
 class SparseStateAsSlices {
@@ -192,7 +192,7 @@ public:
     {
         setBitToZero(p.x, p.y, p.z);
     }
-    
+
     /** This method sets to 1 a particular bit in a state.
       *
       * @param  x   The x coordinate.

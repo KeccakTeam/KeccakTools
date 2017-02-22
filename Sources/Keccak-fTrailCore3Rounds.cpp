@@ -17,17 +17,18 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include "Keccak-fTrailCore3Rounds.h"
 #include "translationsymmetry.h"
 
-using namespace std; 
+using namespace std;
 
 TrailCore3Rounds::TrailCore3Rounds(const vector<SliceValue>& backgroundAtA,
                                    const vector<SliceValue>& aTabooAtB,
                                    unsigned int aMaxWeight,
                                    const KeccakFDCLC& aParent,
                                    KeccakFPropagation::DCorLC aDCorLC) :
-    KeccakFPropagation(aParent, aDCorLC), 
-    maxWeight(aMaxWeight), 
+    KeccakFPropagation(aParent, aDCorLC),
+    maxWeight(aMaxWeight),
     tabooAtB(aTabooAtB)
 {
+    (void)backgroundAtA;
     initializeKnotInfoLUT();
 
     initializeVortexBase();
@@ -47,7 +48,7 @@ void TrailCore3Rounds::populateStatesWithBackground(const vector<SliceValue>& ba
             for(unsigned int x=0 ; x<5 ; x++) {
                 if (getBit(backgroundAtB,x,y,z) != 0) {
                     BitPosition pB(x, y, z);
-                    addPoint(pB, true, true); // these are all background knot points  
+                    addPoint(pB, true, true); // these are all background knot points
                 }
             }
         }
@@ -196,9 +197,9 @@ bool TrailCore3Rounds::completeChain()
             if (chains.back().size() == 1) return false;
             else removePoint(false);
         }
-        while((chains.back().size() > 1) && (yOffsets.back().back() == 4)) 
+        while((chains.back().size() > 1) && (yOffsets.back().back() == 4))
             removePoint(false); // yOffset equal to 4 does not have a successor
-        if (yOffsets.back().back() == 4) 
+        if (yOffsets.back().back() == 4)
             return false;
 
         if (((chains.back().size())%2) == 0) {   // In this case, we have to add the second point in an orbital slice.
@@ -226,13 +227,13 @@ bool TrailCore3Rounds::completeChain()
                 reverseRhoPi(pB);
                 pB.yTranslate(yOffsets.back().back());
                 directRhoPi(pB);
-                isPotentialEndPoint = 
+                isPotentialEndPoint =
                     (chains.back().size()+1 >= minimumWorkingChainLength )  // chain is long enough
                     && (chains.back()[0] < pB);                             // end point is larger than start point
                 success = (0 == getBit(tabooAtB, pB));                      // it does not arrive in the taboo zone
                 if (success) {
                     if (knots.count(pB.z) != 0) {                           // if it arrives in a knot slice
-                        success = 
+                        success =
                             (getBit(stateAtB, pB) == 0) //  it does not collide with an already active point
                             && isPotentialEndPoint;     //  it satisfies all conditions of an end point
                     }
@@ -273,12 +274,11 @@ bool TrailCore3Rounds::nextChain()
 {
     if (chains.back().size() > 1) {
         // If the last added point introduced a new knot, it has to be first converted to an orbital point, as the completeChain() function assumes the working chain ends with an orbital point.
-        if (knotPointAddedKnot.top()) 
+        if (knotPointAddedKnot.top())
             convertKnotPointToOrbitalPoint(); // end point becomes intermediate point
         else
             removePoint(true);
     }
-    bool success = true;
     do {
         // First, let's see if we can find a chain starting with the current start point.
         if ((chains.back().size() > 0) && (completeChain()))
@@ -316,7 +316,7 @@ bool TrailCore3Rounds::nextChain()
                   (getBit(tabooAtB, pB) != 0)  ||   // shall not be in the taboo zone
                   ( (stateAtB[pB.z] != 0) && (knots.count(pB.z) == 0) ) );  // shall not be in an orbital slice
             addPoint(pB, true);
-            updateMinimumWorkingChainLength(); 
+            updateMinimumWorkingChainLength();
         }
     }
     while(true);
@@ -339,34 +339,34 @@ bool TrailCore3Rounds::nextWithKnots()
         }
         if (chains.empty()) return false;
     }
-    while (!isStateAtBWellFormed()); 
+    while (!isStateAtBWellFormed());
     return true;
 }
 
 void TrailCore3Rounds::addVortexPoint(const BitPosition& pB,
                                       vector<BitPosition >& chainAtB,
                                       vector<unsigned int>& yOffset,
-                                      map<RowPosition,unsigned int>& rowsAtA, 
+                                      map<RowPosition,unsigned int>& rowsAtA,
                                       map<RowPosition,unsigned int>& rowsAtD,
                                       map<unsigned int,unsigned int>& slicesAtB) const
 {
     chainAtB.push_back(pB);
     yOffset.push_back(0);
-    
+
     slicesAtB[pB.z] += 1;
 
-    BitPosition pA(pB); 
+    BitPosition pA(pB);
     reverseRhoPi(pA);
     rowsAtA[RowPosition(pA)] += 1;
-    
-    BitPosition pD(pB); 
+
+    BitPosition pD(pB);
     directRhoPi(pD); // For an orbital point at B, the corresponding bit position at C is active. If C is in the kernel, then this active bit will appear at D after applying ρ and π.
     rowsAtD[RowPosition(pD)] += 1;
 }
 
 void TrailCore3Rounds::removeVortexPoint(vector<BitPosition >& chainAtB,
                                         vector<unsigned int>& yOffset,
-                                        map<RowPosition,unsigned int>& rowsAtA, 
+                                        map<RowPosition,unsigned int>& rowsAtA,
                                         map<RowPosition,unsigned int>& rowsAtD,
                                         map<unsigned int,unsigned int>& slicesAtB) const
 {
@@ -374,16 +374,16 @@ void TrailCore3Rounds::removeVortexPoint(vector<BitPosition >& chainAtB,
     if (slicesAtB[pB.z] == 1) slicesAtB.erase(pB.z);
     else slicesAtB[pB.z] -= 1;
 
-    BitPosition pA(pB); 
-    reverseRhoPi(pA); 
-    RowPosition rA(pA); 
-    if (rowsAtA[rA] == 1) rowsAtA.erase(rA); 
+    BitPosition pA(pB);
+    reverseRhoPi(pA);
+    RowPosition rA(pA);
+    if (rowsAtA[rA] == 1) rowsAtA.erase(rA);
     else rowsAtA[rA] -= 1;
 
-    BitPosition pD(pB); 
-    directRhoPi(pD);        
-    RowPosition rD(pD); 
-    if (rowsAtD[rD] == 1) rowsAtD.erase(rD); 
+    BitPosition pD(pB);
+    directRhoPi(pD);
+    RowPosition rD(pD);
+    if (rowsAtD[rD] == 1) rowsAtD.erase(rD);
     else rowsAtD[rD] -= 1;
 
     chainAtB.pop_back();
@@ -428,7 +428,7 @@ void TrailCore3Rounds::initializeVortexBase()
             yOffset.back() += 1;
             pB = chainAtB.back();
             pB.yTranslate(yOffset.back());
-            addVortexPoint(pB,chainAtB,yOffset,rowsAtA,rowsAtD,slicesAtB); 
+            addVortexPoint(pB,chainAtB,yOffset,rowsAtA,rowsAtD,slicesAtB);
             if (2*chainAtB.size() + 2*rowsAtA.size() + 2*rowsAtD.size() + 2 > maxWeight) removeVortexPoint(chainAtB,yOffset,rowsAtA,rowsAtD,slicesAtB); // if the maximum weight does not allow adding one more point afterwards, remove this point again
         }
         else { // The next point to add has to be peer to the last one (i.e., in the same column at A).

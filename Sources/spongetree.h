@@ -31,12 +31,12 @@ public:
 };
 
 /** This class implements a tree hashing mode.
-  * In particular, it implements the second tree hashing mode described 
-  * in Section 7.2 of [Bertoni et al., Sufficient conditions for sound tree 
-  * and sequential hashing modes, IACR ePrint 2009/210], 
-  * where the tree has fixed height <i>H</i>=2, 
+  * In particular, it implements the second tree hashing mode described
+  * in Section 7.2 of [Bertoni et al., Sufficient conditions for sound tree
+  * and sequential hashing modes, IACR ePrint 2009/210],
+  * where the tree has fixed height <i>H</i>=2,
   * the final node has (parameterized) degree <i>D</i>,
-  * and the message bits are interleaved by blocks of (parameterized) 
+  * and the message bits are interleaved by blocks of (parameterized)
   * <i>B</i> bits onto the <i>D</i> leaves.
   * When the leaves are done absorbing the message blocks, a bit 0 is appended
   * for domain separation with the final node.
@@ -57,7 +57,7 @@ protected:
     /** This attribute contains the message blocks not yet processed.
       */
     MessageQueue absorbQueue;
-    /** Boolean indicating whether the sponge is in the squeezing phase 
+    /** Boolean indicating whether the sponge is in the squeezing phase
       * (true) or in the absorbing phase (false). */
     bool squeezing;
     /** This attribute contains the index of the leaf being filled.
@@ -80,7 +80,7 @@ protected:
     int C;
 public:
     /** The constructor.
-      * @param  aFactory    The object that will create the right sponge functions 
+      * @param  aFactory    The object that will create the right sponge functions
       *                     for the leaves and for the final node.
       * @param  aD  The value for <i>D</i>.
       * @param  aB  The value for <i>B</i>.
@@ -120,31 +120,31 @@ public:
       */
     void absorb(const vector<UINT8>& input, unsigned int lengthInBits);
     /**
-      * Method to extract data from the squeezing phase. If in the 
+      * Method to extract data from the squeezing phase. If in the
       * absorbing phase, this function also switches to the squeezing phase.
       *
       * @param  output      The buffer where to store the squeezed data.
       * @param  desiredLengthInBits     The length in bits of the output.
-      *                     If the rate of the sponge is a multiple of 8, 
+      *                     If the rate of the sponge is a multiple of 8,
       *                     @a desiredOutputLength must be a multiple of 8.
       *                     Otherwise, @a desiredOutputLength must be equal to the rate.
       */
     void squeeze(UINT8 *output, unsigned int desiredLengthInBits);
     /**
-      * Method to extract data from the squeezing phase. If in the 
+      * Method to extract data from the squeezing phase. If in the
       * absorbing phase, this function also switches to the squeezing phase.
       *
       * @param  output      The buffer where to store the squeezed data.
       * @param  desiredLengthInBits     The length in bits of the output.
-      *                     If the rate of the sponge is a multiple of 8, 
+      *                     If the rate of the sponge is a multiple of 8,
       *                     @a desiredOutputLength must be a multiple of 8.
       *                     Otherwise, @a desiredOutputLength must be equal to the rate.
       */
     void squeeze(vector<UINT8>& output, unsigned int desiredLengthInBits);
 protected:
     /**
-      * Internal method that absorbs the data still in absorbQueue, 
-      * and then switches the sponge function of the final node 
+      * Internal method that absorbs the data still in absorbQueue,
+      * and then switches the sponge function of the final node
       * to the squeezing phase.
       */
     void flushAndSwitchToSqueezingPhase();

@@ -166,7 +166,7 @@ string Sponge::getDescription() const
 {
     stringstream a;
     a << "Sponge[f=" << (*f) << ", pad=" << (*pad)
-        << ", r=" << dec << rate 
+        << ", r=" << dec << rate
         << ", c=" << capacity << "]";
     return a.str();
 }

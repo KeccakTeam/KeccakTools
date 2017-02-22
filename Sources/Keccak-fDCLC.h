@@ -22,11 +22,11 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 class KeccakFPropagation;
 
-/** As a utility class for KeccakFDCLC, this class lists the output row patterns 
+/** As a utility class for KeccakFDCLC, this class lists the output row patterns
   * (differences or linear masks) compatible with a given row input pattern
   * through either χ or χ<sup>-1</sup>.
   * The main attribute is @a values, which lists all the corresponding output row patterns.
-  * Associated with each output value (same index in the vector), 
+  * Associated with each output value (same index in the vector),
   * its propagation weight is in the vector @a weights.
   * Note that the values are sorted in increasing weight order,
   * so one can start looking for the outputs with lowest weight first.
@@ -53,15 +53,15 @@ public:
     /** This constructor initializes the output patterns to the empty set.
       */
     ListOfRowPatterns() : minMaxInitialized(false) {}
-    /** This function adds a possible output pattern, 
-      * along with an associated propagation weight, 
+    /** This function adds a possible output pattern,
+      * along with an associated propagation weight,
       * while inserting it at the right
       * place to ensure that they are listed with increasing propagation weights.
       * @param  aValue  An output pattern.
       * @param  aWeight Its associated propagation weight.
       */
     void add(RowValue aValue, int aWeight);
-    /** This function displays the possible patterns and their weights. 
+    /** This function displays the possible patterns and their weights.
       * @param  fout    The stream to display to.
       */
     void display(ostream& fout) const;
@@ -87,7 +87,7 @@ public:
     /** This attribute contains the output linear masks for the non-linear function χ<sup>-1</sup>.
       * The index of the vector corresponds to the input mask.
       */
-    vector<ListOfRowPatterns> corrInvChi;    
+    vector<ListOfRowPatterns> corrInvChi;
     /** This attribute indicates, for each λ mode (see LambdaMode), if θ is just after χ.
       * When true, this means that lambdaBeforeTheta() is the identity.
       */
@@ -107,7 +107,7 @@ private:
       * - the input slice index (iz)
       * - the input row index (iy)
       * - the input row value input[iy,iz]
-      * 
+      *
       * So, given a row value B located at row iy in slice 0&lt;=iz&lt;laneSize,
       * its linear contribution to the output of the λ function in Straight mode is given
       * by lambdaRowToSlice[(int)Straight][oz][iz][iy][B], where oz is
@@ -121,7 +121,7 @@ private:
       */
     vector<vector<vector<vector<vector<SliceValue> > > > > lambdaAfterThetaRowToSlice;
 public:
-    /** In this context, λ represents the linear operations in Keccak-<i>f</i> 
+    /** In this context, λ represents the linear operations in Keccak-<i>f</i>
       * between two applications of χ.
       * The λ mode indicates whether to perform these operations, their transpose,
       * their inverse or the transpose of their inverse.
@@ -144,7 +144,7 @@ public:
     string getDescription() const;
     /** This method displays all the possible output patterns
       * (differences and selection vectors) for each input pattern.
-      * If the paramters DC and LC point to actual KeccakFPropagation 
+      * If the paramters DC and LC point to actual KeccakFPropagation
       * instances, the affine descriptions are also given.
       * @param  fout    The stream to display to.
       * @param  DC      A pointer to the KeccakFPropagation instance specialized in differential cryptanalysis (can be null).
@@ -166,7 +166,7 @@ public:
       * @param   mode   The λ mode.
       */
     template<class Lane> void lambda(vector<Lane>& state, LambdaMode mode) const;
-    /** This method applies the λ function (see LambdaMode) 
+    /** This method applies the λ function (see LambdaMode)
       * using the lambdaRowToSlice table.
       * The input is a vector of laneSize slice values, and so is the output.
       * The mode argument gives the λ mode (i.e., inverse/transpose) to use.
@@ -204,7 +204,7 @@ public:
       * @pre This assumes that @a in has size equal to @a laneSize.
       */
     void lambdaAfterTheta(const vector<SliceValue>& in, vector<SliceValue>& out, LambdaMode mode) const;
-    /** Apply the χ function on a single row value. 
+    /** Apply the χ function on a single row value.
       * @param   a      The input row value.
       * @return The output row value.
       */
@@ -214,7 +214,7 @@ public:
       * @return The output row value.
       */
     RowValue inverseChiOnRow(RowValue a) const;
-    /** This method creates the value of a state represented as a vector of slices 
+    /** This method creates the value of a state represented as a vector of slices
       * from a state represented as a vector of lanes.
       * @param  lanes   The state as a vector of lanes.
       * @param  slices  The output state as a vector of slices.
@@ -249,13 +249,13 @@ public:
       *                 an inconsistency is detected.
       */
     void checkLCTrail(const Trail& trail, KeccakFPropagation *LC=0) const;
-    /** This method computes the θ-gap of the state given as input. 
+    /** This method computes the θ-gap of the state given as input.
       * (See the Keccak main document for a definition of the θ-gap.)
       * @param   state  The state of which to compute the θ-gap as a vector of lanes.
       * @return The θ-gap value.
       */
     unsigned int getThetaGap(const vector<LaneValue>& state) const;
-    /** This method computes the θ-gap from the parity of a state given as input. 
+    /** This method computes the θ-gap from the parity of a state given as input.
       * (See the Keccak main document for a definition of the θ-gap.)
       * @param   parity The parity of which to compute the θ-gap as a vector of 5 lanes.
       * @return The θ-gap value.
@@ -291,8 +291,8 @@ void KeccakFDCLC::thetaTransposed(vector<Lane>& A) const
 {
     vector<Lane> C(5);
     for(unsigned int x=0; x<5; x++) {
-        C[x] = A[index(x,0)]; 
-        for(unsigned int y=1; y<5; y++) 
+        C[x] = A[index(x,0)];
+        for(unsigned int y=1; y<5; y++)
             C[x] ^= A[index(x,y)];
     }
     vector<Lane> D(5);
@@ -351,7 +351,7 @@ void KeccakFDCLC::lambdaAfterTheta(vector<Lane>& state, LambdaMode mode) const
     }
 }
 
-template<class Lane> 
+template<class Lane>
 void KeccakFDCLC::getThetaEffectFromParity(const vector<Lane>& C, vector<Lane>& D) const
 {
     if (D.size() != 5)

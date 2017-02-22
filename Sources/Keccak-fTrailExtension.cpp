@@ -88,17 +88,17 @@ int KnownSmallWeightStates::getMaxCompleteWeight() const
     return maxCompleteWeight;
 }
 
-void KnownSmallWeightStates::connect(const KeccakFPropagation& DCorLC, const vector<SliceValue>& inputState, 
+void KnownSmallWeightStates::connect(const KeccakFPropagation& DCorLC, const vector<SliceValue>& inputState,
     int maxWeightOut, vector<vector<SliceValue> >& compatibleStates) const
 {
     unsigned int inputNrRows = getNrActiveRows(inputState);
-    for(unsigned int weight=2; (weight<=maxWeightOut) && (weight<statesAfterChiPerWeight.size()); weight++)
+    for(unsigned int weight=2; (weight<=(unsigned int)maxWeightOut) && (weight<statesAfterChiPerWeight.size()); weight++)
         for(unsigned int i=0; i<statesAfterChiPerWeight[weight].size(); i++)
             if (getNrActiveRows(statesAfterChiPerWeight[weight][i]) == inputNrRows)
                 connect(DCorLC, inputState, statesAfterChiPerWeight[weight][i], compatibleStates);
 }
 
-void KnownSmallWeightStates::connect(const KeccakFPropagation& DCorLC, const vector<SliceValue>& inputState, 
+void KnownSmallWeightStates::connect(const KeccakFPropagation& DCorLC, const vector<SliceValue>& inputState,
     const vector<SliceValue>& candidate, vector<vector<SliceValue> >& compatibleStates) const
 {
     for(unsigned int z=0; z<DCorLC.laneSize; z++) {
@@ -119,7 +119,7 @@ void KnownSmallWeightStates::loadFromFile(const KeccakFPropagation& DCorLC, cons
     for( ; !fin.isEnd(); ++fin) {
         const Trail& trail = *fin;
         for(unsigned int i=(trail.firstStateSpecified ? 0 : 1); i<trail.weights.size(); i++)
-            if (trail.weights[i] <= maxCompleteWeight)
+            if (trail.weights[i] <= (unsigned int)maxCompleteWeight)
                 addState(DCorLC, trail.states[i]);
     }
 }
@@ -143,7 +143,7 @@ void KnownSmallWeightStates::saveToFile(const KeccakFPropagation& DCorLC, const 
 void KnownSmallWeightStates::addState(const KeccakFPropagation& DCorLC, const vector<SliceValue>& state)
 {
     unsigned int weight = DCorLC.getWeight(state);
-    if (weight > maxCompleteWeight) return;
+    if (weight > (unsigned int)maxCompleteWeight) return;
     vector<SliceValue> stateAfterChi;
     DCorLC.reverseLambda(state, stateAfterChi);
     statesAfterChiPerWeight[weight].push_back(stateAfterChi);
@@ -222,7 +222,7 @@ void KeccakFTrailExtension::recurseForwardExtendTrail(const Trail& trail, TrailF
 {
     int baseWeight = trail.totalWeight;
     int baseNrRounds  = trail.getNumberOfRounds();
-    int curNrRounds = baseNrRounds + 1;
+    unsigned int curNrRounds = baseNrRounds + 1;
     int curWeight = trail.weights.back();
     int maxWeightOut = maxTotalWeight - baseWeight
         - knownBounds.getMinWeight(nrRounds-baseNrRounds-1);
@@ -237,7 +237,7 @@ void KeccakFTrailExtension::recurseForwardExtendTrail(const Trail& trail, TrailF
     }
 
     const int minWeightInLookingForSmallWeightStates = 16;
-    if ((curWeight >= minWeightInLookingForSmallWeightStates) && (knownSmallWeightStates != 0) 
+    if ((curWeight >= minWeightInLookingForSmallWeightStates) && (knownSmallWeightStates != 0)
             && (maxWeightOut <= knownSmallWeightStates->getMaxCompleteWeight())) {
         vector<vector<SliceValue> > compatibleStates;
         knownSmallWeightStates->connect(*this, trail.states.back(), maxWeightOut, compatibleStates);
@@ -313,7 +313,7 @@ void KeccakFTrailExtension::backwardExtendTrail(const Trail& trail, TrailFetcher
         recurseBackwardExtendTrail(trail, trailsOut, nrRounds, maxTotalWeight, true);
     }
     else {
-        Trail trimmedTrailPrefix;
+        Trail trimmedTrailPrefix; // cut wrev(a0)
         for(unsigned int i=1; i<trail.states.size(); i++)
             trimmedTrailPrefix.append(trail.states[i], trail.weights[i]);
         recurseBackwardExtendTrail(trimmedTrailPrefix, trailsOut, nrRounds, maxTotalWeight, allPrefixes);
@@ -350,7 +350,7 @@ void KeccakFTrailExtension::recurseBackwardExtendTrail(const Trail& trail, Trail
         ReverseStateIterator i(stateAfterChi, *this, maxWeightOut);
         if (i.isEmpty())
             return;
-        int curNrRounds = baseNrRounds + 1;
+        unsigned int curNrRounds = baseNrRounds + 1;
         {
             stringstream str;
             str << dec << getNrActiveRows(stateAfterChi) << " active rows towards round -" << dec << curNrRounds;

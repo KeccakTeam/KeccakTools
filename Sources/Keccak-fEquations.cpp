@@ -22,13 +22,13 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 using namespace std;
 
-SymbolicBit::SymbolicBit() 
-    : value("0"), containsAddition(false) 
+SymbolicBit::SymbolicBit()
+    : value("0"), containsAddition(false)
 {
 }
 
-SymbolicBit::SymbolicBit(bool aValue) 
-    : value(aValue ? "1" : "0"), containsAddition(false) 
+SymbolicBit::SymbolicBit(bool aValue)
+    : value(aValue ? "1" : "0"), containsAddition(false)
 {
 }
 
@@ -73,7 +73,7 @@ void SymbolicBit::multiply(const SymbolicBit& a)
 }
 
 
-SymbolicLane::SymbolicLane() 
+SymbolicLane::SymbolicLane()
 {
 }
 
@@ -191,7 +191,7 @@ void KeccakFEquations::genRoundEquations(ostream& fout, int startRoundIndex, uns
 {
     char input = 'A';
     char output = 'B';
-    for(int i=startRoundIndex; i<startRoundIndex+nrRounds; i++) {
+    for(unsigned int i=startRoundIndex; i<startRoundIndex+nrRounds; i++) {
         if (!forSage)
             fout << "// --- Round " << dec << i << endl;
         string inputName(1, input);
@@ -263,7 +263,7 @@ void KeccakFEquations::genComponentEquations(ostream& fout, const string& prefix
 void KeccakFEquations::genAbsoluteValuesBeforeChi(ostream& fout, const vector<LaneValue>& input, const string& prefix, int startRoundIndex, unsigned nrRounds) const
 {
     vector<LaneValue> state(input);
-    for(int i=startRoundIndex; i<startRoundIndex+nrRounds; i++) {
+    for(unsigned int i=startRoundIndex; i<startRoundIndex+nrRounds; i++) {
         theta(state);
         rho(state);
         pi(state);

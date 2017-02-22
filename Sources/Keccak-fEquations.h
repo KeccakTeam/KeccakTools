@@ -47,7 +47,7 @@ public:
       */
     void genRoundEquations(ostream& fout, int startRoundIndex, unsigned nrRounds, bool forSage=false) const;
     /**
-      * Method that generate equations for the mappings θ, ρ, π, χ and ι 
+      * Method that generate equations for the mappings θ, ρ, π, χ and ι
       * of the chosen Keccak-<i>f</i> instance.
       *
       * @param  fout    The stream to which the equations are sent.
@@ -57,7 +57,7 @@ public:
     void genComponentEquations(ostream& fout, const string& prefixInput, const string& prefixOutput) const;
     /**
       * Method that, given the input to the chosen Keccak-<i>f</i> permutation,
-      * generates initialization equations to set the absolute value 
+      * generates initialization equations to set the absolute value
       * just before χ at each round.
       * This can be used in combination with KeccakFDCEquations::buildDCTrailFromPair()
       * and KeccakFDCEquations::genDCEquations() to test that the conditions
@@ -72,9 +72,9 @@ public:
     void genAbsoluteValuesBeforeChi(ostream& fout, const vector<LaneValue>& input, const string& prefix, int startRoundIndex, unsigned nrRounds) const;
 protected:
     /**
-      * Internal method to generate the equations from symbolic lanes. 
+      * Internal method to generate the equations from symbolic lanes.
       * The left hand side of the equations are the variables with prefix @a prefixOutput.
-      * The right hand side of the equations are the symbolic bits 
+      * The right hand side of the equations are the symbolic bits
       * in the symbolic lanes in @a state.
       *
       * @param  fout    The stream to which the equations are sent.
@@ -85,7 +85,7 @@ protected:
       */
     void genEquations(ostream& fout, const vector<SymbolicLane>& state, const string& prefixOutput, bool forSage=false) const;
     /**
-      * Internal method that initializes the symbolic bits of a symbolic state 
+      * Internal method that initializes the symbolic bits of a symbolic state
       * with variables using the given prefix.
       *
       * @param  state   The symbolic state to initialize.

@@ -106,7 +106,7 @@ public:
       * @return x + 5*z
       */
     inline unsigned int getXplus5Z() const { return x+5*z; }
-    /** An ordering operator, required when storing a ColumnPosition object 
+    /** An ordering operator, required when storing a ColumnPosition object
       * in a set or as the first member in maps.
       * @param  a   The column position at the left of the operator.
       * @param  az  The column position at the right of the operator.
@@ -143,7 +143,7 @@ public:
       * @return y + 5*z
       */
     inline unsigned int getYplus5Z() const { return y+5*z; }
-    /** An ordering operator, required when storing a RowPosition object 
+    /** An ordering operator, required when storing a RowPosition object
       * in a set or as the first member in maps.
       * @param  aRP  The row position at the left of the operator.
       * @param  bRP  The row position at the right of the operator.

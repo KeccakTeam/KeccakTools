@@ -29,8 +29,8 @@ typedef Exception SpongeException;
 
 /**
   * Class implementing the sponge construction.
-  * This class uses a given transformation (inherited from class 
-  * Transformation or Permutation). 
+  * This class uses a given transformation (inherited from class
+  * Transformation or Permutation).
   * The following restrictions are made:
   * - the input message can have any length (not necessarily a multiple
   *     of 8), but all calls to absorb() <em>except the last one</em>
@@ -40,12 +40,12 @@ typedef Exception SpongeException;
   */
 class Sponge {
 protected:
-    /** The transformation (or permutation) used by the sponge construction. 
+    /** The transformation (or permutation) used by the sponge construction.
       * The memory allocated by f is assumed to belong to the caller;
       * this class does not free the allocated memory.
       */
     const Transformation *f;
-    /** The padding rule used by the sponge construction. 
+    /** The padding rule used by the sponge construction.
       * The memory allocated by pad is assumed to belong to the caller;
       * this class does not free the allocated memory.
       */
@@ -54,7 +54,7 @@ protected:
     unsigned int capacity;
     /** The rate of the sponge construction. */
     unsigned int rate;
-    /** Boolean indicating whether the sponge is in the squeezing phase 
+    /** Boolean indicating whether the sponge is in the squeezing phase
       * (true) or in the absorbing phase (false). */
     bool squeezing;
     /** The state of the sponge construction. */
@@ -65,14 +65,14 @@ protected:
     deque<UINT8> squeezeBuffer;
 public:
     /**
-      * The constructor. The transformation, padding rule and rate are given to the 
+      * The constructor. The transformation, padding rule and rate are given to the
       * constructor, while the capacity is computed from the function width
       * and the requested rate.
       * The sponge construction is set to the absorbing phase.
       *
-      * @param  aF          A pointer to the transformation used in the 
+      * @param  aF          A pointer to the transformation used in the
       *                     sponge construction.
-      * @param  aPad        A pointer to the padding rule used in the 
+      * @param  aPad        A pointer to the padding rule used in the
       *                     sponge construction.
       * @param  aRate      The desired value of the rate (in bits),
       *                    not necessarily a multiple of 8.
@@ -83,6 +83,10 @@ public:
       * @param  other   A reference to the object to copy from.
       */
     Sponge(const Sponge& other);
+    /**
+      * The (virtual) destructor.
+      */
+    virtual ~Sponge(void) {}
     /** Method to reset the sponge to the initial state. */
     void reset();
     /**
@@ -116,23 +120,23 @@ public:
       */
     void absorb(const vector<UINT8>& input, unsigned int lengthInBits);
     /**
-      * Method to extract data from the squeezing phase. If in the 
+      * Method to extract data from the squeezing phase. If in the
       * absorbing phase, this function also switches to the squeezing phase.
       *
       * @param  output      The buffer where to store the squeezed data.
       * @param  desiredLengthInBits     The length in bits of the output.
-      *                     If the rate of the sponge is a multiple of 8, 
+      *                     If the rate of the sponge is a multiple of 8,
       *                     @a desiredOutputLength must be a multiple of 8.
       *                     Otherwise, @a desiredOutputLength must be equal to the rate.
       */
     void squeeze(UINT8 *output, unsigned int desiredLengthInBits);
     /**
-      * Method to extract data from the squeezing phase. If in the 
+      * Method to extract data from the squeezing phase. If in the
       * absorbing phase, this function also switches to the squeezing phase.
       *
       * @param  output      The buffer where to store the squeezed data.
       * @param  desiredLengthInBits     The length in bits of the output.
-      *                     If the rate of the sponge is a multiple of 8, 
+      *                     If the rate of the sponge is a multiple of 8,
       *                     @a desiredOutputLength must be a multiple of 8.
       *                     Otherwise, @a desiredOutputLength must be equal to the rate.
       */
@@ -155,18 +159,18 @@ public:
     friend ostream& operator<<(ostream& a, const Sponge& sponge);
 protected:
     /**
-      * Internal method that does the actual absorbing of the whole block 
+      * Internal method that does the actual absorbing of the whole block
       * in @a block.
       * @param  block  A block to absorb.
       */
     void absorbBlock(const vector<UINT8>& block);
     /**
-      * Internal method that absorbs the data still in absorbQueue, 
+      * Internal method that absorbs the data still in absorbQueue,
       * and then switches the sponge function to the squeezing phase.
       */
     void flushAndSwitchToSqueezingPhase();
     /**
-      * Internal method that does the actual squeezing and stores the whole 
+      * Internal method that does the actual squeezing and stores the whole
       * squeezed block into squeezeBuffer.
       */
     void squeezeIntoBuffer();

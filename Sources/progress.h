@@ -20,6 +20,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include <string>
 #include <vector>
 #include "types.h"
+#include <algorithm>
 
 using namespace std;
 

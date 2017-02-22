@@ -27,11 +27,11 @@ public:
     /**
       * The constructor. It dynamically allocates a KeccakF permutation.
       *
-      * @param  aRate       The desired rate (in bits) of the Keccak sponge 
+      * @param  aRate       The desired rate (in bits) of the Keccak sponge
       *                     function.
-      * @param  aCapacity   The desired capacity (in bits) of the Keccak sponge 
+      * @param  aCapacity   The desired capacity (in bits) of the Keccak sponge
       *                     function. The sum of the rate and capacity must
-      *                     be equal to the width of one of the Keccak-<i>f</i> 
+      *                     be equal to the width of one of the Keccak-<i>f</i>
       *                     permutations.
       */
     Keccak(unsigned int aRate = 1024, unsigned int aCapacity = 576);
@@ -40,7 +40,7 @@ public:
       */
     virtual ~Keccak();
     /**
-      * Method that returns a string describing the instance of the Keccak sponge 
+      * Method that returns a string describing the instance of the Keccak sponge
       * function.
       */
     string getDescription() const;
@@ -73,7 +73,7 @@ public:
       */
     virtual ~ReducedRoundKeccak();
     /**
-      * Method that returns a string describing the instance of the Keccak sponge 
+      * Method that returns a string describing the instance of the Keccak sponge
       * function.
       */
     string getDescription() const;

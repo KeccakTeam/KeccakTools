@@ -20,6 +20,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include <string>
 #include <vector>
 #include "transformations.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -470,7 +471,7 @@ private:
 template<class Lane>
 void KeccakF::forward(vector<Lane>& state) const
 {
-    for(int i=startRoundIndex; i<startRoundIndex+nrRounds; i++)
+    for(unsigned int i=startRoundIndex; i<startRoundIndex+nrRounds; i++)
         round(state, i);
 }
 

@@ -47,14 +47,14 @@ inline RowValue getParityFromPackedParity(const PackedParity& parity, const unsi
 }
 
 /** This function converts from a vector of parity of each slice
-  * to a PackedParity value. 
+  * to a PackedParity value.
   * @param   parity     The parity of a state as vector of row values.
   * @return The parity of a state as a PackedParity value.
   */
 PackedParity packParity(const vector<RowValue>& parity);
 
-/** This function converts from a PackedParity value 
-  * to a vector of parity of each slice. 
+/** This function converts from a PackedParity value
+  * to a vector of parity of each slice.
   * @param   packedParity   The parity of a state as a PackedParity value.
   * @param   parity         The parity of a state as a vector of row values.
   * @param   laneSize       The number of slices.
@@ -81,14 +81,14 @@ PackedParity getParity(const vector<SliceValue>& state);
   */
 void getParity(const vector<SliceValue>& state, vector<RowValue>& parity);
 
-/** This function computes the parity of a state, sheet per sheet, 
+/** This function computes the parity of a state, sheet per sheet,
   * and returns it in a vector of lane values.
   * @param   state  The value of the state given as a vector of lanes.
   * @param   parity The parity of @a state as a vector of 5 lane values.
   */
 void getParity(const vector<LaneValue>& state, vector<LaneValue>& parity);
 
-/** This function converts the parity of a state 
+/** This function converts the parity of a state
   * expressed as a vector of parities of each slice
   * into a vector of parities of each sheet.
   * @param   paritySlices   The parity as a vector of rows.

@@ -59,8 +59,8 @@ void getParity(const vector<LaneValue>& state, vector<LaneValue>& parity)
     if (parity.size() != nrRowsAndColumns)
         parity.resize(nrRowsAndColumns);
     for(unsigned int x=0; x<nrRowsAndColumns; x++) {
-        parity[x] = state[KeccakF::index(x,0)]; 
-        for(unsigned int y=1; y<5; y++) 
+        parity[x] = state[KeccakF::index(x,0)];
+        for(unsigned int y=1; y<5; y++)
             parity[x] ^= state[KeccakF::index(x,y)];
     }
 }

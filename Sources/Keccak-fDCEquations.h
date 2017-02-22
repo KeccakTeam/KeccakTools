@@ -42,7 +42,7 @@ public:
     void buildDCTrailFromPair(const vector<SliceValue>& a1, const vector<SliceValue>& a2, Trail& trail, int startRoundIndex, unsigned nrRounds) const;
     /** This method displays the equations from round to round
       * that a pair has to satisfy to follow the given trail.
-      * @note Note that for row patterns 11111, 5 equations are generated, 
+      * @note Note that for row patterns 11111, 5 equations are generated,
       *       although the fifth is redundant with the 4 first.
       * @param   fout       The stream to display to.
       * @param   trail      The trail to follow.

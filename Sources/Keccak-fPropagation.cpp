@@ -69,12 +69,12 @@ void KeccakFPropagation::directRhoPiAfterTheta(BitPosition& point) const
 
 KeccakFPropagation::KeccakFPropagation(const KeccakFDCLC& aParent, KeccakFPropagation::DCorLC aDCorLC)
     : directRowOutputListPerInput((aDCorLC == DC) ? aParent.diffChi : aParent.corrInvChi),
-        reverseRowOutputListPerInput((aDCorLC == DC) ? aParent.diffInvChi : aParent.corrChi),
-        parent(aParent),
-        laneSize(parent.getWidth()/25),
-        name((aDCorLC == DC) ? "DC" : "LC"),
-        lambdaMode((aDCorLC == DC) ? KeccakFDCLC::Straight : KeccakFDCLC::Transpose),
-        reverseLambdaMode((aDCorLC == DC) ? KeccakFDCLC::Inverse : KeccakFDCLC::Dual)
+    reverseRowOutputListPerInput((aDCorLC == DC) ? aParent.diffInvChi : aParent.corrChi),
+    parent(aParent),
+    laneSize(parent.getWidth()/25),
+    name((aDCorLC == DC) ? "DC" : "LC"),
+    lambdaMode((aDCorLC == DC) ? KeccakFDCLC::Straight : KeccakFDCLC::Transpose),
+    reverseLambdaMode((aDCorLC == DC) ? KeccakFDCLC::Inverse : KeccakFDCLC::Dual)
 {
     initializeAffine();
     initializeWeight();
@@ -705,6 +705,7 @@ SliceValue KeccakFPropagation::getMinimumInKernelSliceAfterChi(const SliceValue&
 
 SliceValue KeccakFPropagation::getMinimumInKernelSliceBeforeChi(const SliceValue& sliceAfterChi) const
 {
+    (void)sliceAfterChi;
    const RowValue minRowInKernel[32] = {0x00,0x01,0x02,0x00, 0x04,0x00,0x00,0x00, 0x08,0x00,0x00,0x00, 0x00,0x00,0x00,0x00,
                                         0x10,0x00,0x00,0x00, 0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00};
 //  minRowInKernel[0x01] = 0x01; minRowInKernel[0x02] = 0x02; minRowInKernel[0x04] = 0x04; minRowInKernel[0x08] = 0x08; minRowInKernel[0x10] = 0x10;

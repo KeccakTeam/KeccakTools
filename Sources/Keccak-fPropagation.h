@@ -31,7 +31,7 @@ class ReverseStateIterator;
   * The convention of the direction of propagation is as described in the Keccak main document:
   * - "direct" means in the direction that allows to describe the output patterns in an affine space
   *   (same direction as the rounds for DC, inverse rounds for LC);
-  * - "reverse" means the opposite of "direct" 
+  * - "reverse" means the opposite of "direct"
   *   (hence same direction as the inverse rounds for DC, rounds for LC).
   *
   * In this context, the words "before" and "after" refer to the "direct" direction.
@@ -96,7 +96,7 @@ public:
       * @return The propagation type as a DCorLC value.
       */
     DCorLC getPropagationType() const;
-    /** This function displays the possible patterns and their weights. 
+    /** This function displays the possible patterns and their weights.
       * @param  out The stream to display to.
       */
     void display(ostream& out) const;
@@ -131,7 +131,7 @@ public:
       */
     unsigned int getMinReverseWeight(const vector<SliceValue>& state) const;
     /** This method returns the minimum reverse weight of a state, to which
-      * the reverse λ is first applied. 
+      * the reverse λ is first applied.
       * This allows to give a state value before χ (so after λ),
       * which is then converted to a state value after the χ of the previous round
       * (so before λ).
@@ -147,7 +147,7 @@ public:
       * @param  dy  The y coordinate to update.
       */
     void directPi(unsigned int& dx, unsigned int& dy) const;
-    /** This method multiplies the vector (dx, dy)<sup>T</sup> by the matrix π or π<sup>-1</sup> 
+    /** This method multiplies the vector (dx, dy)<sup>T</sup> by the matrix π or π<sup>-1</sup>
       * to the left:
       * - for DC, π<sup>-1</sup> is used;
       * - for LC, π is used.
@@ -179,14 +179,14 @@ public:
       * @param  point   The coordinates (x, y, z) to update.
       */
     void reverseRhoPiBeforeTheta(BitPosition& point) const;
-    /** This method computes a lower bound on the propagation weight 
+    /** This method computes a lower bound on the propagation weight
       * for any state having the given the Hamming weight.
       * The formula is given in Section 3.1 of "The Keccak reference".
       * @param  hammingWeight   The Hamming weight.
       * @return The computed lower bound.
       */
     unsigned int getLowerBoundOnWeightGivenHammingWeight(unsigned int hammingWeight) const;
-    /** This method computes a lower bound on the propagation weight 
+    /** This method computes a lower bound on the propagation weight
       * for any state with given lower bounds on its Hamming weight and number of active rows.
       * The formulas are as follows. Let <i>l</i> be the resulting lower bound,
       * <i>n</i> be the number of active rows and <i>h</i> be the Hamming weight.
@@ -203,14 +203,14 @@ public:
       * @return The computed lower bound.
       */
     unsigned int getLowerBoundOnWeightGivenHammingWeightAndNrActiveRows(unsigned int hammingWeight, unsigned int nrOfActiveRows) const;
-    /** This method computes a lower bound on the minimum reverse weight 
+    /** This method computes a lower bound on the minimum reverse weight
       * for any state having the given Hamming weight.
       * The formula is given in Section 3.1 of "The Keccak reference".
       * @param  hammingWeight   The Hamming weight.
       * @return The computed lower bound.
       */
     unsigned int getLowerBoundOnReverseWeightGivenHammingWeight(unsigned int hammingWeight) const;
-    /** This method computes a lower bound on the minimum reverse weight 
+    /** This method computes a lower bound on the minimum reverse weight
       * for any state with given lower bounds on its Hamming weight and number of active rows.
       * The formulas are as follows. Let <i>l</i> be the resulting lower bound,
       * <i>n</i> be the number of active rows and <i>h</i> be the Hamming weight.
@@ -259,7 +259,7 @@ public:
       * @return The affine space as a AffineSpaceOfStates object.
       */
     AffineSpaceOfStates buildStateBase(const vector<SliceValue>& state, bool packedIfPossible = false) const;
-    /** This method builds an iterator over the possible states propagating through χ 
+    /** This method builds an iterator over the possible states propagating through χ
       * in the "reverse" direction. The iterator can be restricted to run through the states
       * only up to a given maximum propagation weight.
       * @param   stateAfterChi  The state just after χ given as a vector of slices.
@@ -385,7 +385,7 @@ public:
       * See also Trail::produceHumanReadableFile().
       * @param   fileNameIn The name of the file containing the trails.
       * @param   fout       The output stream to send the report to.
-      * @param   maxWeight  The maximum weight to display trails. 
+      * @param   maxWeight  The maximum weight to display trails.
       *                     If 0, the maximum weight of trails to display is
       *                     computed automatically so that a reasonable number
       *                     of trails are displayed in the report.
@@ -402,15 +402,15 @@ public:
      *  @param p    The parity, packed.
      */
     void displayParity(ostream& fout, PackedParity p) const;
-    /** This method builds a file name by prepending "DC" or "LC" as a prefix 
-      * and appending a given suffix to the name produced by 
+    /** This method builds a file name by prepending "DC" or "LC" as a prefix
+      * and appending a given suffix to the name produced by
       * KeccakFDCLC::getName().
       * @param   suffix The given suffix.
       * @return The constructed file name.
       */
     string buildFileName(const string& suffix) const;
-    /** This method builds a file name by prepending "DC" or "LC" and a given prefix 
-      * and appending a given suffix to the name produced by 
+    /** This method builds a file name by prepending "DC" or "LC" and a given prefix
+      * and appending a given suffix to the name produced by
       * KeccakFDCLC::getName().
       * @param   prefix The given prefix.
       * @param   suffix The given suffix.
@@ -478,7 +478,7 @@ public:
       * @param   DCorLC         A reference to the KeccakFPropagation instance that
       *                         determines the type of propagation.
       * @param   aMaxWeight     The iterator will run through the states whose propagation
-      *                         weight is not higher than this parameter. 
+      *                         weight is not higher than this parameter.
       */
     ReverseStateIterator(const vector<SliceValue>& stateAfterChi, const KeccakFPropagation& DCorLC, unsigned int aMaxWeight);
     /** This method tells whether the iterator has reached the end of the possible states.

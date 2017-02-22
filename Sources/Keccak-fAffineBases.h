@@ -36,7 +36,7 @@ public:
 public:
     /** The constructor creates an affine space with a single element: 0. */
     AffineSpaceOfRows() { offset = 0; }
-    /** This method adds a generator to the set of generators. 
+    /** This method adds a generator to the set of generators.
       * @param   generator  The generator to add
       */
     void addGenerator(RowValue generator) { generators.push_back(generator); }
@@ -44,7 +44,7 @@ public:
       * @param   anOffset   The new offset value.
       */
     void setOffset(RowValue anOffset) { offset = anOffset; }
-    /** This method displays the offset and generators. 
+    /** This method displays the offset and generators.
       * @param   fout       The stream to display to.
       */
     void display(ostream& fout) const;
@@ -59,16 +59,16 @@ public:
 };
 
 /** This class expresses an affine space of slice values.
-  * The members of the affine space are determined by the offset 
+  * The members of the affine space are determined by the offset
   * plus any linear combination of the generators.
   *
   * The parity of a slice is the sum of all its rows.
-  * In order to easily generate all the slice values with a given parity, 
-  * the generators are grouped in two sets. 
+  * In order to easily generate all the slice values with a given parity,
+  * the generators are grouped in two sets.
   * - The parity-kernel generators (in kernelGenerators) are the generators with parity zero.
   * - The parity-offset generators (in offsetGenerators) are the generators with non-zero parity.
   *
-  * The generators in offsetGenerators have linearly independent parities. 
+  * The generators in offsetGenerators have linearly independent parities.
   * Hence, to generate all the slice values with a given requested parity, one has to
   * - first, take the parity of the slice offset
   * - then, combine it with some parity-offset generators to obtain the requested parity (if possible);
@@ -93,7 +93,7 @@ public:
       * the next generators necessarily have parity bits #m&lt;=n at 0.
       */
     vector<SliceValue> offsetGenerators;
-    /** This vector contains the parities of offsetGenerators, i.e., 
+    /** This vector contains the parities of offsetGenerators, i.e.,
       * offsetParities[i] contains the parity of offsetGenerators[i].
       */
     vector<RowValue> offsetParities;
@@ -152,7 +152,7 @@ public:
       * @return The current element in the affine space.
       */
     const vector<T>& operator*() const;
-    /** This method displays the offset and generators. 
+    /** This method displays the offset and generators.
       * @param   fout       The stream to display to.
       */
     void display(ostream& fout) const;
@@ -192,7 +192,7 @@ void AffineSpaceIterator<T>::operator++()
 {
     if (i < (end-1)) {
         unsigned int index = 0;
-        while((i & ((UINT64)1<<index)) != 0) 
+        while((i & ((UINT64)1<<index)) != 0)
             index++;
         for(unsigned int z=0; z<current.size(); z++)
             current[z] ^= (*base)[index][z];
@@ -234,10 +234,11 @@ UINT64 AffineSpaceIterator<T>::getCount() const
   */
 typedef AffineSpaceIterator<SliceValue> SlicesAffineSpaceIterator;
 
+
 /** This class expresses an affine space of states.
-  * The members of the affine space are determined by the offset 
+  * The members of the affine space are determined by the offset
   * plus any linear combination of the generators.
-  * The generators are split into two sets: 
+  * The generators are split into two sets:
   * - one set of generators that have a zero parity (called "parity-kernel"), and
   * - one set of generators that have a non-zero parity (called "parity-offset").
   * This allows one to address a subspace of states with a given parity.
@@ -260,16 +261,16 @@ public:
       * This can be used to generate an offset for a given parity.
       * The parity-offset generators are organized such that their parity
       * makes an upper-triangular matrix. In other words, whenever
-      * a generator has parity bit <i>n</i> set to 1 
+      * a generator has parity bit <i>n</i> set to 1
       * and parity bits <i>m</i>&lt;<i>n</i> set to 0,
       * the next generators necessarily have parity bits <i>m</i>&lt;=<i>n</i> set to 0.
       */
     vector<vector<SliceValue> > offsetGenerators;
-    /** If packed is true, this vector contains the parities of offsetGenerators, i.e., 
+    /** If packed is true, this vector contains the parities of offsetGenerators, i.e.,
       * offsetParitiesPacked[i] contains the parity of offsetGenerators[i].
       */
     vector<PackedParity> offsetParitiesPacked;
-    /** If packed is false, this vector contains the parities of offsetGenerators, i.e., 
+    /** If packed is false, this vector contains the parities of offsetGenerators, i.e.,
       * offsetParities[i] contains the parity of offsetGenerators[i].
       */
     vector<vector<RowValue> > offsetParities;
@@ -289,24 +290,24 @@ protected:
     /** The lane size. */
     unsigned int laneSize;
 public:
-    /** This constructor initializes the different attributes from the given generators, 
+    /** This constructor initializes the different attributes from the given generators,
       * the offset and their parities.
       * This function is to be called only if the number of slices is low enough
       * so that PackedParity can contain all the parities.
       * @note The passed vectors aGenerators and aGeneratorParities are modified in the process.
       * @param   aLaneSize          The lane size.
-      * @param   aGenerators        The set of generators of the affine space, 
+      * @param   aGenerators        The set of generators of the affine space,
       *                             each given as a vector of slices.
       * @param   aGeneratorParities The corresponding parities, each given in a PackedParity type.
       * @param   aOffset            The offset of the affine space, as a vector of slices.
       * @param   aOffsetParity      The parity of the offset, given in a PackedParity type.
       */
     AffineSpaceOfStates(unsigned int aLaneSize, vector<vector<SliceValue> >& aGenerators, vector<PackedParity>& aGeneratorParities, const vector<SliceValue>& aOffset, PackedParity aOffsetParity);
-    /** This constructor initializes the different attributes from the given generators, 
+    /** This constructor initializes the different attributes from the given generators,
       * the offset and their parities.
       * @note   The passed vectors aGenerators and aGeneratorParities are modified in the process.
       * @param   aLaneSize          The lane size.
-      * @param   aGenerators        The set of generators of the affine space, 
+      * @param   aGenerators        The set of generators of the affine space,
       *                             each given as a vector of slices.
       * @param   aGeneratorParities The corresponding parities, each given as a vector of rows.
       * @param   aOffset            The offset of the affine space, as a vector of slices.
@@ -314,7 +315,7 @@ public:
       */
     AffineSpaceOfStates(unsigned int aLaneSize, vector<vector<SliceValue> >& aGenerators, vector<vector<RowValue> >& aGeneratorParities, const vector<SliceValue>& aOffset, const vector<RowValue>& aOffsetParity);
     /** This method returns a state value (in argument @a output) with a given parity.
-      * From the offset and the parity-offset generators of the affine space, this method 
+      * From the offset and the parity-offset generators of the affine space, this method
       * computes an element that has the given parity. (Note that other elements with the same parity
       * can be generated by adding any linear combination of parity-kernel generators.)
       * If the given parity cannot be reached, false is returned.
@@ -324,7 +325,7 @@ public:
       */
     bool getOffsetWithGivenParity(PackedParity parity, vector<SliceValue>& output) const;
     /** This method returns a state value (in argument @a output) with a given parity.
-      * From the offset and the parity-offset generators of the affine space, this method 
+      * From the offset and the parity-offset generators of the affine space, this method
       * computes an element that has the given parity. (Note that other elements with the same parity
       * can be generated by adding any linear combination of parity-kernel generators.)
       * If the given parity cannot be reached, false is returned.
@@ -338,14 +339,14 @@ public:
       */
     SlicesAffineSpaceIterator getIterator() const;
     /** This method returns an iterator to the affine space restricted to a given parity.
-      * In the returned iterator, its offset is computed as in method getOffsetWithGivenParity() 
+      * In the returned iterator, its offset is computed as in method getOffsetWithGivenParity()
       * and its generators are the parity-kernel generators.
       * @param   parity     The requested parity.
       * @return An iterator to all states in the affine space, restricted to the requested parity.
       */
     SlicesAffineSpaceIterator getIteratorWithGivenParity(PackedParity parity) const;
     /** This method returns an iterator to the affine space restricted to a given parity.
-      * In the returned iterator, its offset is computed as in method getOffsetWithGivenParity() 
+      * In the returned iterator, its offset is computed as in method getOffsetWithGivenParity()
       * and its generators are the parity-kernel generators.
       * @param   parity     The requested parity.
       * @return An iterator to all states in the affine space, restricted to the requested parity.
@@ -355,7 +356,7 @@ public:
       * @return An iterator to all states in the affine space with zero parity (i.e., in the kernel).
       */
     SlicesAffineSpaceIterator getIteratorInKernel() const;
-    /** This method displays the offset and generators. 
+    /** This method displays the offset and generators.
       * @param   fout       The stream to display to.
       */
     void display(ostream& fout) const;

@@ -59,7 +59,7 @@ public:
     bool successorOf(const OrbitalPosition& other, const vector<unsigned int>& yMin, unsigned int laneSize);
 };
 
-/** This abstract class iterates on all 2-round trail cores with a given parity, 
+/** This abstract class iterates on all 2-round trail cores with a given parity,
   * limited by some budget defined in a derived class.
   */
 class KeccakFTrailWithGivenParityIterator : public TrailIterator
@@ -97,7 +97,7 @@ protected:
       * @return True iff the active bit could and was added.
       */
     virtual bool pushBitInUnaffectedOddColumn(const ColumnPosition& columnBeforeTheta, unsigned int y) = 0;
-    /** This abstract method is called when the iteration adds 
+    /** This abstract method is called when the iteration adds
       * an active pair of bits, called an orbital.
       * It returns true iff the budget allows this addition.
       * If this method returns true, the pop() method will later be called to remove the active bits.
@@ -107,8 +107,8 @@ protected:
       */
     virtual bool pushOrbitalInUnaffectedColumn(const OrbitalPosition& orbital) = 0;
     /** This abstract method is called when the iteration removes active bits
-      * added, corresponding to a call either 
-      * to pushValueInAffectedColumn(), pushBitInUnaffectedOddColumn() or 
+      * added, corresponding to a call either
+      * to pushValueInAffectedColumn(), pushBitInUnaffectedOddColumn() or
       * pushOrbitalInUnaffectedColumn(), as on a stack.
       */
     virtual void pop() = 0;
@@ -117,7 +117,7 @@ protected:
     virtual void getTrail() = 0;
     bool first();
     bool next();
-    
+
     // Stack 1 for affected columns
     unsigned int S1_height;
     stack<unsigned int> S1_valueIndex;
@@ -128,7 +128,7 @@ protected:
     bool S1_nextTop();
     bool S1_first();
     bool S1_next();
-    
+
     // Stack 2 for unaffected odd columns
     unsigned int S2_height;
     stack<unsigned int> S2_y;
@@ -138,7 +138,7 @@ protected:
     bool S2_nextTop();
     bool S2_first();
     bool S2_next();
-    
+
     // Stack 3 for orbitals
     unsigned int S3_height;
     vector<unsigned int> S3_yMin;
@@ -150,14 +150,14 @@ protected:
 
 public:
     /** The constructor.
-      * @param   DCorLC The propagation context of the trail, 
+      * @param   DCorLC The propagation context of the trail,
       *                 as a reference to a KeccakFPropagation object.
       * @param  aParity The parity as a vector of row values.
-      * @param  aOrbitals   If false, only the states with minimum total 
+      * @param  aOrbitals   If false, only the states with minimum total
       *     Hamming weight (before and after θ) are generated, i.e.,
       *     no orbitals are added.
       */
-    KeccakFTrailWithGivenParityIterator(const KeccakFPropagation& aDCorLC, 
+    KeccakFTrailWithGivenParityIterator(const KeccakFPropagation& aDCorLC,
         const vector<RowValue>& aParity, bool aOrbitals = true);
 
     /** See TrailIterator::isEnd(). */
@@ -176,18 +176,18 @@ public:
     const Trail& operator*();
 };
 
-/** This class iterates on all 2-round trail cores with a given parity, 
+/** This class iterates on all 2-round trail cores with a given parity,
  * such that the weight of the core is not greater than a given value.
  */
-class KeccakFTwoRoundTrailCoreWithGivenParityIterator : public KeccakFTrailWithGivenParityIterator 
+class KeccakFTwoRoundTrailCoreWithGivenParityIterator : public KeccakFTrailWithGivenParityIterator
 {
 protected:
     int maxWeight;
     stack<StateAsVectorOfSlices> stack_stateAtA, stack_stateAtB;
     stack<unsigned int> stack_weight;
-public: 
+public:
     /** The constructor.
-      * @param   DCorLC The propagation context of the trail, 
+      * @param   DCorLC The propagation context of the trail,
       *                 as a reference to a KeccakFPropagation object.
       * @param  aParity The parity as a vector of row values.
       * @param  aOrbitals   See KeccakFTrailWithGivenParityIterator::KeccakFTrailWithGivenParityIterator().

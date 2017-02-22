@@ -41,6 +41,7 @@ void AffineSpaceOfRows::display(ostream& fout) const
     fout << ">" << endl;
 }
 
+
 // -------------------------------------------------------------
 //
 // AffineSpaceOfSlices
@@ -130,7 +131,6 @@ void AffineSpaceOfSlices::display(ostream& fout) const
 bool AffineSpaceOfSlices::getOffsetWithGivenParity(RowValue parity, SliceValue& output) const
 {
     output = offset;
-    RowValue outputParity = offsetParity;
     RowValue correctionParity = parity^offsetParity;
 
     unsigned int i = 0;
@@ -150,6 +150,7 @@ bool AffineSpaceOfSlices::getOffsetWithGivenParity(RowValue parity, SliceValue& 
     }
     return (correctionParity == 0);
 }
+
 
 // -------------------------------------------------------------
 //
@@ -315,7 +316,6 @@ bool AffineSpaceOfStates::getOffsetWithGivenParity(PackedParity parity, vector<S
     }
     else {
         output = offset;
-        PackedParity outputParity = offsetParityPacked;
         PackedParity correctionParity = parity^offsetParityPacked;
 
         unsigned int i = 0;

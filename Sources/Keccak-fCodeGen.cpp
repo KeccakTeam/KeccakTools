@@ -184,8 +184,8 @@ unsigned int KeccakFCodeGen::schedule(unsigned int i) const
         return i;
 }
 
-void KeccakFCodeGen::genCodePlanePerPlane(ostream& fout, bool prepareTheta, 
-                                     SliceValue inChiMask, SliceValue outChiMask, 
+void KeccakFCodeGen::genCodePlanePerPlane(ostream& fout, bool prepareTheta,
+                                     SliceValue inChiMask, SliceValue outChiMask,
                                      string A, string B, string C,
                                      string D, string E, string header) const
 {
@@ -255,7 +255,7 @@ void KeccakFCodeGen::genCodePlanePerPlane(ostream& fout, bool prepareTheta,
                 bool LC1 = (M1==M2) && (M0 == M1);
                 bool LC2 = (M1==M2) && (M0 != M1);
                 bool LOR = ((!M1) && M2) || (M0 && (M1==M2));
-                bool LC0 = !LOR==M0; 
+                bool LC0 = !LOR==M0;
                 // χ
                 fout << "    " << buildWordName(E, x, y, zeta) << " = ";
                 fout << strXOR(
@@ -322,7 +322,7 @@ unsigned int getXplus2Y(unsigned int x, unsigned int y)
 
 void KeccakFCodeGen::genCodeInPlace(ostream& fout,
     bool earlyParity,
-    SliceValue inChiMask, SliceValue outChiMask, 
+    SliceValue inChiMask, SliceValue outChiMask,
     string A, string B, string C, string D, string header) const
 {
     if (interleavingFactor > 2)
@@ -348,13 +348,13 @@ void KeccakFCodeGen::genCodeInPlace(ostream& fout,
         fout << header << endl;
 
     vector<unsigned int> O(25, 0);
-    
+
     for(unsigned int i=0; i<4; i++) {
         if (!earlyParity) {
             for(unsigned int x=0; x<5; x++)
             for(unsigned int zeta=0; zeta<interleavingFactor; zeta++) {
                 fout << "    " << buildWordName(C, x, zeta) << " = ";
-                fout << 
+                fout <<
                     strXOR(buildWordName(A, x, getInPlaceY(i, x, 0), (zeta+O[index(x, getInPlaceY(i, x, 0))])%interleavingFactor),
                     strXOR(buildWordName(A, x, getInPlaceY(i, x, 1), (zeta+O[index(x, getInPlaceY(i, x, 1))])%interleavingFactor),
                     strXOR(buildWordName(A, x, getInPlaceY(i, x, 2), (zeta+O[index(x, getInPlaceY(i, x, 2))])%interleavingFactor),
@@ -390,7 +390,7 @@ void KeccakFCodeGen::genCodeInPlace(ostream& fout,
                 unsigned int r = (rhoOffsets[index(x, getXplus2Y(x, y))] / interleavingFactor) % wordSize
                     + ((zeta < rModS) ? 1 : 0);
                 zetapp[xpp] = (zetaprime + O[index(xpp, ypp)])%interleavingFactor;
-                
+
                 // θ then ρ then π
                 fout << "    " << buildWordName(B, getXplus2Y(x, y)) << " = ";
                 fout << strROL((string("(")+strXOR(buildWordName(A, xpp, ypp, zetapp[xpp]),
@@ -406,7 +406,7 @@ void KeccakFCodeGen::genCodeInPlace(ostream& fout,
                 bool LC1 = (M1==M2) && (M0 == M1);
                 bool LC2 = (M1==M2) && (M0 != M1);
                 bool LOR = ((!M1) && M2) || (M0 && (M1==M2));
-                bool LC0 = !LOR==M0; 
+                bool LC0 = !LOR==M0;
                 // χ
                 fout << "    " << buildWordName(A, xpp, ypp, zetapp[xpp]) << " = ";
                 fout << strXOR(
@@ -455,7 +455,7 @@ void KeccakFCodeGen::genCodeForPrepareTheta(ostream& fout, string A, string C) c
     for(unsigned int x=0; x<5; x++)
     for(unsigned int z=0; z<interleavingFactor; z++) {
         fout << "    " << buildWordName(C, x, z) << " = ";
-        fout << 
+        fout <<
             strXOR(buildWordName(A, x, 0, z),
             strXOR(buildWordName(A, x, 1, z),
             strXOR(buildWordName(A, x, 2, z),
@@ -538,6 +538,7 @@ void KeccakFCodeGen::genCopyFromStateAndXor(ostream& fout, unsigned int bitsToXo
 
 void KeccakFCodeGen::genCopyToState(ostream& fout, string A, string state, string input) const
 {
+    (void)input;
     unsigned int i=0;
     for(unsigned int y=0; y<5; y++)
     for(unsigned int x=0; x<5; x++)
@@ -600,18 +601,18 @@ void KeccakFCodeGen::genMacroFile(ostream& fout, bool laneComplementing) const
         const SliceValue outChiMask = 0x121106; // see "Keccak implementation overview", Section "The lane complementing transform"
         fout << "#ifdef UseBebigokimisa" << endl;
         genCodePlanePerPlane(fout, true, inChiMask, outChiMask,
-            "A##", "B", "C", "D", "E##", 
+            "A##", "B", "C", "D", "E##",
             "#define thetaRhoPiChiIotaPrepareTheta(i, A, E) \\");
         genCodePlanePerPlane(fout, false, inChiMask, outChiMask,
-            "A##", "B", "C", "D", "E##", 
+            "A##", "B", "C", "D", "E##",
             "#define thetaRhoPiChiIota(i, A, E) \\");
         fout << "#else // UseBebigokimisa" << endl;
     }
     genCodePlanePerPlane(fout, true, 0, 0,
-        "A##", "B", "C", "D", "E##", 
+        "A##", "B", "C", "D", "E##",
         "#define thetaRhoPiChiIotaPrepareTheta(i, A, E) \\");
     genCodePlanePerPlane(fout, false, 0, 0,
-        "A##", "B", "C", "D", "E##", 
+        "A##", "B", "C", "D", "E##",
         "#define thetaRhoPiChiIota(i, A, E) \\");
     if (laneComplementing)
         fout << "#endif // UseBebigokimisa" << endl << endl;
@@ -683,7 +684,7 @@ string KeccakFCodeGen::strANDORnot(const string& A, const string& B, bool LC1, b
     stringstream str;
 
     if (outputMacros) {
-        str << (LOR ? "OR" : "AND") << (LC1 ? "n" : "u") << (LC2 ? "n" : "u") 
+        str << (LOR ? "OR" : "AND") << (LC1 ? "n" : "u") << (LC2 ? "n" : "u")
             << dec << wordSize << "(";
         str << A << ", " << B;
         str << ")";

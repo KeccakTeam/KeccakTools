@@ -14,13 +14,23 @@
  * http://creativecommons.org/publicdomain/zero/1.0/
  */
 
+#include <sstream>
 #include <string>
 #include <vector>
 #include "bitstring.h"
 
 using namespace std;
 
-UINT8  enc8(unsigned int x);
+static UINT8 enc8(unsigned int x)
+{
+    if (x > 255) {
+        stringstream s;
+        s << "The integer " << x << " cannot be encoded on 8 bits.";
+        throw Exception(s.str());
+    }
+    else
+        return UINT8(x);
+}
 
 static void _assert(bool condition, const string &synopsis, const char *fct)
 {

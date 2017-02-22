@@ -150,7 +150,11 @@ const ColumnValue KeccakFTrailWithGivenParityIterator::oddValues[16] = {
 
 KeccakFTrailWithGivenParityIterator::KeccakFTrailWithGivenParityIterator(const KeccakFPropagation& aDCorLC,
         const vector<RowValue>& aParity, bool aOrbitals)
-    : TrailIterator(aDCorLC), laneSize(DCorLC.laneSize), orbitals(aOrbitals), C(aParity), initialized(false)
+    : TrailIterator(aDCorLC),
+    laneSize(DCorLC.laneSize),
+    orbitals(aOrbitals),
+    C(aParity),
+    initialized(false)
 {
     DCorLC.directThetaEffectFromParities(C, D);
     S3_yMin.assign(5*laneSize, 0);

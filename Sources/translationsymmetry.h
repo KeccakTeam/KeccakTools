@@ -36,7 +36,7 @@ bool isSmaller(const std::vector<T>& a, const std::vector<T>& b)
     return false;
 }
 
-/** This function returns whether the given vector is smaller 
+/** This function returns whether the given vector is smaller
   * after translation than itself.
   * @param  a   The vector to compare.
   * @param  dz  The amount of translation.

@@ -43,7 +43,7 @@ typedef unsigned char ColumnValue;
 
 /** The SliceValue type is one 32-bit word, containing the 5
   * rows of a slice, each located in 5 bits of this word. The row y is
-  * in the bits corresponding to numerical value (0-31)*32^y 
+  * in the bits corresponding to numerical value (0-31)*32^y
   * in the word.
   * See getSliceFromRow() and getRowFromSlice() for more details.
   */
@@ -163,7 +163,7 @@ inline void invertBit(vector<SliceValue>& slices, const BitPosition& p)
     invertBit(slices, p.x, p.y, p.z);
 }
 
-/** This function returns a SliceValue with bits set to zero, except at 
+/** This function returns a SliceValue with bits set to zero, except at
   * row y, where the value is given by the argument @a row.
   */
 inline SliceValue getSliceFromRow(const RowValue& row, const unsigned int& y)
@@ -283,7 +283,7 @@ void invertColumn(vector<SliceValue>& slices, unsigned int x = 0, unsigned int z
   */
 inline RowValue translateRow(const RowValue& row, const unsigned int& dx)
 {
-    if (dx == 0) 
+    if (dx == 0)
         return row;
     else
         return ((row << dx) | (row >> (5-dx))) & 0x1F;
@@ -341,7 +341,7 @@ SliceValue getSlice(const vector<LaneValue>& lanes, unsigned int z = 0);
   */
 void setSlice(vector<LaneValue>& lanes, SliceValue slice, unsigned int z = 0);
 
-/** This method creates the value of a state represented as a vector of slices 
+/** This method creates the value of a state represented as a vector of slices
   * from a state represented as a vector of lanes.
   *
   * @param  slices  The destination for the slices.

@@ -21,7 +21,7 @@ BitPosition::BitPosition(unsigned int ax, unsigned int ay, unsigned int az)
 {
 }
 
-BitPosition::BitPosition(const BitPosition& aPoint) 
+BitPosition::BitPosition(const BitPosition& aPoint)
 : x(aPoint.x) , y(aPoint.y) , z(aPoint.z)
 {
 }
@@ -51,7 +51,7 @@ bool BitPosition::operator<(const BitPosition& otherPoint) const
 
 bool BitPosition::nextXY()
 {
-    if(y<4) { 
+    if(y<4) {
         y++;
         return true;
     }

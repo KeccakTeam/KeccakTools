@@ -29,7 +29,7 @@ void KeccakFDCEquations::buildDCTrailFromPair(const vector<SliceValue>& a1, cons
     vector<LaneValue> state2;
     fromSlicesToLanes(a2, state2);
 
-    for(int i=startRoundIndex; i<startRoundIndex+nrRounds; i++) {
+    for(int i=startRoundIndex; i<(int)(startRoundIndex+nrRounds); i++) {
         lambda(state1, KeccakFDCLC::Straight);
         lambda(state2, KeccakFDCLC::Straight);
 
@@ -43,7 +43,7 @@ void KeccakFDCEquations::buildDCTrailFromPair(const vector<SliceValue>& a1, cons
         chi(state1);       chi(state2);
         iota(state1, i);   iota(state2, i);
 
-        if (i == (startRoundIndex+nrRounds-1)) {
+        if (i == (int)(startRoundIndex+nrRounds-1)) {
             vector<SliceValue> aa1, aa2;
             fromLanesToSlices(state1, aa1);
             fromLanesToSlices(state2, aa2);

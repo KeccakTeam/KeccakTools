@@ -273,7 +273,7 @@ void KeccakFDCLC::initializeLambdaLookupTables()
                         for(unsigned int y=0; y<nrRowsAndColumns; y++) {
                             vector<SliceValue> v(1<<nrRowsAndColumns);
                             for(RowValue row=0; row<(1<<nrRowsAndColumns); row++) {
-                                static unsigned char tmp[4]; 
+                                static unsigned char tmp[4];
                                 fin.read((char *)tmp, 4);
                                 v[row]  = tmp[3];  v[row] <<= 8;
                                 v[row] ^= tmp[2];  v[row] <<= 8;
@@ -422,7 +422,7 @@ void KeccakFDCLC::checkDCTrail(const Trail& trail, KeccakFPropagation *DC) const
         cerr << "The total weight of the trail is incorrect; it should be " << totalWeight << "." << endl;
         throw KeccakException("The total weight in the trail is incorrect!");
     }
-    
+
     // Check compatibility between consecutive states
     for(unsigned int i=1+offsetIndex; i<trail.states.size(); i++) {
         vector<SliceValue> stateAfterChi;
@@ -474,7 +474,7 @@ void KeccakFDCLC::checkLCTrail(const Trail& trail, KeccakFPropagation *LC) const
         cerr << "The total weight of the trail is incorrect; it should be " << totalWeight << "." << endl;
         throw KeccakException("The total weight in the trail is incorrect!");
     }
-    
+
     // Check compatibility between consecutive states
     for(unsigned int i=1+offsetIndex; i<trail.states.size(); i++) {
         vector<SliceValue> stateAfterChi;
@@ -532,8 +532,8 @@ unsigned int KeccakFDCLC::getThetaGap(const vector<LaneValue>& state) const
 {
     vector<LaneValue> C(5);
     for(unsigned int x=0; x<5; x++) {
-        C[x] = state[index(x,0)]; 
-        for(unsigned int y=1; y<5; y++) 
+        C[x] = state[index(x,0)];
+        for(unsigned int y=1; y<5; y++)
             C[x] ^= state[index(x,y)];
     }
     return getThetaGapFromParity(C);
@@ -543,7 +543,7 @@ unsigned int KeccakFDCLC::getThetaGapFromParity(const vector<LaneValue>& paritie
 {
     vector<LaneValue> D(5);
     getThetaEffectFromParity(parities, D);
-    return 
+    return
          (getHammingWeightLane(D[0])
         + getHammingWeightLane(D[1])
         + getHammingWeightLane(D[2])

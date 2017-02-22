@@ -21,21 +21,21 @@ KeccakFTrailCoreRows::KeccakFTrailCoreRows(const KeccakFDCLC& aParent, KeccakFPr
 {
 }
 
-void KeccakFTrailCoreRows::generateTrailCoresBasedOnRows(TrailFetcher& trailsOut, int maxNrRowsAtA, int maxNrRowsAtB, int maxWeight)
+void KeccakFTrailCoreRows::generateTrailCoresBasedOnRows(TrailFetcher& trailsOut, int maxNrRowsAtA, int maxNrRowsAtB, unsigned int maxWeight)
 {
     if ((maxNrRowsAtA > 3) && (maxNrRowsAtB > 3))
         throw KeccakException("This method generates up to 3 rows only.");
     generateTrailCoresBasedOnRows(trailsOut, (maxNrRowsAtA < maxNrRowsAtB), maxNrRowsAtA, maxNrRowsAtB, maxWeight);
 }
 
-void KeccakFTrailCoreRows::generateTrailCoresUpToGivenWeight(TrailFetcher& trailsOut, int maxMinRevWeightAtA, int maxWeightAtB, int maxWeight)
+void KeccakFTrailCoreRows::generateTrailCoresUpToGivenWeight(TrailFetcher& trailsOut, unsigned int maxMinRevWeightAtA, unsigned int maxWeightAtB, unsigned int maxWeight)
 {
     if ((maxMinRevWeightAtA > 7) && (maxWeightAtB > 7))
         throw KeccakException("This method generates up to 3 rows only.");
     generateTrailCoresUpToGivenWeight(trailsOut, (maxMinRevWeightAtA < maxWeightAtB), maxMinRevWeightAtA, maxWeightAtB, maxWeight);
 }
 
-void KeccakFTrailCoreRows::generateTrailCoresBasedOnRows(TrailFetcher& trailsOut, bool startingFromA, int maxNrRowsAtA, int maxNrRowsAtB, int maxWeight)
+void KeccakFTrailCoreRows::generateTrailCoresBasedOnRows(TrailFetcher& trailsOut, bool startingFromA, int maxNrRowsAtA, int maxNrRowsAtB, unsigned int maxWeight)
 {
     int maxNrRows = (startingFromA ? maxNrRowsAtA : maxNrRowsAtB);
     if (maxNrRows >= 1) {
@@ -104,7 +104,7 @@ void KeccakFTrailCoreRows::generateTrailCoresBasedOnRows(TrailFetcher& trailsOut
     }
 }
 
-void KeccakFTrailCoreRows::generateTrailCoresUpToGivenWeight(TrailFetcher& trailsOut, bool startingFromA, int maxMinRevWeightAtA, int maxWeightAtB, int maxWeight)
+void KeccakFTrailCoreRows::generateTrailCoresUpToGivenWeight(TrailFetcher& trailsOut, bool startingFromA, unsigned int maxMinRevWeightAtA, unsigned int maxWeightAtB, unsigned int maxWeight)
 {
     int maxMinRevWeightAtAorB = (startingFromA ? maxMinRevWeightAtA : maxWeightAtB);
     int maxNrRows = maxMinRevWeightAtAorB/2;
@@ -123,14 +123,14 @@ void KeccakFTrailCoreRows::generateTrailCoresUpToGivenWeight(TrailFetcher& trail
         progress.stack("Generating 2 rows");
         for(RowValue a1=1; a1<32; a1++)
         for(RowValue a2=1; a2<32; a2++) {
-            int weight = (startingFromA ? 
-                getMinReverseWeightRow(a1)+getMinReverseWeightRow(a2) 
+            int weight = (startingFromA ?
+                getMinReverseWeightRow(a1)+getMinReverseWeightRow(a2)
               : getWeightRow(a1)+getWeightRow(a2));
             if (weight <= maxMinRevWeightAtAorB) {
                 {
                     stringstream str;
-                    str << "Row values " << hex << (int)a1 << "," << (int)a2 
-                        << " of " << (startingFromA ? "min. rev. " : "") << "weight " 
+                    str << "Row values " << hex << (int)a1 << "," << (int)a2
+                        << " of " << (startingFromA ? "min. rev. " : "") << "weight "
                         << dec << weight;
                     progress.stack(str.str());
                 }
@@ -156,14 +156,14 @@ void KeccakFTrailCoreRows::generateTrailCoresUpToGivenWeight(TrailFetcher& trail
         for(RowValue a1=1; a1<32; a1++)
         for(RowValue a2=1; a2<32; a2++)
         for(RowValue a3=1; a3<32; a3++) {
-            int weight = (startingFromA ? 
-                getMinReverseWeightRow(a1)+getMinReverseWeightRow(a2)+getMinReverseWeightRow(a3)  
+            int weight = (startingFromA ?
+                getMinReverseWeightRow(a1)+getMinReverseWeightRow(a2)+getMinReverseWeightRow(a3)
               : getWeightRow(a1)+getWeightRow(a2)+getWeightRow(a3));
             if (weight <= maxMinRevWeightAtAorB) {
                 {
                     stringstream str;
                     str << "Row values " << hex << (int)a1 << "," << (int)a2 << "," << (int)a3
-                        << " of " << (startingFromA ? "min. rev. " : "") << "weight " 
+                        << " of " << (startingFromA ? "min. rev. " : "") << "weight "
                         << dec << weight;
                     progress.stack(str.str());
                 }
@@ -197,7 +197,7 @@ void KeccakFTrailCoreRows::generateTrailCoresUpToGivenWeight(TrailFetcher& trail
     }
 }
 
-void KeccakFTrailCoreRows::filterGeneratedTrailCores(TrailFetcher& trailsOut, const vector<SliceValue>& stateAtAorB, bool stateAtA, int maxNrRowsAtA, int maxNrRowsAtB, int maxWeight)
+void KeccakFTrailCoreRows::filterGeneratedTrailCores(TrailFetcher& trailsOut, const vector<SliceValue>& stateAtAorB, bool stateAtA, unsigned int maxNrRowsAtA, unsigned int maxNrRowsAtB, unsigned int maxWeight)
 {
     vector<SliceValue> stateAtBorA;
     if (stateAtA) {
@@ -226,7 +226,7 @@ void KeccakFTrailCoreRows::filterGeneratedTrailCores(TrailFetcher& trailsOut, co
     trailsOut.fetchTrail(trail);
 }
 
-void KeccakFTrailCoreRows::filterGeneratedTrailCoresUpToGivenWeight(TrailFetcher& trailsOut, const vector<SliceValue>& stateAtAorB, bool stateAtA, int maxMinRevWeightAtA, int maxWeightAtB, int maxWeight)
+void KeccakFTrailCoreRows::filterGeneratedTrailCoresUpToGivenWeight(TrailFetcher& trailsOut, const vector<SliceValue>& stateAtAorB, bool stateAtA, unsigned int maxMinRevWeightAtA, unsigned int maxWeightAtB, unsigned int maxWeight)
 {
     vector<SliceValue> stateAtBorA;
     if (stateAtA) {

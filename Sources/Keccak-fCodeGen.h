@@ -28,8 +28,8 @@ class KeccakFCodeGen : public KeccakF {
 protected:
      /** The interleaving factor, i.e., the ratio between the lane size and the
        * target word size. For instance, to generate 32-bit interleaved code
-       * for Keccak-<i>f</i>[1600], interleavingFactor must be set to 2 (=64/32). By 
-       * default, the interleavingFactor is 1, meaning no interleaving. The 
+       * for Keccak-<i>f</i>[1600], interleavingFactor must be set to 2 (=64/32). By
+       * default, the interleavingFactor is 1, meaning no interleaving. The
        * interleavingFactor must divide the lane size.
        */
     unsigned int interleavingFactor;
@@ -64,7 +64,7 @@ public:
       * Method to set whether the operations should be written as macros
       * or using regular operators.
       *
-      * @param  anOutputMacros  If true, macros are output; 
+      * @param  anOutputMacros  If true, macros are output;
       *                         if false, operators are output.
       */
     void setOutputMacros(bool anOutputMacros);
@@ -72,7 +72,7 @@ public:
       * Method to set whether the words should be written with
       * names or subscripts.
       *
-      * @param  anOutputSubscripts  If true, subscripts are output; 
+      * @param  anOutputSubscripts  If true, subscripts are output;
       *                         if false, names are output.
       */
     void setOutputSubscripts(bool anOutputSubscripts);
@@ -98,7 +98,7 @@ public:
       */
     void displayPi();
     /**
-      * Method that generates declarations for the C code produced by 
+      * Method that generates declarations for the C code produced by
       * genCodeForRound().
       *
       * @param  fout    The output stream where the code is generated.
@@ -126,10 +126,10 @@ public:
       * @param  E       The string with the variable name for E.
       * @param  header  A string to output before the generated code.
       */
-    void genCodePlanePerPlane(ostream& fout, bool earlyParity, SliceValue inChiMask=0, SliceValue outChiMask=0, 
+    void genCodePlanePerPlane(ostream& fout, bool earlyParity, SliceValue inChiMask=0, SliceValue outChiMask=0,
         string A = "A", string B = "B", string C = "C", string D = "D", string E = "E", string header = "") const;
     /**
-      * Method that generates C code to compute the sheet parities 
+      * Method that generates C code to compute the sheet parities
       * (C's variables) for θ in the first round.
       *
       * @param  fout    The output stream where the code is generated.
@@ -144,7 +144,7 @@ public:
       */
     void genRoundConstants(ostream& fout) const;
     /**
-      * Method that generates code to copy from an array of words into the state 
+      * Method that generates code to copy from an array of words into the state
       * variables. It can xors a given number of words along the way.
       *
       * @param  fout    The output stream where the code is generated.
@@ -155,7 +155,7 @@ public:
       */
     void genCopyFromStateAndXor(ostream& fout, unsigned int bitsToXor, string A="X##", string state="state", string input="input") const;
     /**
-      * Method that generates code to copy from the state variables into an 
+      * Method that generates code to copy from the state variables into an
       * array of words.
       *
       * @param  fout    The output stream where the code is generated.
@@ -165,7 +165,7 @@ public:
       */
     void genCopyToState(ostream& fout, string A="X##", string state="state", string input="input") const;
     /**
-      * Method that generates code to copy from the state variables into other 
+      * Method that generates code to copy from the state variables into other
       * state variables.
       *
       * @param  fout    The output stream where the code is generated.
@@ -177,7 +177,7 @@ public:
       * Method that generates all the macros for the C code.
       *
       * @param  fout    The output stream where the code is generated.
-      * @param  laneComplementing   If the output must contain code using 
+      * @param  laneComplementing   If the output must contain code using
       *                 the lane complementing technique, in addition to the
       *                 straightforward code.
       */
@@ -204,7 +204,7 @@ public:
       * @param  D       The string with the variable name for D.
       * @param  header  A string to output before the generated code.
       */
-    void genCodeInPlace(ostream& fout, bool earlyParity, SliceValue inChiMask=0, SliceValue outChiMask=0, 
+    void genCodeInPlace(ostream& fout, bool earlyParity, SliceValue inChiMask=0, SliceValue outChiMask=0,
         string A = "A", string B = "B", string C = "C", string D = "D", string header = "") const;
     virtual string getName() const;
 protected:
