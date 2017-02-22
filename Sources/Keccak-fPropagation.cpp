@@ -596,77 +596,44 @@ string KeccakFPropagation::buildFileName(const string& prefix, const string& suf
     return parent.buildFileName(name+prefix, suffix);
 }
 
-unsigned int KeccakFPropagation::getLowerBoundOnWeightGivenHammingWeight(unsigned int hammingWeight) const
-{
-    if (getPropagationType() == KeccakFPropagation::DC)
-        return hammingWeight - (hammingWeight/nrRowsAndColumns)
-            + ((hammingWeight%nrRowsAndColumns==1)?1:0)
-            + ((hammingWeight%nrRowsAndColumns==2)?1:0);
-    else
-        return hammingWeight - (hammingWeight/nrRowsAndColumns)
-            + ((hammingWeight%nrRowsAndColumns==1)?1:0);
-}
-
 unsigned int KeccakFPropagation::getLowerBoundOnWeightGivenHammingWeightAndNrActiveRows(unsigned int hammingWeight, unsigned int nrActiveRows) const
 {
+    if (hammingWeight > 5*nrActiveRows) nrActiveRows = (hammingWeight+4)/5;
     if (getPropagationType() == KeccakFPropagation::DC) {
-        if (nrActiveRows >= hammingWeight)
-            return 2*nrActiveRows;
-        else if (5*nrActiveRows > hammingWeight) {
-            unsigned int doubleWeight = 3*nrActiveRows + hammingWeight;
-            return (doubleWeight+1)/2;
-        }
-        else
-            return getLowerBoundOnWeightGivenHammingWeight(hammingWeight);
+        if (hammingWeight <= nrActiveRows) return 2*nrActiveRows;
+        return (hammingWeight + 3*nrActiveRows + 1)/2;
     }
     else {
-        if (2*nrActiveRows >= hammingWeight)
-            return 2*nrActiveRows;
-        else if (5*nrActiveRows > hammingWeight) {
-            unsigned int doubleWeight = nrActiveRows + hammingWeight;
-            return 2*((doubleWeight+2)/3);
-        }
-        else
-            return getLowerBoundOnWeightGivenHammingWeight(hammingWeight);
+        if (2*hammingWeight <= nrActiveRows) return 2*nrActiveRows;
+        return 2*((hammingWeight + nrActiveRows + 2)/3);
+    }
+}
+
+unsigned int KeccakFPropagation::getLowerBoundOnWeightGivenHammingWeight(unsigned int hammingWeight) const
+{
+    unsigned int nrActiveRows = (hammingWeight+4)/5;
+    return getLowerBoundOnWeightGivenHammingWeightAndNrActiveRows(hammingWeight, nrActiveRows);
+}
+
+unsigned int KeccakFPropagation::getLowerBoundOnReverseWeightGivenHammingWeightAndNrActiveRows(unsigned int hammingWeight, unsigned int nrActiveRows) const
+{
+    if (hammingWeight > 5*nrActiveRows) nrActiveRows = (hammingWeight+4)/5;
+    if (getPropagationType() == KeccakFPropagation::DC) {
+        if (3*hammingWeight <= nrActiveRows) return 2*nrActiveRows;
+        return (hammingWeight + nrActiveRows + 1)/2;
+    }
+    else {
+        if (4*hammingWeight <= nrActiveRows) return 2*nrActiveRows;
+        return 2*((hammingWeight + 3)/4);
     }
 }
 
 unsigned int KeccakFPropagation::getLowerBoundOnReverseWeightGivenHammingWeight(unsigned int hammingWeight) const
 {
-    if (getPropagationType() == KeccakFPropagation::DC) {
-        unsigned int result = 3*(hammingWeight / 5);
-        if ((hammingWeight % 5) == 4)
-            result += 3;
-        else if ((hammingWeight % 5) == 1)
-            result += 1;
-        else if ((hammingWeight % 5) > 0)
-            result += 2;
-        return result;
-    }
-    else {
-        return 2*((hammingWeight+3) / 4);
-    }
+    unsigned int nrActiveRows = (hammingWeight+4)/5;
+    return getLowerBoundOnReverseWeightGivenHammingWeightAndNrActiveRows(hammingWeight, nrActiveRows);
 }
 
-unsigned int KeccakFPropagation::getLowerBoundOnReverseWeightGivenHammingWeightAndNrActiveRows(unsigned int hammingWeight, unsigned int nrActiveRows) const
-{
-    if (getPropagationType() == KeccakFPropagation::DC) {
-        if (3*nrActiveRows >= hammingWeight)
-            return 2*nrActiveRows;
-        else if (5*nrActiveRows > hammingWeight) {
-            unsigned int doubleWeight = nrActiveRows + hammingWeight;
-            return (doubleWeight+1)/2;
-        }
-        else
-            return getLowerBoundOnReverseWeightGivenHammingWeight(hammingWeight);
-    }
-    else {
-        if (4*nrActiveRows >= hammingWeight)
-            return 2*nrActiveRows;
-        else
-            return getLowerBoundOnReverseWeightGivenHammingWeight(hammingWeight);
-    }
-}
 
 SliceValue KeccakFPropagation::getMinimumInKernelSliceAfterChi(const SliceValue& sliceBeforeChi) const
 {
