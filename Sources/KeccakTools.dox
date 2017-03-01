@@ -64,12 +64,15 @@ questions, please refer to our website: http://keccak.noekeon.org/
  * Related to the DC and LC classes, the reader can refer to the following documents for more detailed explanations:
  * - Bertoni et al., <em>The Keccak reference</em>, available from <a href="http://keccak.noekeon.org/">our website</a>;
  * - Daemen and Van Assche, <em>Differential propagation analysis of Keccak</em>, FSE 2012, 
- *  available as <a href="http://eprint.iacr.org/2012/163">IACR ePrint 2012/163</a>.
+ *   available as <a href="http://eprint.iacr.org/2012/163">IACR ePrint 2012/163</a>;
+ * - Mella, Daemen and Van Assche, <em>New techniques for trail bounds and application to differential trails in Keccak</em>, FSE 2017,
+ *   available as <a href="http://eprint.iacr.org/2017/181">IACR ePrint 2017/181</a>.
  * 
  * (<sup>1</sup>) Note that the equations can be generated in a format compatible
  * with <a href="http://www.sagemath.org">SAGE</a>.
  *
- * Implementation by the designers, hereby denoted as "the implementer".
+ * Implementation by Guido Bertoni, Joan Daemen, Silvia Mella, Michaël Peeters,
+ * Gilles Van Assche and Ronny Van Keer, hereby denoted as "the implementer".
  * To the extent possible under law, the implementer has waived all copyright
  * and related or neighboring rights to KeccakTools.
  * http://creativecommons.org/publicdomain/zero/1.0/

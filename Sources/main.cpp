@@ -26,7 +26,9 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include "Keccak-fEquations.h"
 #include "Keccak-fPropagation.h"
 #include "Keccak-fTrailExtension.h"
+#include "Keccak-fTrailExtensionBasedOnParity.h"
 #include "Keccak-fTrails.h"
+#include "Keccak-fTree.h"
 #include "Keyakv2-test.h"
 #include "Ketjev2-test.h"
 
@@ -494,6 +496,278 @@ void extendTrails()
     extendTrails(KeccakFPropagation::LC, 1600, "LCKeccakF-1600-trailcores", 4, 100, false);
 }
 
+// This function outputs a file with 2-round trail cores in the kernel with cost below given limit.
+// An example function to use it is given below.
+void traverseOrbitalTree(KeccakFPropagation::DCorLC DCLC, unsigned int width, unsigned int maxCost, unsigned int alpha, unsigned int beta)
+{
+    (void)DCLC;
+    cout << "Initializing... " << flush;
+    KeccakFDCLC keccakFDCLC(width);
+    cout << endl;
+    KeccakFPropagation keccakProp(keccakFDCLC, KeccakFPropagation::DC);
+    cout << keccakFDCLC << endl;
+    cout << "Initialized " << flush;
+    cout << endl;
+
+    // output file
+    stringstream FileName;
+    FileName << keccakProp.buildFileName("-TwoRoundTrailCoresInKernel-");
+    FileName << "Below-";
+    FileName << maxCost;
+    string oFileName = FileName.str();
+    ofstream fout(oFileName.c_str());
+    TrailSaveToFile trailsOut(fout);
+
+    TwoRoundTrailCoreCostFunction costF(alpha, beta);
+    OrbitalsSet orbSet(width / 25);
+    TwoRoundTrailCoreStack cache(keccakProp);
+
+    OrbitalTreeIterator iterator(orbSet, cache, costF, maxCost);
+
+    for (; !iterator.isEnd(); ++iterator) {
+        TwoRoundTrailCore node = *iterator;
+        node.save(fout);
+    }
+
+    Trail::produceHumanReadableFile(keccakProp, oFileName);
+
+}
+
+// This function outputs a file with 2-round trail cores outside the kernel with cost below given limit.
+// An example function to use it is given below
+void traverseRunTreeAndOrbitalTree(KeccakFPropagation::DCorLC DCLC, unsigned int width, unsigned int maxCost, unsigned int alpha, unsigned int beta)
+{
+    (void)DCLC;
+    unsigned int laneSize = width / 25;
+
+    cout << "Initializing... " << flush;
+    KeccakFDCLC keccakFDCLC(width);
+    cout << endl;
+    KeccakFPropagation keccakProp(keccakFDCLC, KeccakFPropagation::DC);
+    cout << keccakFDCLC << endl;
+    cout << "Initialized " << flush;
+    cout << endl;
+
+    // output file
+    stringstream FileName;
+    FileName << keccakProp.buildFileName("-TwoRoundTrailCoresOutsideKernel-");
+    FileName << "Below";
+    FileName << maxCost;
+    string oFileName = FileName.str();
+    ofstream fout(oFileName.c_str());
+    TrailSaveToFile trailsOut(fout);
+
+    TwoRoundTrailCoreCostBoundFunction costFRun(alpha, beta);
+    ColumnsSet colSet(laneSize);
+    TwoRoundTrailCoreStack cacheRun(keccakProp);
+
+    RunTreeIterator iteratorRun(colSet, cacheRun, costFRun, maxCost);
+
+    //unsigned int counter = 0;
+
+    for (; !iteratorRun.isEnd(); ++iteratorRun) {
+        TwoRoundTrailCore nodeRun = *iteratorRun;
+        unsigned int costNodeRun = alpha*nodeRun.w0 + beta*nodeRun.w1;
+        bool completeNodeRun = nodeRun.complete;
+
+        if (costNodeRun <= maxCost && completeNodeRun){
+            nodeRun.save(fout);
+            TwoRoundTrailCoreStack cacheOrb(keccakProp, nodeRun.stateA, nodeRun.stateB, nodeRun.w0, nodeRun.w1, completeNodeRun, nodeRun.zPeriod);
+            TwoRoundTrailCoreCostFunction costFOrb(alpha, beta);
+
+            vector<RowValue> C(nodeRun.C), D(nodeRun.D);
+            vector<unsigned int> yMin(5 * laneSize, 0);
+
+            for (unsigned int x = 0; x < 5; x++){
+                for (unsigned int z = 0; z < laneSize; z++) {
+                    bool odd = (getBit(C, x, z) != 0);
+                    bool affected = (getBit(D, x, z) != 0);
+                    if (affected) {
+                        yMin[x + 5 * z] = 5; // no orbitals here
+                    }
+                    else{
+                        if (odd){
+                            for (unsigned int y = 0; y < 5; y++){
+                                if (getBit(nodeRun.stateA, x, y, z) != 0){
+                                    yMin[x + 5 * z] = y + 1;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // orbital tree with parity-bare trail core at root
+            OrbitalsSet orbSet(yMin, laneSize);
+            OrbitalTreeIterator iteratorOrb(orbSet, cacheOrb, costFOrb, maxCost);
+
+            for (; !iteratorOrb.isEnd(); ++iteratorOrb) {
+                TwoRoundTrailCore nodeOrb = *iteratorOrb;
+                nodeOrb.save(fout);
+            }
+        }
+    }
+
+    Trail::produceHumanReadableFile(keccakProp, oFileName);
+
+}
+
+
+// Function to perform extension in the kernel.
+// Example functions to use it are given below.
+void extendTrailsInTheKernel(KeccakFPropagation::DCorLC DCLC, unsigned int width, const string& inFileName, int maxWeight, unsigned int nrRounds, bool reverse, bool allPrefixes = false)
+{
+    try {
+        cout << "Initializing... " << flush;
+        KeccakFDCLC keccakF(width);
+        cout << endl;
+        KeccakFTrailExtensionBasedOnParity keccakFTE(keccakF, DCLC);
+        cout << keccakF << endl;
+
+        cout << "Extending... " << flush;
+        TrailFileIterator trailsIn(inFileName, keccakFTE);
+        cout << trailsIn << endl;
+
+        stringstream oFileName;
+        oFileName << inFileName + (reverse ? string("-revInKernel") : string("-dirInKernel"));
+        oFileName << maxWeight;
+        string outFileName = oFileName.str();
+        ofstream fout(outFileName.c_str());
+        TrailSaveToFile trailsOut(fout);
+
+        if (reverse) {
+            keccakFTE.showMinimalTrails = true;
+            keccakFTE.allPrefixes = allPrefixes;
+            keccakFTE.backwardExtendTrailsInTheKernel(trailsIn, trailsOut, nrRounds, maxWeight);
+        }
+        else {
+            keccakFTE.showMinimalTrails = false;
+            keccakFTE.forwardExtendTrailsInTheKernel(trailsIn, trailsOut, nrRounds, maxWeight);
+        }
+        Trail::produceHumanReadableFile(keccakFTE, outFileName);
+
+    }
+    catch (KeccakException e) {
+        cout << e.reason << endl;
+    }
+}
+
+// Function to perform extension outside the kernel.
+// Example functions to use it are given below.
+void extendTrailsOutsideTheKernel(KeccakFPropagation::DCorLC DCLC, unsigned int width, const string& inFileName, int maxWeight, unsigned int nrRounds, bool reverse, bool allPrefixes = false)
+{
+    try {
+        cout << "Initializing... " << flush;
+        KeccakFDCLC keccakF(width);
+        cout << endl;
+        KeccakFTrailExtensionBasedOnParity keccakFTE(keccakF, DCLC);
+        cout << keccakF << endl;
+
+        cout << "Extending... " << flush;
+        TrailFileIterator trailsIn(inFileName, keccakFTE);
+        cout << trailsIn << endl;
+
+        stringstream oFileName;
+        oFileName << inFileName + (reverse ? string("-revOutsideKernel") : string("-dirOutsideKernel"));
+        oFileName << maxWeight;
+        string outFileName = oFileName.str();
+        ofstream fout(outFileName.c_str());
+        TrailSaveToFile trailsOut(fout);
+
+        if (reverse) {
+            keccakFTE.showMinimalTrails = true;
+            keccakFTE.allPrefixes = allPrefixes;
+            keccakFTE.backwardExtendTrailsOutsideKernel(trailsIn, trailsOut, nrRounds, maxWeight);
+        }
+        else {
+            keccakFTE.showMinimalTrails = false;
+            keccakFTE.forwardExtendTrailsOutsideKernel(trailsIn, trailsOut, nrRounds, maxWeight);
+        }
+        Trail::produceHumanReadableFile(keccakFTE, outFileName);
+
+    }
+    catch (KeccakException e) {
+        cout << e.reason << endl;
+    }
+}
+
+
+// Example function to generate trail cores in the kernel
+void generateTrailCoresInTheKernel()
+{
+    unsigned int width = 1600;
+    unsigned int maxCost = 8;
+    unsigned int alpha = 0; // 1 to generate states with w_0 smaller than maxCost
+    unsigned int beta = 1;  // 1 to generate states with w_1 smaller than maxCost
+    //unsigned int laneSize = width / 25;
+
+    traverseOrbitalTree(KeccakFPropagation::DC, width, maxCost, alpha, beta);
+
+}
+
+// Example function to generate trail cores outside the kernel
+void generateTrailCoresOutsideTheKernel()
+{
+    unsigned int width = 1600;
+    unsigned int maxCost = 36;
+    unsigned int alpha = 1; // 1 to generate states with w_0 smaller than maxCost
+    unsigned int beta = 2;  // 1 to generate states with w_1 smaller than maxCost
+    //unsigned int laneSize = width / 25;
+
+    traverseRunTreeAndOrbitalTree(KeccakFPropagation::DC, width, maxCost, alpha, beta);
+
+}
+
+
+// Example function to perform backward extension in the kernel
+void backwardExtendInKernel(){
+
+    unsigned int width = 1600;
+    unsigned int nrRounds = 3;
+    unsigned int maxWeight = 36;
+    string inFileName = "fileName";
+
+    extendTrailsInTheKernel(KeccakFPropagation::DC, width, inFileName, maxWeight, nrRounds, true);
+
+}
+
+// Example function to perform forward extension in the kernel
+void forwardExtendInKernel(){
+
+    unsigned int width = 1600;
+    unsigned int nrRounds = 3;
+    unsigned int maxWeight = 36;
+    string inFileName = "fileName";
+
+    extendTrailsInTheKernel(KeccakFPropagation::DC, width, inFileName, maxWeight, nrRounds, false);
+
+}
+
+// Example function to perform forward extension outside the kernel
+void forwardExtendOutsideKernel(){
+
+    unsigned int width = 1600;
+    unsigned int nrRounds = 3;
+    unsigned int maxWeight = 36;
+    string inFileName = "fileName";
+
+    extendTrailsOutsideTheKernel(KeccakFPropagation::DC, width, inFileName, maxWeight, nrRounds, false);
+
+}
+
+// Example function to perform backward extension outside the kernel
+void backwardExtendOutsideKernel(){
+
+    unsigned int width = 1600;
+    unsigned int nrRounds = 3;
+    unsigned int maxWeight = 36;
+    string inFileName = "fileName";
+
+    extendTrailsOutsideTheKernel(KeccakFPropagation::DC, width, inFileName, maxWeight, nrRounds, true);
+
+}
+
 int main(int argc, char *argv[])
 {
     try {
@@ -515,6 +789,12 @@ int main(int argc, char *argv[])
         //extendTrails();
         //testAllKeyakv2Instances();
         //testAllKetjev2Instances();
+        //backwardExtendInKernel();
+        //forwardExtendInKernel();
+        //backwardExtendOutsideKernel();
+        //forwardExtendOutsideKernel();
+        //generateTrailCoresOutsideTheKernel();
+        //generateTrailCoresInTheKernel();
     }
     catch(Exception e) {
         cout << e.reason << endl;
