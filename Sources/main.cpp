@@ -768,6 +768,47 @@ void backwardExtendOutsideKernel(){
 
 }
 
+// this function computes the number of round differentials per weight for a given Keccak width
+void weightDistributions(unsigned int width)
+{
+    unsigned int laneSize = width / 25;
+    unsigned int numRows = width / 5;
+
+    cout << "Initializing... " << flush;
+    KeccakFDCLC keccakFDCLC(width);
+    KeccakFPropagation keccakProp(keccakFDCLC, KeccakFPropagation::DC);
+    cout << keccakFDCLC << endl;
+    // output file
+    stringstream outFileName;
+    outFileName << keccakProp.buildFileName("-weightDistributions");
+    string oFileName = outFileName.str();
+    ofstream fout(oFileName.c_str());
+
+    RowValue rowVal;
+    int i;
+    unsigned int numRowsPerWeight[nrRowsAndColumns]; // table where numRowsPerWeight[i] contains the number of row inputs with weight i
+    double wattab0[20000], wattab1[20000]; // these tables will contain the final number of states with given weight. numbers can grow quite large, hence they are double
+
+    // fill weight table for rows
+    for(i = 0; i<nrRowsAndColumns; i++)
+        numRowsPerWeight[i] = 0;
+    for (rowVal = 0; rowVal<(1 << nrRowsAndColumns); rowVal++)
+        numRowsPerWeight[keccakProp.getWeightRow(rowVal)]++;
+
+    for (i = 0; i<20000; i++) wattab0[i] = wattab1[i] = 0;
+    wattab1[0] = 1;
+    for (unsigned int j = 0; j<numRows; j++){
+        for (i = 0; i<int(j*nrRowsAndColumns) + 1; i++) wattab0[i] = wattab1[i]; // copy wattab1 into wattab0
+        for (i = 0; i<int(j*nrRowsAndColumns) + 1; i++) wattab1[i] = 0; // clear wattab1
+        for (i = 0; i<int(j + 1)*nrRowsAndColumns; i++){
+            for (int k = 0; k<nrRowsAndColumns; k++) wattab1[i + k] += wattab0[i] * numRowsPerWeight[k]; // convolution, as many as there are "rows"
+        }
+    }
+
+    for (i = 0; i<int(nrRowsAndColumns*numRows); i++)
+        fout << "w: " << i << " log: " << log(wattab1[i]/laneSize) / log(2) <<  " n : " << wattab1[i]/laneSize << endl;
+}
+
 int main(int argc, char *argv[])
 {
     try {
@@ -795,6 +836,7 @@ int main(int argc, char *argv[])
         //forwardExtendOutsideKernel();
         //generateTrailCoresOutsideTheKernel();
         //generateTrailCoresInTheKernel();
+        //weightDistributions(200);
     }
     catch(Exception e) {
         cout << e.reason << endl;
