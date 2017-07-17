@@ -118,6 +118,10 @@ BitString::BitString(const vector<UINT8> &v)
     : vSize(v.size() * 8), v(v), alias(NULL)
 {}
 
+BitString::BitString(const UINT8 *s, unsigned int size)
+    : vSize(size), v(s, s + (size + 7) / 8), alias(NULL)
+{}
+
 string BitString::str() const
 {
     return string(v.begin(), v.end());
@@ -126,6 +130,11 @@ string BitString::str() const
 UINT8 *BitString::array()
 {
     assert((vSize % 8) == 0, "Can't get array if BitString length is not a multiple of 8."); // Because caller may modify the array and break the invariant
+    return &v[0];
+}
+
+const UINT8 *BitString::array() const
+{
     return &v[0];
 }
 
@@ -143,6 +152,13 @@ BitString BitString::keypack(const BitString &K, unsigned int size)
     return BitString(8, enc8(size / 8)) || K || BitString::pad10(size - 8, K.size());
 }
 
+BitString BitString::substring(const BitString &K, unsigned int index, unsigned int size)
+{
+    unsigned int prependLength = (8 - index % 8) % 8;
+    BitString K2 = BitString::zeroes(prependLength) || K;
+    return BitString(K2, prependLength + index, size);
+}
+
 BitString BitString::pad10(unsigned int r, unsigned int Mlen)
 {
     assert(0 < r, "r must be positive.");
@@ -158,6 +174,11 @@ BitString BitString::pad101(unsigned int r, unsigned int Mlen)
 BitString BitString::zeroes(unsigned int size)
 {
     return BitString(size, (UINT8)0);
+}
+
+BitString BitString::ones(unsigned int size)
+{
+    return BitString(size, (UINT8)255);
 }
 
 BitString &BitString::truncate(unsigned int size)
@@ -283,6 +304,49 @@ ostream &operator<<(ostream &os, const BitString &S)
         }
     }
     return os;
+}
+
+BitStrings::BitStrings()
+{
+}
+
+BitStrings::BitStrings(const BitString &M)
+{
+	list.push_back(M);
+}
+
+size_t BitStrings::size() const
+{
+	return list.size();
+}
+
+const BitString &BitStrings::operator[](size_t i) const
+{
+	return list[i];
+}
+
+BitString &BitStrings::operator[](size_t i)
+{
+	return list[i];
+}
+
+BitStrings BitStrings::operator*(const BitString &M) const
+{
+	BitStrings tmp = M;
+	tmp.list.insert(tmp.list.end(), list.begin(), list.end());
+	return tmp;
+}
+
+BitStrings operator*(const BitString &M, const BitStrings &B)
+{
+	BitStrings tmp = B;
+	tmp.list.push_back(M);
+	return tmp;
+}
+
+BitStrings operator*(const BitString &A, const BitString &B)
+{
+	return A * BitStrings(B);
 }
 
 Block::Block(BitString &S, unsigned int index, unsigned int r)

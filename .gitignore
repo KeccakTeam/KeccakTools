@@ -1,2 +1,8 @@
 *.txt
 bin/
+Debug/
+Release/
+x64/
+.vs/
+*.suo
+*.user

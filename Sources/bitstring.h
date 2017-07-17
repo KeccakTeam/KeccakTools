@@ -43,13 +43,17 @@ public:
     BitString(const BitString &S);
     BitString(const BitString &S, unsigned int index, unsigned int size);
     BitString(const vector<UINT8> &v);
+    BitString(const UINT8 *s, unsigned int size);
     string            str() const;
     UINT8 *           array();
+    const UINT8 *     array() const;
     unsigned int      size() const;
     static BitString  keypack(const BitString &K, unsigned int size);
+    static BitString  substring(const BitString &K, unsigned int index, unsigned int size);
     static BitString  pad10(unsigned int r, unsigned int Mlen);
     static BitString  pad101(unsigned int r, unsigned int Mlen);
     static BitString  zeroes(unsigned int size);
+    static BitString  ones(unsigned int size);
     BitString &       truncate(unsigned int size);
     BitString &       overwrite(const BitString &S, unsigned int index);
     BitString &       operator=(const BitString &A);
@@ -65,6 +69,26 @@ BitString             operator||(const BitString &A, unsigned int bit);
 BitString             operator||(const BitString &A, const BitString &B);
 BitString             operator^(const BitString &A, const BitString &B);
 ostream &             operator<<(ostream &os, const BitString &S);
+
+/**
+ * Class implementing a string of bit strings
+ */
+class BitStrings
+{
+	private:
+		std::vector<BitString> list;
+
+	public:
+		BitStrings();
+		BitStrings(const BitString &M);
+		size_t size() const;
+		const BitString &operator[](size_t i) const;
+		BitString &operator[](size_t i);
+		BitStrings operator*(const BitString &M) const;
+		friend BitStrings operator*(const BitString &M, const BitStrings &B);
+};
+
+BitStrings operator*(const BitString &A, const BitString &B);
 
 /**
  * Class implementing a simple block of bits

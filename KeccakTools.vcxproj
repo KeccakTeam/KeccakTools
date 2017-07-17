@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -20,10 +20,12 @@
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -83,7 +85,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\bitstring.cpp" />
     <ClCompile Include="Sources\duplex.cpp" />
+    <ClCompile Include="Sources\Farfalle.cpp" />
     <ClCompile Include="Sources\genKATShortMsg.cpp" />
     <ClCompile Include="Sources\Keccak-f.cpp" />
     <ClCompile Include="Sources\Keccak-f25LUT.cpp" />
@@ -104,20 +108,31 @@
     <ClCompile Include="Sources\Keccak-fTrailCoreParity.cpp" />
     <ClCompile Include="Sources\Keccak-fTrailCoreRows.cpp" />
     <ClCompile Include="Sources\Keccak-fTrailExtension.cpp" />
+    <ClCompile Include="Sources\Keccak-fTrailExtensionBasedOnParity.cpp" />
     <ClCompile Include="Sources\Keccak-fTrails.cpp" />
+    <ClCompile Include="Sources\Keccak-fTree.cpp" />
     <ClCompile Include="Sources\Keccak.cpp" />
     <ClCompile Include="Sources\KeccakCrunchyContest.cpp" />
+    <ClCompile Include="Sources\Ketjev2-test.cpp" />
+    <ClCompile Include="Sources\Ketjev2.cpp" />
     <ClCompile Include="Sources\Keyakv2.cpp" />
     <ClCompile Include="Sources\Keyakv2-test.cpp" />
+    <ClCompile Include="Sources\Kravatte-test.cpp" />
+    <ClCompile Include="Sources\Kravatte.cpp" />
+    <ClCompile Include="Sources\KravatteModes-test.cpp" />
     <ClCompile Include="Sources\main.cpp" />
+    <ClCompile Include="Sources\monkey.cpp" />
     <ClCompile Include="Sources\Motorist.cpp" />
     <ClCompile Include="Sources\padding.cpp" />
     <ClCompile Include="Sources\progress.cpp" />
     <ClCompile Include="Sources\sponge.cpp" />
+    <ClCompile Include="Sources\spongetree.cpp" />
     <ClCompile Include="Sources\transformations.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\bitstring.h" />
     <ClInclude Include="Sources\duplex.h" />
+    <ClInclude Include="Sources\Farfalle.h" />
     <ClInclude Include="Sources\Keccak-f.h" />
     <ClInclude Include="Sources\Keccak-f25LUT.h" />
     <ClInclude Include="Sources\Keccak-fAffineBases.h" />
@@ -137,16 +152,34 @@
     <ClInclude Include="Sources\Keccak-fTrailCoreParity.h" />
     <ClInclude Include="Sources\Keccak-fTrailCoreRows.h" />
     <ClInclude Include="Sources\Keccak-fTrailExtension.h" />
+    <ClInclude Include="Sources\Keccak-fTrailExtensionBasedOnParity.h" />
     <ClInclude Include="Sources\Keccak-fTrails.h" />
+    <ClInclude Include="Sources\Keccak-fTree.h" />
     <ClInclude Include="Sources\Keccak.h" />
     <ClInclude Include="Sources\KeccakCrunchyContest.h" />
+    <ClInclude Include="Sources\Ketjev2-test.h" />
+    <ClInclude Include="Sources\Ketjev2.h" />
     <ClInclude Include="Sources\Keyakv2.h" />
     <ClInclude Include="Sources\Keyakv2-test.h" />
+    <ClInclude Include="Sources\Kravatte-test.h" />
+    <ClInclude Include="Sources\Kravatte.h" />
+    <ClInclude Include="Sources\KravatteModes-test.h" />
+    <ClInclude Include="Sources\monkey.h" />
     <ClInclude Include="Sources\Motorist.h" />
     <ClInclude Include="Sources\padding.h" />
     <ClInclude Include="Sources\progress.h" />
     <ClInclude Include="Sources\sponge.h" />
+    <ClInclude Include="Sources\spongetree.h" />
     <ClInclude Include="Sources\transformations.h" />
+    <ClInclude Include="Sources\translationsymmetry.h" />
+    <ClInclude Include="Sources\Tree.h" />
+    <ClInclude Include="Sources\types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sources\KeccakTools.dox" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="README.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -31,6 +31,9 @@ http://creativecommons.org/publicdomain/zero/1.0/
 #include "Keccak-fTree.h"
 #include "Keyakv2-test.h"
 #include "Ketjev2-test.h"
+#include "Kravatte.h"
+#include "Kravatte-test.h"
+#include "KravatteModes-test.h"
 
 using namespace std;
 
@@ -837,6 +840,8 @@ int main(int argc, char *argv[])
         //generateTrailCoresOutsideTheKernel();
         //generateTrailCoresInTheKernel();
         //weightDistributions(200);
+        //testKravatte();
+        //testKravatteModes();
     }
     catch(Exception e) {
         cout << e.reason << endl;
