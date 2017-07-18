@@ -38,6 +38,7 @@ static void _assert(bool condition, const string &synopsis, const char *fct)
 /* IdentityRollingFunction */
 BitString IdentityRollingFunction::operator()(const BitString &k, unsigned int i) const
 {
+    (void)i;
 	return k;
 }
 

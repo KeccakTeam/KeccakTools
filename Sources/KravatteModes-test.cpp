@@ -83,14 +83,6 @@ static void generateSimpleRawMaterial(unsigned char* data, unsigned int length, 
     }
 }
 
-static void outputHex(const unsigned char *data, unsigned char length)
-{
-    unsigned int i;
-    for(i=0; i<length; i++)
-        printf("%02x ", (int)data[i]);
-    printf("\n\n");
-}
-
 /* ------------------------------------------------------------------------- */
 
 static void performTestKravatte_SIV_OneInput(BitLength keyLen, BitLength dataLen, BitLength ADLen, Keccak &rSpongeChecksum)
@@ -123,7 +115,7 @@ static void performTestKravatte_SIV_OneInput(BitLength keyLen, BitLength dataLen
         AD[(ADLen + 7) / 8 - 1] &= (1 << (ADLen & 7)) - 1;
 
     #ifdef VERBOSE_SIV
-    printf( "keyLen %5u, dataLen %5u, ADLen %5u (in bits)\n", keyLen, dataLen, ADLen);
+    printf( "keyLen %5u, dataLen %5u, ADLen %5u (in bits)\n", (unsigned int)keyLen, (unsigned int)dataLen, (unsigned int)ADLen);
     #endif
 
 	KravatteSIV kv;
@@ -146,7 +138,7 @@ static void performTestKravatte_SIV_OneInput(BitLength keyLen, BitLength dataLen
         unsigned int i;
         BitLength len;
 
-        printf("Key of %d bits:", keyLen);
+        printf("Key of %d bits:", (int)keyLen);
         keyLen += 7;
         keyLen /= 8;
         for(i=0; (i<keyLen) && (i<16); i++)
@@ -155,7 +147,7 @@ static void performTestKravatte_SIV_OneInput(BitLength keyLen, BitLength dataLen
             printf(" ...");
         printf("\n");
 
-        printf("Input of %d bits:", dataLen);
+        printf("Input of %d bits:", (int)dataLen);
         len = (dataLen + 7) /8;
         for(i=0; (i<len) && (i<16); i++)
             printf(" %02x", (int)input[i]);
@@ -163,7 +155,7 @@ static void performTestKravatte_SIV_OneInput(BitLength keyLen, BitLength dataLen
             printf(" ...");
         printf("\n");
 
-        printf("AD of %d bits:", ADLen);
+        printf("AD of %d bits:", (int)ADLen);
         ADLen += 7;
         ADLen /= 8;
         for(i=0; (i<ADLen) && (i<16); i++)
@@ -172,7 +164,7 @@ static void performTestKravatte_SIV_OneInput(BitLength keyLen, BitLength dataLen
             printf(" ...");
         printf("\n");
 
-        printf("Output of %d bits:", dataLen);
+        printf("Output of %d bits:", (int)dataLen);
         len = (dataLen + 7) /8;
         for(i=0; (i<len) && (i<8); i++)
             printf(" %02x", (int)output[i]);
@@ -184,7 +176,7 @@ static void performTestKravatte_SIV_OneInput(BitLength keyLen, BitLength dataLen
             printf(" %02x", (int)output[i]);
         printf("\n");
 
-        printf("Tag of %d bytes:", tagLenSIV);
+        printf("Tag of %d bytes:", (int)tagLenSIV);
         for(i=0; i<tagLenSIV; i++)
             printf(" %02x", (int)tag[i]);
         printf("\n\n");
@@ -317,7 +309,7 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
         AD[ADLen / 8] &= (1 << (ADLen & 7)) - 1;
 
     #ifdef VERBOSE_SAE
-    printf( "keyLen %5u, nonceLen %5u, dataLen %5u, ADLen %5u (in bits)\n", keyLen, nonceLen, dataLen, ADLen);
+    printf( "keyLen %5u, nonceLen %5u, dataLen %5u, ADLen %5u (in bits)\n", (unsigned int)keyLen, (unsigned int)nonceLen, (unsigned int)dataLen, (unsigned int)ADLen);
     #endif
 
 	BitString bits_tagInit;
@@ -333,7 +325,7 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
         unsigned int i;
         unsigned int len;
 
-        printf("Key of %d bits:", keyLen);
+        printf("Key of %d bits:", (int)keyLen);
         len = (keyLen + 7) / 8;
         for(i=0; (i<len) && (i<16); i++)
             printf(" %02x", (int)key[i]);
@@ -341,7 +333,7 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
             printf(" ...");
         printf("\n");
 
-        printf("Nonce of %d bits:", nonceLen);
+        printf("Nonce of %d bits:", (int)nonceLen);
         len = (nonceLen + 7) / 8;
         for(i=0; (i<len) && (i<16); i++)
             printf(" %02x", (int)nonce[i]);
@@ -349,7 +341,7 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
             printf(" ...");
         printf("\n");
 
-        printf("Input of %d bits:", dataLen);
+        printf("Input of %d bits:", (int)dataLen);
         len = (dataLen + 7) / 8;
         for(i=0; (i<len) && (i<16); i++)
             printf(" %02x", (int)input[i]);
@@ -357,7 +349,7 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
             printf(" ...");
         printf("\n");
 
-        printf("AD of %d bits:", ADLen);
+        printf("AD of %d bits:", (int)ADLen);
         len = (ADLen + 7) / 8;
         for(i=0; (i<len) && (i<16); i++)
             printf(" %02x", (int)AD[i]);
@@ -383,7 +375,7 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
             unsigned int i;
             unsigned int len;
 
-            printf("Output of %d bits:", dataLen);
+            printf("Output of %d bits:", (int)dataLen);
             len = (dataLen + 7) / 8;
             for(i=0; (i<len) && (i<8); i++)
                 printf(" %02x", (int)output[i]);
@@ -395,7 +387,7 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
                 printf(" %02x", (int)output[i]);
             printf("\n");
 
-            printf("Tag of %d bytes:", tagLenSAE);
+            printf("Tag of %d bytes:", (int)tagLenSAE);
             for(i=0; i<tagLenSAE; i++)
                 printf(" %02x", (int)tag[i]);
             printf("\n");
@@ -535,7 +527,7 @@ static void performTestKravatte_WBC_OneInput(BitLength keyLen, BitLength dataLen
         input[dataLen / 8] &= (1 << (dataLen & 7)) - 1;
 
     #ifdef VERBOSE_WBC
-    printf( "keyLen %5u, WLen %5u, dataLen %5u (in bits)\n", keyLen, WLen, dataLen);
+    printf( "keyLen %5u, WLen %5u, dataLen %5u (in bits)\n", (unsigned int)keyLen, (unsigned int)WLen, (unsigned int)dataLen);
     #endif
 
 	KravatteWBC kvw;
@@ -565,7 +557,7 @@ static void performTestKravatte_WBC_OneInput(BitLength keyLen, BitLength dataLen
         unsigned int i;
         unsigned int dataByteLen;
 
-        printf("Key of %d bits:", keyLen);
+        printf("Key of %d bits:", (int)keyLen);
         keyLen += 7;
         keyLen /= 8;
         for(i=0; (i<keyLen) && (i<16); i++)
@@ -574,7 +566,7 @@ static void performTestKravatte_WBC_OneInput(BitLength keyLen, BitLength dataLen
             printf(" ...");
         printf("\n");
 
-        printf("Tweak of %d bits:", WLen);
+        printf("Tweak of %d bits:", (int)WLen);
         WLen += 7;
         WLen /= 8;
         for(i=0; (i<WLen) && (i<16); i++)
@@ -583,7 +575,7 @@ static void performTestKravatte_WBC_OneInput(BitLength keyLen, BitLength dataLen
             printf(" ...");
         printf("\n");
 
-        printf("Input of %d bits:", dataLen);
+        printf("Input of %d bits:", (int)dataLen);
         dataByteLen = (dataLen + 7) / 8;
         for(i=0; (i<dataByteLen) && (i<16); i++)
             printf(" %02x", (int)input[i]);
@@ -591,7 +583,7 @@ static void performTestKravatte_WBC_OneInput(BitLength keyLen, BitLength dataLen
             printf(" ...");
         printf("\n");
 
-        printf("Output of %d bits:", dataLen);
+        printf("Output of %d bits:", (int)dataLen);
         for(i=0; (i<dataByteLen) && (i<8); i++)
             printf(" %02x", (int)output[i]);
         if (dataByteLen > 16)
@@ -743,7 +735,7 @@ static void performTestKravatte_WBC_AE_OneInput(BitLength keyLen, BitLength data
         input[dataLen / 8] &= (1 << (dataLen & 7)) - 1;
 
     #ifdef VERBOSE_WBC_AE
-    printf( "keyLen %5u, ADLen %5u, dataLen %5u (in bits)\n", keyLen, ADLen, dataLen);
+    printf( "keyLen %5u, ADLen %5u, dataLen %5u (in bits)\n", (unsigned int)keyLen, (unsigned int)ADLen, (unsigned int)dataLen);
     #endif
 
 	KravatteWBCAE kvw;
@@ -764,7 +756,7 @@ static void performTestKravatte_WBC_AE_OneInput(BitLength keyLen, BitLength data
         unsigned int dataByteLen;
         unsigned int outputByteLen;
 
-        printf("Key of %d bits:", keyLen);
+        printf("Key of %d bits:", (int)keyLen);
         keyLen += 7;
         keyLen /= 8;
         for(i=0; (i<keyLen) && (i<16); i++)
@@ -773,7 +765,7 @@ static void performTestKravatte_WBC_AE_OneInput(BitLength keyLen, BitLength data
             printf(" ...");
         printf("\n");
 
-        printf("AD of %d bits:", ADLen);
+        printf("AD of %d bits:", (int)ADLen);
         ADLen += 7;
         ADLen /= 8;
         for(i=0; (i<ADLen) && (i<16); i++)
@@ -782,7 +774,7 @@ static void performTestKravatte_WBC_AE_OneInput(BitLength keyLen, BitLength data
             printf(" ...");
         printf("\n");
 
-        printf("Input of %d bits:", dataLen);
+        printf("Input of %d bits:", (int)dataLen);
         dataByteLen = (dataLen + 7) / 8;
         for(i=0; (i<dataByteLen) && (i<16); i++)
             printf(" %02x", (int)input[i]);
@@ -790,7 +782,7 @@ static void performTestKravatte_WBC_AE_OneInput(BitLength keyLen, BitLength data
             printf(" ...");
         printf("\n");
 
-        printf("Output of %d bits:", outputLen);
+        printf("Output of %d bits:", (int)outputLen);
         outputByteLen = (outputLen + 7) / 8;
         for(i=0; (i<outputByteLen) && (i<8); i++)
             printf(" %02x", (int)output[i]);

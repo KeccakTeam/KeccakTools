@@ -74,6 +74,7 @@ static void generateSimpleRawMaterial(unsigned char* data, unsigned int length, 
 
 static void performTestKravatteOneInput(BitLength keyLen, BitLength inputLen, BitLength outputLen, int flags, Keccak &rSpongeChecksum, unsigned int mode)
 {
+    (void)flags;
     BitSequence input[inputByteSize];
     BitSequence output[outputByteSize];
     BitSequence key[keyByteSize];
@@ -92,7 +93,7 @@ static void performTestKravatteOneInput(BitLength keyLen, BitLength inputLen, Bi
         key[keyLen / 8] &= (1 << (keyLen & 7)) - 1;
 
     #ifdef VERBOSE
-    printf( "keyLen %5u, outputLen %5u, inputLen %5u (in bits)\n", keyLen, outputLen, inputLen);
+    printf( "keyLen %5u, outputLen %5u, inputLen %5u (in bits)\n", (unsigned int)keyLen, (unsigned int)outputLen, (unsigned int)inputLen);
     #endif
 
 	Kravatte kv;
@@ -105,12 +106,12 @@ static void performTestKravatteOneInput(BitLength keyLen, BitLength inputLen, Bi
     }
     /*else if (mode == 1)
     {
-        /* Input/Output one byte per call *
+        // Input/Output one byte per call
         for (i = 0; i < inputLen / 8; ++i ) {
             result = Kra(&kv, input + i, 8, flags);
             assert(result == 0);
         }
-        /* Last bits and final flag *
+        // Last bits and final flag
         result = Kra(&kv, input + i, inputLen & 7, flags | KRAVATTE_FLAG_LAST_PART);
         assert(result == 0);
         for (i = 0; i < outputLen / 8; ++i ) {
@@ -122,7 +123,7 @@ static void performTestKravatteOneInput(BitLength keyLen, BitLength inputLen, Bi
     }
     else if (mode == 2)
     {
-        /* Input/Output random number of bytes per call *
+        // Input/Output random number of bytes per call
         BitSequence *pInput = input;
         BitSequence *pOutput = output;
         BitLength ilen = inputLen, olen = outputLen;
@@ -157,7 +158,7 @@ static void performTestKravatteOneInput(BitLength keyLen, BitLength inputLen, Bi
     {
         unsigned int i;
 
-        printf("Key of %d bits:", keyLen);
+        printf("Key of %d bits:", (int)keyLen);
         keyLen += 7;
         keyLen /= 8;
         for(i=0; (i<keyLen) && (i<16); i++)
@@ -166,7 +167,7 @@ static void performTestKravatteOneInput(BitLength keyLen, BitLength inputLen, Bi
             printf(" ...");
         printf("\n");
 
-        printf("Input of %d bits:", inputLen);
+        printf("Input of %d bits:", (int)inputLen);
         inputLen += 7;
         inputLen /= 8;
         for(i=0; (i<inputLen) && (i<16); i++)
@@ -175,7 +176,7 @@ static void performTestKravatteOneInput(BitLength keyLen, BitLength inputLen, Bi
             printf(" ...");
         printf("\n");
 
-        printf("Output of %d bits:", outputLen);
+        printf("Output of %d bits:", (int)outputLen);
         outputLen += 7;
         outputLen /= 8;
         for(i=0; (i<outputLen) && (i<8); i++)
@@ -280,6 +281,7 @@ void writeTestKravatte(const char *filename)
 }
 #endif
 
+#if 0
 static void outputHex(const unsigned char *data, unsigned char length)
 {
     unsigned int i;
@@ -288,7 +290,6 @@ static void outputHex(const unsigned char *data, unsigned char length)
     printf("\n\n");
 }
 
-#if 0
 void printKravatteTestVectors()
 {
     unsigned char *M, *C;
