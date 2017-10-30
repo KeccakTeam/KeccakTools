@@ -167,14 +167,8 @@ KeccakFTrailExtension::KeccakFTrailExtension(const KeccakFDCLC& aParent, KeccakF
         }
     }
     else if (parent.getWidth() == 200) {
-        if (aDCorLC == KeccakFPropagation::DC) {
-            knownBounds.excludeBelowWeight(3, 20);
-            knownBounds.excludeBelowWeight(4, 46);
-        }
-        else {
-            knownBounds.excludeBelowWeight(3, 20);
-            knownBounds.excludeBelowWeight(4, 46);
-        }
+        knownBounds.excludeBelowWeight(3, 20);
+        knownBounds.excludeBelowWeight(4, 46);
     }
     else if (parent.getWidth() == 1600) {
         if (aDCorLC == KeccakFPropagation::DC) {
