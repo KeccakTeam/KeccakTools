@@ -13,26 +13,43 @@
  * http://creativecommons.org/publicdomain/zero/1.0/
  */
 
+#include <algorithm>
 #include "Kravatte.h"
 
 #define ROL64(a, offset) ((((UINT64)a) << offset) ^ (((UINT64)a) >> (64 - offset)))
 
-/* KravatteRollingFunction */
-BitString KravatteRollingFunction::operator()(const BitString &k, unsigned int i) const
+/* KravatteCompressionRollingFunction */
+BitString KravatteCompressionRollingFunction::operator()(const BitString &k, unsigned int i) const
 {
 	vector<UINT8> kp(k.array(), k.array() + k.size() / 8);
 	UINT64 *lanes = reinterpret_cast<UINT64 *>(kp.data());
 
 	for (unsigned int j = 0; j < i; j++)
 	{
-		UINT64 lane0 = lanes[5 * 4    ];
-		UINT64 lane1 = lanes[5 * 4 + 1];
+		UINT64 x0 = lanes[5 * 4    ];
+		UINT64 x1 = lanes[5 * 4 + 1];
 
-		lanes[5 * 4    ] = lanes[5 * 4 + 1];
-		lanes[5 * 4 + 1] = lanes[5 * 4 + 2];
-		lanes[5 * 4 + 2] = lanes[5 * 4 + 3];
-		lanes[5 * 4 + 3] = lanes[5 * 4 + 4];
-		lanes[5 * 4 + 4] = (ROL64(lane0, 7) ^ lane1 ^ (lane1 >> 3));
+		std::rotate(&lanes[5 * 4], &lanes[5 * 4 + 1], &lanes[5 * 5]);
+		lanes[5 * 4 + 4] = (ROL64(x0, 7) ^ x1 ^ (x1 >> 3));
+	}
+
+	return BitString(kp);
+}
+
+/* KravatteExpansionRollingFunction */
+BitString KravatteExpansionRollingFunction::operator()(const BitString &k, unsigned int i) const
+{
+	vector<UINT8> kp(k.array(), k.array() + k.size() / 8);
+	UINT64 *lanes = reinterpret_cast<UINT64 *>(kp.data());
+
+	for (unsigned int j = 0; j < i; j++)
+	{
+		UINT64 x0 = lanes[5 * 3    ];
+		UINT64 x1 = lanes[5 * 3 + 1];
+		UINT64 x2 = lanes[5 * 3 + 2];
+
+		std::rotate(&lanes[5 * 3], &lanes[5 * 3 + 1], &lanes[5 * 5]);
+		lanes[5 * 4 + 4] = (ROL64(x0, 7) ^ ROL64(x1, 18) ^ (x2 & (x1 >> 1)));
 	}
 
 	return BitString(kp);
@@ -41,35 +58,34 @@ BitString KravatteRollingFunction::operator()(const BitString &k, unsigned int i
 /* Kravatte instantiation parameters */
 namespace KravatteParams
 {
-	IterableTransformation<KeccakP>  p_b(1600, 6);
-	IterableTransformation<KeccakP>  p_c(1600, 6);
-	IterableTransformation<KeccakP>  p_d(1600, 4);
-	IterableTransformation<KeccakP>  p_e(1600, 4);
-	IterableTransformation<Identity> p_identity(1600);
+	IterableTransformation<KeccakP>    p_b(1600, 6);
+	IterableTransformation<KeccakP>    p_c(1600, 6);
+	IterableTransformation<KeccakP>    p_d(1600, 6);
+	IterableTransformation<KeccakP>    p_e(1600, 6);
+	IterableTransformation<Identity>   p_identity(1600);
 
-	KravatteRollingFunction          roll_c;
-	KravatteRollingFunction          roll_e;
-	IdentityRollingFunction          roll_f;
+	KravatteCompressionRollingFunction roll_c;
+	KravatteExpansionRollingFunction   roll_e;
 
-	unsigned int                     param_SAE_t = 128;
-	unsigned int                     param_SAE_l = 8;
+	unsigned int                       param_SAE_t = 128;
+	unsigned int                       param_SAE_l = 8;
 
-	unsigned int                     param_SIV_t = 256;
+	unsigned int                       param_SIV_t = 256;
 
-	unsigned int                     param_WBC_l = 8;
+	unsigned int                       param_WBC_l = 8;
 
-	unsigned int                     param_WBC_AE_t = 128;
-	unsigned int                     param_WBC_AE_l = 8;
+	unsigned int                       param_WBC_AE_t = 128;
+	unsigned int                       param_WBC_AE_l = 8;
 };
 
 Farfalle make_Short_Kravatte()
 {
-	return Farfalle(KravatteParams::p_b, KravatteParams::p_c, KravatteParams::p_identity, KravatteParams::p_e, KravatteParams::roll_c, KravatteParams::roll_e, KravatteParams::roll_f);
+	return Farfalle(KravatteParams::p_b, KravatteParams::p_c, KravatteParams::p_identity, KravatteParams::p_e, KravatteParams::roll_c, KravatteParams::roll_e);
 }
 
 Farfalle make_Kravatte()
 {
-	return Farfalle(KravatteParams::p_b, KravatteParams::p_c, KravatteParams::p_d, KravatteParams::p_e, KravatteParams::roll_c, KravatteParams::roll_e, KravatteParams::roll_f);
+	return Farfalle(KravatteParams::p_b, KravatteParams::p_c, KravatteParams::p_d, KravatteParams::p_e, KravatteParams::roll_c, KravatteParams::roll_e);
 }
 
 /* Kravatte */

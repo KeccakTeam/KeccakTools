@@ -27,7 +27,13 @@
 
 using namespace std;
 
-class KravatteRollingFunction : public BaseRollingFunction
+class KravatteCompressionRollingFunction : public BaseRollingFunction
+{
+	public:
+		BitString operator()(const BitString &k, unsigned int i) const;
+};
+
+class KravatteExpansionRollingFunction : public BaseRollingFunction
 {
 	public:
 		BitString operator()(const BitString &k, unsigned int i) const;

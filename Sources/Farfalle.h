@@ -86,10 +86,9 @@ class Farfalle
 		BaseIterableTransformation &p_e;
 		BaseRollingFunction        &roll_c;
 		BaseRollingFunction        &roll_e;
-		BaseRollingFunction        &roll_f;
 
 	public:
-		Farfalle(BaseIterableTransformation &p_b, BaseIterableTransformation &p_c, BaseIterableTransformation &p_d, BaseIterableTransformation &p_e, BaseRollingFunction &roll_c, BaseRollingFunction &roll_e, BaseRollingFunction &roll_f);
+		Farfalle(BaseIterableTransformation &p_b, BaseIterableTransformation &p_c, BaseIterableTransformation &p_d, BaseIterableTransformation &p_e, BaseRollingFunction &roll_c, BaseRollingFunction &roll_e);
 		BitString     operator()(const BitString &K, const BitStrings &Mseq, unsigned int n, unsigned int q = 0) const;
 		unsigned int  width() const;
 };

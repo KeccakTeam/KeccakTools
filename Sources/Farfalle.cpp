@@ -48,9 +48,8 @@ Farfalle::Farfalle(BaseIterableTransformation &p_b,
                    BaseIterableTransformation &p_d,
                    BaseIterableTransformation &p_e,
                    BaseRollingFunction        &roll_c,
-                   BaseRollingFunction        &roll_e,
-                   BaseRollingFunction        &roll_f)
-	: p_b(p_b), p_c(p_c), p_d(p_d), p_e(p_e), roll_c(roll_c), roll_e(roll_e), roll_f(roll_f)
+                   BaseRollingFunction        &roll_e)
+	: p_b(p_b), p_c(p_c), p_d(p_d), p_e(p_e), roll_c(roll_c), roll_e(roll_e)
 {
 	assert((p_b.width % 8) == 0 && (p_c.width % 8) == 0 && (p_d.width % 8) == 0 && (p_e.width % 8) == 0,
 		"This implementation only supports permutation width that are multiple of 8."); // Limitation of Transformation class
@@ -89,7 +88,7 @@ BitString Farfalle::operator()(const BitString &K, const BitStrings &Mseq, unsig
 
 	for (unsigned int j = 0; width() * j < n + q; j++)
 	{
-		zblocks[j] = p_e(roll_e(y, j)) ^ roll_f(kp, j);
+		zblocks[j] = p_e(roll_e(y, j)) ^ kp;
 	}
 
 	BitString Z = BitString::substring(zblocks.bits(), q, n);
