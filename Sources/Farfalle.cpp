@@ -4,9 +4,8 @@
  * hereby denoted as "the implementer".
  *
  * For more information, feedback or questions, please refer to our websites:
- * http://keccak.noekeon.org/
- * http://keyak.noekeon.org/
- * http://ketje.noekeon.org/
+ * https://keccak.team/farfalle.html
+ * https://keccak.team/kravatte.html
  *
  * To the extent possible under law, the implementer has waived all copyright
  * and related or neighboring rights to the source code in this file.
