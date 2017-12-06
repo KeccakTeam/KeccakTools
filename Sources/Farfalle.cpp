@@ -68,7 +68,7 @@ BitString Farfalle::operator()(const BitString &K, const BitStrings &Mseq, unsig
 
 	for (unsigned int j = 0; j <= m - 1; j++)
 	{
-		unsigned int mu = (Mseq[j].size() + b) / b;
+		unsigned int mu = (Mseq[j].size() % b || 0 == Mseq[j].size()) ? (Mseq[j].size() + b) / b : Mseq[j].size() / b;
 		BitString M = Mseq[j] || BitString::pad10(mu * b, Mseq[j].size());
 		Blocks mblocks(M, b);
 
