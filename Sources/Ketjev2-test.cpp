@@ -41,7 +41,7 @@ static void displayByteString(ostream &fout, const string &synopsis, const strin
     fout << endl;
 }
 
-static void assert(bool condition, const string &synopsis)
+static void Farfalle_assert(bool condition, const string &synopsis)
 {
     if ( !condition ) {
         throw Exception(synopsis);
@@ -95,7 +95,7 @@ void testKetje(ostream &fout, Ketje ketje, const string &Texpected)
 
                             Bprime = ketje2.unwrap(A, C, T);
 
-                            assert(B == Bprime, "The plaintexts do not match.");
+                            Farfalle_assert(B == Bprime, "The plaintexts do not match.");
                         }
                         catch ( ... ) {
                             fout << "Klen: " << dec << Klen << " ";
@@ -123,7 +123,7 @@ void testKetje(ostream &fout, Ketje ketje, const string &Texpected)
         global.initialize(string(""), string(""));
         (void)global.wrap(Aglobal, string(""), 128, Tglobal);
         displayByteString(fout, "+++ Global tag ", Tglobal);
-        assert(Tglobal == Texpected, "The global tag does not match.");
+        Farfalle_assert(Tglobal == Texpected, "The global tag does not match.");
     }
 }
 

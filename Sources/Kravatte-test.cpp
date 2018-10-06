@@ -40,7 +40,7 @@ typedef size_t                  BitLength;
 #include <string.h>
 #include <time.h>
 
-static void assert(int condition)
+static void Farfalle_assert(int condition)
 {
     if (!condition)
     {
@@ -108,17 +108,17 @@ static void performTestKravatteOneInput(BitLength keyLen, BitLength inputLen, Bi
         // Input/Output one byte per call
         for (i = 0; i < inputLen / 8; ++i ) {
             result = Kra(&kv, input + i, 8, flags);
-            assert(result == 0);
+            Farfalle_assert(result == 0);
         }
         // Last bits and final flag
         result = Kra(&kv, input + i, inputLen & 7, flags | KRAVATTE_FLAG_LAST_PART);
-        assert(result == 0);
+        Farfalle_assert(result == 0);
         for (i = 0; i < outputLen / 8; ++i ) {
             result =  Vatte(&kv, output + i, 8, flags);
-            assert(result == 0);
+            Farfalle_assert(result == 0);
         }
         result =  Vatte(&kv, output + i, outputLen & 7, flags | KRAVATTE_FLAG_LAST_PART);
-        assert(result == 0);
+        Farfalle_assert(result == 0);
     }
     else if (mode == 2)
     {
@@ -134,7 +134,7 @@ static void performTestKravatteOneInput(BitLength keyLen, BitLength inputLen, Bi
             if ((fl & KRAVATTE_FLAG_LAST_PART) == 0)
                 len &= ~7;
             result = Kra(&kv, pInput, len, fl);
-            assert(result == 0);
+            Farfalle_assert(result == 0);
             pInput += len / 8;
             ilen -= len;
         } while (ilen);
@@ -145,7 +145,7 @@ static void performTestKravatteOneInput(BitLength keyLen, BitLength inputLen, Bi
             if ((fl & KRAVATTE_FLAG_LAST_PART) == 0)
                 len &= ~7;
             result = Vatte(&kv, pOutput, len, fl);
-            assert(result == 0);
+            Farfalle_assert(result == 0);
             pOutput += len / 8;
             olen -= len;
         }
@@ -251,7 +251,7 @@ void selfTestKravatte(const char *expected)
         printf("Testing Kravatte %u ", mode);
         fflush(stdout);
         performTestKravatte(checksum, mode);
-        assert(memcmp(expected, checksum, checksumByteSize) == 0);
+        Farfalle_assert(memcmp(expected, checksum, checksumByteSize) == 0);
         printf(" - OK.\n");
     }
 }
@@ -274,7 +274,7 @@ void writeTestKravatteOne(FILE *f)
 void writeTestKravatte(const char *filename)
 {
     FILE *f = fopen(filename, "w");
-    assert(f != NULL);
+    Farfalle_assert(f != NULL);
     writeTestKravatteOne(f);
     fclose(f);
 }

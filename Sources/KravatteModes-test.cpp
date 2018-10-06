@@ -38,8 +38,8 @@ typedef size_t                  BitLength;
 #define keyBitSize              (keyByteSize*8)
 #define nonceBitSize            (nonceByteSize*8)
 #define WBitSize                (WByteSize*8)
-#define tagLenSIV               32
-#define tagLenSAE               16
+#define tagLenSANSE             32
+#define tagLenSANE              16
 #define expansionLenWBCAE       16
 
 #define checksumByteSize        16
@@ -51,7 +51,7 @@ typedef size_t                  BitLength;
 #include <string.h>
 #include <time.h>
 
-static void assert(int condition)
+static void Farfalle_assert(int condition)
 {
     if (!condition)
     {
@@ -84,22 +84,23 @@ static void generateSimpleRawMaterial(unsigned char* data, unsigned int length, 
 
 /* ------------------------------------------------------------------------- */
 
-static void performTestKravatte_SIV_OneInput(BitLength keyLen, BitLength dataLen, BitLength ADLen, Keccak &rSpongeChecksum)
+static void performTestKravatteSANSE_OneInput(BitLength keyLen, BitLength dataLen, BitLength ADLen, Keccak &rSpongeChecksum)
 {
     BitSequence input[dataByteSize];
     BitSequence inputPrime[dataByteSize];
     BitSequence output[dataByteSize];
     BitSequence AD[ADByteSize];
     BitSequence key[keyByteSize];
-    unsigned char tag[tagLenSIV];
+    unsigned char tag[tagLenSANSE];
     unsigned int seed;
+    unsigned int session;
 
     randomize(key, keyByteSize);
     randomize(input, dataByteSize);
     randomize(inputPrime, dataByteSize);
     randomize(output, dataByteSize);
     randomize(AD, ADByteSize);
-    randomize(tag, tagLenSIV);
+    randomize(tag, tagLenSANSE);
 
     seed = keyLen + dataLen + ADLen;
     seed ^= seed >> 3;
@@ -113,36 +114,23 @@ static void performTestKravatte_SIV_OneInput(BitLength keyLen, BitLength dataLen
     if (ADLen & 7)
         AD[(ADLen + 7) / 8 - 1] &= (1 << (ADLen & 7)) - 1;
 
-    #ifdef VERBOSE_SIV
+    #ifdef VERBOSE_SANSE
     printf( "keyLen %5u, dataLen %5u, ADLen %5u (in bits)\n", (unsigned int)keyLen, (unsigned int)dataLen, (unsigned int)ADLen);
     #endif
 
-	KravatteSIV kv;
+	KravatteSANSE xpEnc(BitString(key, keyLen));
+	KravatteSANSE xpDec(BitString(key, keyLen));
 
-	const std::pair<BitString, BitString> ct = kv.wrap(BitString(key, keyLen), BitString(AD, ADLen), BitString(input, dataLen));
-	if (ct.first.size() != 0) copy(ct.first.array(), ct.first.array() + (ct.first.size() + 7) / 8, output);
-	if (ct.second.size() != 0) copy(ct.second.array(), ct.second.array() + (ct.second.size() + 7) / 8, tag);
-
-	const BitString p_prime = kv.unwrap(BitString(key, keyLen), BitString(AD, ADLen), ct.first, ct.second);
-	if (p_prime.size() != 0) copy(p_prime.array(), p_prime.array() + (p_prime.size() + 7) / 8, inputPrime);
-    assert(!memcmp(input,inputPrime,(dataLen + 7) / 8));
-
-	rSpongeChecksum.absorb(output, 8 * ((dataLen + 7) / 8));
-	rSpongeChecksum.absorb(tag, 8 * sizeof(tag));
-    //KeccakWidth1600_SpongeAbsorb(pSpongeChecksum, output, (dataLen + 7) / 8);
-    //KeccakWidth1600_SpongeAbsorb(pSpongeChecksum, tag, sizeof(tag));
-
-    #ifdef VERBOSE_SIV
+    #ifdef VERBOSE_SANSE
     {
         unsigned int i;
         BitLength len;
 
         printf("Key of %d bits:", (int)keyLen);
-        keyLen += 7;
-        keyLen /= 8;
-        for(i=0; (i<keyLen) && (i<16); i++)
+        len = (keyLen + 7) / 8;
+        for(i=0; (i<len) && (i<16); i++)
             printf(" %02x", (int)key[i]);
-        if (keyLen > 16)
+        if (len > 16)
             printf(" ...");
         printf("\n");
 
@@ -150,43 +138,62 @@ static void performTestKravatte_SIV_OneInput(BitLength keyLen, BitLength dataLen
         len = (dataLen + 7) /8;
         for(i=0; (i<len) && (i<16); i++)
             printf(" %02x", (int)input[i]);
-        if (dataLen > 16)
+        if (len > 16)
             printf(" ...");
         printf("\n");
 
         printf("AD of %d bits:", (int)ADLen);
-        ADLen += 7;
-        ADLen /= 8;
-        for(i=0; (i<ADLen) && (i<16); i++)
+        len = (ADLen + 7) / 8;
+        for(i=0; (i<len) && (i<16); i++)
             printf(" %02x", (int)AD[i]);
-        if (ADLen > 16)
-            printf(" ...");
-        printf("\n");
-
-        printf("Output of %d bits:", (int)dataLen);
-        len = (dataLen + 7) /8;
-        for(i=0; (i<len) && (i<8); i++)
-            printf(" %02x", (int)output[i]);
         if (len > 16)
             printf(" ...");
-        if (i < (len - 8))
-            i = len - 8;
-        for( /* empty */; i<len; i++)
-            printf(" %02x", (int)output[i]);
-        printf("\n");
-
-        printf("Tag of %d bytes:", (int)tagLenSIV);
-        for(i=0; i<tagLenSIV; i++)
-            printf(" %02x", (int)tag[i]);
         printf("\n\n");
         fflush(stdout);
     }
     #endif
 
+	for (session = 3; session != 0; --session) {
+		const std::pair<BitString, BitString> ct = xpEnc.wrap(BitString(AD, ADLen), BitString(input, dataLen));
+		if (ct.first.size() != 0) std::copy(ct.first.array(), ct.first.array() + (ct.first.size() + 7) / 8, output);
+		if (ct.second.size() != 0) std::copy(ct.second.array(), ct.second.array() + (ct.second.size() + 7) / 8, tag);
+
+		const BitString p_prime = xpDec.unwrap(BitString(AD, ADLen), ct.first, ct.second);
+		if (p_prime.size() != 0) std::copy(p_prime.array(), p_prime.array() + (p_prime.size() + 7) / 8, inputPrime);
+
+        Farfalle_assert(!memcmp(input,inputPrime,(dataLen + 7) / 8));
+		rSpongeChecksum.absorb(output, 8 * ((dataLen + 7) / 8));
+		rSpongeChecksum.absorb(tag, 8 * tagLenSANSE);
+        #ifdef VERBOSE_SANSE
+        {
+            unsigned int i;
+            unsigned int len;
+
+            printf("Output of %d bits:", (int)dataLen);
+            len = (dataLen + 7) / 8;
+            for(i=0; (i<len) && (i<8); i++)
+                printf(" %02x", (int)output[i]);
+            if (len > 16)
+                printf(" ...");
+            if (i < (len - 8))
+                i = len - 8;
+            for( /* empty */; i<len; i++)
+                printf(" %02x", (int)output[i]);
+            printf("\n");
+
+            printf("Tag of %d bytes:", (int)tagLenSANSE);
+            for(i=0; i<tagLenSANSE; i++)
+                printf(" %02x", (int)tag[i]);
+            printf("\n");
+            fflush(stdout);
+            if (session == 1)
+                printf("\n");
+        }
+        #endif
+    }
 }
 
-
-static void performTestKravatte_SIV(unsigned char *checksum)
+static void performTestKravatteSANSE(unsigned char *checksum)
 {
     BitLength dataLen, ADLen, keyLen;
 
@@ -199,7 +206,7 @@ static void performTestKravatte_SIV(unsigned char *checksum)
     dataLen = 128*8;
     ADLen = 64*8;
     for(keyLen=0; keyLen<keyBitSize; keyLen = (keyLen < 2*SnP_width) ? (keyLen+1) : (keyLen+8)) {
-        performTestKravatte_SIV_OneInput(keyLen, dataLen, ADLen, spongeChecksum);
+        performTestKravatteSANSE_OneInput(keyLen, dataLen, ADLen, spongeChecksum);
     }
     
     #ifdef OUTPUT
@@ -208,7 +215,7 @@ static void performTestKravatte_SIV(unsigned char *checksum)
     ADLen = 64*8;
     keyLen = 16*8;
     for(dataLen=0; dataLen<=dataBitSize; dataLen = (dataLen < 2*SnP_width) ? (dataLen+1) : (dataLen+8)) {
-        performTestKravatte_SIV_OneInput(keyLen, dataLen, ADLen, spongeChecksum);
+        performTestKravatteSANSE_OneInput(keyLen, dataLen, ADLen, spongeChecksum);
     }
     
     #ifdef OUTPUT
@@ -217,15 +224,15 @@ static void performTestKravatte_SIV(unsigned char *checksum)
     dataLen = 128*8;
     keyLen = 16*8;
     for(ADLen=0; ADLen<=ADBitSize; ADLen = (ADLen < 2*SnP_width) ? (ADLen+1) : (ADLen+8)) {
-        performTestKravatte_SIV_OneInput(keyLen, dataLen, ADLen, spongeChecksum);
+        performTestKravatteSANSE_OneInput(keyLen, dataLen, ADLen, spongeChecksum);
     }
     
 	spongeChecksum.squeeze(checksum, 8 * checksumByteSize);
 
-    #ifdef VERBOSE_SIV
+    #ifdef VERBOSE_SANSE
     {
         unsigned int i;
-        printf("Kravatte-SIV\n" );
+        printf("Kravatte-SANSE\n" );
         printf("Checksum: ");
         for(i=0; i<checksumByteSize; i++)
             printf("\\x%02x", (int)checksum[i]);
@@ -234,44 +241,48 @@ static void performTestKravatte_SIV(unsigned char *checksum)
     #endif
 }
 
-void selfTestKravatte_SIV(const char *expected)
+void selfTestKravatteSANSE(const char *expected)
 {
     unsigned char checksum[checksumByteSize];
 
-    printf("Testing Kravatte-SIV ");
+    #if defined(OUTPUT)
+    printf("Testing Kravatte-SANSE ");
     fflush(stdout);
-    performTestKravatte_SIV(checksum);
-    assert(memcmp(expected, checksum, checksumByteSize) == 0);
+    #endif
+    performTestKravatteSANSE(checksum);
+    Farfalle_assert(memcmp(expected, checksum, checksumByteSize) == 0);
+    #if defined(OUTPUT)
     printf(" - OK.\n");
+    #endif
 }
 
 #ifdef OUTPUT
-void writeTestKravatte_SIV_One(FILE *f)
+void writeTestKravatteSANSE_One(FILE *f)
 {
     unsigned char checksum[checksumByteSize];
     unsigned int offset;
 
-    printf("Writing Kravatte-SIV ");
-    performTestKravatte_SIV(checksum);
-    fprintf(f, "    selfTestKravatte_SIV(\"");
+    printf("Writing Kravatte-SANSE ");
+    performTestKravatteSANSE(checksum);
+    fprintf(f, "    selfTestKravatteSANSE(\"");
     for(offset=0; offset<checksumByteSize; offset++)
         fprintf(f, "\\x%02x", checksum[offset]);
     fprintf(f, "\");\n");
     printf("\n");
 }
 
-void writeTestKravatte_SIV(const char *filename)
+void writeTestKravatteSANSE(const char *filename)
 {
     FILE *f = fopen(filename, "w");
-    assert(f != NULL);
-    writeTestKravatte_SIV_One(f);
+    Farfalle_assert(f != NULL);
+    writeTestKravatteSANSE_One(f);
     fclose(f);
 }
 #endif
 
 /* ------------------------------------------------------------------------- */
 
-static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLen, BitLength dataLen, BitLength ADLen, Keccak &rSpongeChecksum)
+static void performTestKravatteSANE_OneInput(BitLength keyLen, BitLength nonceLen, BitLength dataLen, BitLength ADLen, Keccak &rSpongeChecksum)
 {
     BitSequence input[dataByteSize];
     BitSequence inputPrime[dataByteSize];
@@ -279,8 +290,8 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
     BitSequence AD[ADByteSize];
     BitSequence key[keyByteSize];
     BitSequence nonce[nonceByteSize];
-    unsigned char tag[tagLenSAE];
-    unsigned char tagInit[tagLenSAE];
+    unsigned char tag[tagLenSANE];
+    unsigned char tagInit[tagLenSANE];
     unsigned int seed;
     unsigned int session;
 
@@ -290,7 +301,7 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
     randomize(inputPrime, dataByteSize);
     randomize(output, dataByteSize);
     randomize(AD, ADByteSize);
-    randomize(tag, tagLenSAE);
+    randomize(tag, tagLenSANE);
 
     seed = keyLen + nonceLen + dataLen + ADLen;
     seed ^= seed >> 3;
@@ -307,19 +318,19 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
     if (ADLen & 7)
         AD[ADLen / 8] &= (1 << (ADLen & 7)) - 1;
 
-    #ifdef VERBOSE_SAE
+    #ifdef VERBOSE_SANE
     printf( "keyLen %5u, nonceLen %5u, dataLen %5u, ADLen %5u (in bits)\n", (unsigned int)keyLen, (unsigned int)nonceLen, (unsigned int)dataLen, (unsigned int)ADLen);
     #endif
 
 	BitString bits_tagInit;
-	KravatteSAE kvEnc(BitString(key, keyLen), BitString(nonce, nonceLen), bits_tagInit, true);
-	if (bits_tagInit.size() != 0) copy(bits_tagInit.array(), bits_tagInit.array() + (bits_tagInit.size() + 7) / 8, tagInit);
+	KravatteSANE xpEnc(BitString(key, keyLen), BitString(nonce, nonceLen), bits_tagInit, true);
+	if (bits_tagInit.size() != 0) std::copy(bits_tagInit.array(), bits_tagInit.array() + (bits_tagInit.size() + 7) / 8, tagInit);
 
-	KravatteSAE kvDec(BitString(key, keyLen), BitString(nonce, nonceLen), bits_tagInit, false);
+	KravatteSANE xpDec(BitString(key, keyLen), BitString(nonce, nonceLen), bits_tagInit, false);
 
-	rSpongeChecksum.absorb(tagInit, 8 * tagLenSAE);
+	rSpongeChecksum.absorb(tagInit, 8 * tagLenSANE);
 
-    #ifdef VERBOSE_SAE
+    #ifdef VERBOSE_SANE
     {
         unsigned int i;
         unsigned int len;
@@ -359,17 +370,17 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
     #endif
 
     for (session = 3; session != 0; --session) {
-		const pair<BitString, BitString> ct = kvEnc.wrap(BitString(AD, ADLen), BitString(input, dataLen));
-		if (ct.first.size() != 0) copy(ct.first.array(), ct.first.array() + (ct.first.size() + 7) / 8, output);
-		if (ct.second.size() != 0) copy(ct.second.array(), ct.second.array() + (ct.second.size() + 7) / 8, tag);
+		const std::pair<BitString, BitString> ct = xpEnc.wrap(BitString(AD, ADLen), BitString(input, dataLen));
+		if (ct.first.size() != 0) std::copy(ct.first.array(), ct.first.array() + (ct.first.size() + 7) / 8, output);
+		if (ct.second.size() != 0) std::copy(ct.second.array(), ct.second.array() + (ct.second.size() + 7) / 8, tag);
 
-		const BitString p_prime = kvDec.unwrap(BitString(AD, ADLen), ct.first, ct.second);
-		if (p_prime.size() != 0) copy(p_prime.array(), p_prime.array() + (p_prime.size() + 7) / 8, inputPrime);
+		const BitString p_prime = xpDec.unwrap(BitString(AD, ADLen), ct.first, ct.second);
+		if (p_prime.size() != 0) std::copy(p_prime.array(), p_prime.array() + (p_prime.size() + 7) / 8, inputPrime);
 
-        assert(!memcmp(input,inputPrime,(dataLen + 7) / 8));
+        Farfalle_assert(!memcmp(input,inputPrime,(dataLen + 7) / 8));
 		rSpongeChecksum.absorb(output, 8 * ((dataLen + 7) / 8));
-		rSpongeChecksum.absorb(tag, 8 * tagLenSAE);
-        #ifdef VERBOSE_SAE
+		rSpongeChecksum.absorb(tag, 8 * tagLenSANE);
+        #ifdef VERBOSE_SANE
         {
             unsigned int i;
             unsigned int len;
@@ -386,8 +397,8 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
                 printf(" %02x", (int)output[i]);
             printf("\n");
 
-            printf("Tag of %d bytes:", (int)tagLenSAE);
-            for(i=0; i<tagLenSAE; i++)
+            printf("Tag of %d bytes:", (int)tagLenSANE);
+            for(i=0; i<tagLenSANE; i++)
                 printf(" %02x", (int)tag[i]);
             printf("\n");
             fflush(stdout);
@@ -400,7 +411,7 @@ static void performTestKravatte_SAE_OneInput(BitLength keyLen, BitLength nonceLe
 }
 
 
-static void performTestKravatte_SAE(unsigned char *checksum)
+static void performTestKravatteSANE(unsigned char *checksum)
 {
     BitLength dataLen, ADLen, keyLen, nonceLen;
 
@@ -414,7 +425,7 @@ static void performTestKravatte_SAE(unsigned char *checksum)
     ADLen = 64*8;
     nonceLen = 24*8;
     for(keyLen=0; keyLen<keyBitSize; keyLen = (keyLen < 2*SnP_width) ? (keyLen+1) : (keyLen+8)) {
-        performTestKravatte_SAE_OneInput(keyLen, nonceLen, dataLen, ADLen, spongeChecksum);
+        performTestKravatteSANE_OneInput(keyLen, nonceLen, dataLen, ADLen, spongeChecksum);
     }
     
     #ifdef OUTPUT
@@ -424,7 +435,7 @@ static void performTestKravatte_SAE(unsigned char *checksum)
     ADLen = 64*8;
     keyLen = 16*8;
     for(nonceLen=0; nonceLen<=nonceBitSize; nonceLen = (nonceLen < 2*SnP_width) ? (nonceLen+1) : (nonceLen+8)) {
-        performTestKravatte_SAE_OneInput(keyLen, nonceLen, dataLen, ADLen, spongeChecksum);
+        performTestKravatteSANE_OneInput(keyLen, nonceLen, dataLen, ADLen, spongeChecksum);
     }
     
     #ifdef OUTPUT
@@ -434,7 +445,7 @@ static void performTestKravatte_SAE(unsigned char *checksum)
     keyLen = 16*8;
     nonceLen = 24*8;
     for(dataLen=0; dataLen<=dataBitSize; dataLen = (dataLen < 2*SnP_width) ? (dataLen+1) : (dataLen+8)) {
-        performTestKravatte_SAE_OneInput(keyLen, nonceLen, dataLen, ADLen, spongeChecksum);
+        performTestKravatteSANE_OneInput(keyLen, nonceLen, dataLen, ADLen, spongeChecksum);
     }
     
     #ifdef OUTPUT
@@ -444,15 +455,15 @@ static void performTestKravatte_SAE(unsigned char *checksum)
     keyLen = 16*8;
     nonceLen = 24*8;
     for(ADLen=0; ADLen<=ADBitSize; ADLen = (ADLen < 2*SnP_width) ? (ADLen+1) : (ADLen+8)) {
-        performTestKravatte_SAE_OneInput(keyLen, nonceLen, dataLen, ADLen, spongeChecksum);
+        performTestKravatteSANE_OneInput(keyLen, nonceLen, dataLen, ADLen, spongeChecksum);
     }
     
 	spongeChecksum.squeeze(checksum, 8 * checksumByteSize);
 
-    #ifdef VERBOSE_SAE
+    #ifdef VERBOSE_SANE
     {
         unsigned int i;
-        printf("Kravatte-SAE\n" );
+        printf("Kravatte-SANE\n" );
         printf("Checksum: ");
         for(i=0; i<checksumByteSize; i++)
             printf("\\x%02x", (int)checksum[i]);
@@ -461,37 +472,41 @@ static void performTestKravatte_SAE(unsigned char *checksum)
     #endif
 }
 
-void selfTestKravatte_SAE(const char *expected)
+void selfTestKravatteSANE(const char *expected)
 {
     unsigned char checksum[checksumByteSize];
 
-    printf("Testing Kravatte-SAE ");
+    #if defined(OUTPUT)
+    printf("Testing Kravatte-SANE ");
     fflush(stdout);
-    performTestKravatte_SAE(checksum);
-    assert(memcmp(expected, checksum, checksumByteSize) == 0);
+    #endif
+    performTestKravatteSANE(checksum);
+    Farfalle_assert(memcmp(expected, checksum, checksumByteSize) == 0);
+    #if defined(OUTPUT)
     printf(" - OK.\n");
+    #endif
 }
 
 #ifdef OUTPUT
-void writeTestKravatte_SAE_One(FILE *f)
+void writeTestKravatteSANE_One(FILE *f)
 {
     unsigned char checksum[checksumByteSize];
     unsigned int offset;
 
-    printf("Writing Kravatte-SAE ");
-    performTestKravatte_SAE(checksum);
-    fprintf(f, "    selfTestKravatte_SAE(\"");
+    printf("Writing Kravatte-SANE ");
+    performTestKravatteSANE(checksum);
+    fprintf(f, "    selfTestKravatteSANE(\"");
     for(offset=0; offset<checksumByteSize; offset++)
         fprintf(f, "\\x%02x", checksum[offset]);
     fprintf(f, "\");\n");
     printf("\n");
 }
 
-void writeTestKravatte_SAE(const char *filename)
+void writeTestKravatteSANE(const char *filename)
 {
     FILE *f = fopen(filename, "w");
-    assert(f != NULL);
-    writeTestKravatte_SAE_One(f);
+    Farfalle_assert(f != NULL);
+    writeTestKravatteSANE_One(f);
     fclose(f);
 }
 #endif
@@ -547,7 +562,7 @@ static void performTestKravatte_WBC_OneInput(BitLength keyLen, BitLength dataLen
 	const BitString p_prime = kvw.decipher(BitString(key, keyLen), BitString(W, WLen), bits_output);
 	if (p_prime.size() != 0) copy(p_prime.array(), p_prime.array() + (p_prime.size() + 7) / 8, inputPrime);
 
-    assert(!memcmp(input,inputPrime,(dataLen + 7) / 8));
+    Farfalle_assert(!memcmp(input,inputPrime,(dataLen + 7) / 8));
 
 	rSpongeChecksum.absorb(output, 8 * ((dataLen + 7) / 8));
 
@@ -654,7 +669,7 @@ void selfTestKravatte_WBC(const char *expected)
     printf("Testing Kravatte-WBC ");
     fflush(stdout);
     performTestKravatte_WBC(checksum);
-    assert(memcmp(expected, checksum, checksumByteSize) == 0);
+    Farfalle_assert(memcmp(expected, checksum, checksumByteSize) == 0);
     printf(" - OK.\n");
 }
 
@@ -676,7 +691,7 @@ void writeTestKravatte_WBC_One(FILE *f)
 void writeTestKravatte_WBC(const char *filename)
 {
     FILE *f = fopen(filename, "w");
-    assert(f != NULL);
+    Farfalle_assert(f != NULL);
 
     #if 0
     {
@@ -745,7 +760,7 @@ static void performTestKravatte_WBC_AE_OneInput(BitLength keyLen, BitLength data
 	const BitString p_prime = kvw.unwrap(BitString(key, keyLen), BitString(AD, ADLen), bits_output);
 	if (p_prime.size() != 0) copy(p_prime.array(), p_prime.array() + (p_prime.size() + 7) / 8, inputPrime);
 
-    assert(!memcmp(input,inputPrime,(dataLen + 7) / 8));
+    Farfalle_assert(!memcmp(input,inputPrime,(dataLen + 7) / 8));
 
 	rSpongeChecksum.absorb(output, 8 * ((outputLen + 7) / 8));
 
@@ -854,7 +869,7 @@ void selfTestKravatte_WBC_AE(const char *expected)
     printf("Testing Kravatte-WBC-AE ");
     fflush(stdout);
     performTestKravatte_WBC_AE(checksum);
-    assert(memcmp(expected, checksum, checksumByteSize) == 0);
+    Farfalle_assert(memcmp(expected, checksum, checksumByteSize) == 0);
     printf(" - OK.\n");
 }
 
@@ -876,7 +891,7 @@ void writeTestKravatte_WBC_AE_One(FILE *f)
 void writeTestKravatte_WBC_AE(const char *filename)
 {
     FILE *f = fopen(filename, "w");
-    assert(f != NULL);
+    Farfalle_assert(f != NULL);
 
     #if 0
     {
@@ -909,15 +924,15 @@ void testKravatteModes(void)
 #ifndef KeccakP1600_excluded
 #ifdef OUTPUT
 //    printKravatteTestVectors();
-    writeTestKravatte_SIV("Kravatte_SIV.txt");
-    writeTestKravatte_SAE("Kravatte_SAE.txt");
+    writeTestKravatteSANE("Kravatte_SANE.txt");
+    writeTestKravatteSANSE("Kravatte_SANSE.txt");
     writeTestKravatte_WBC("Kravatte_WBC.txt");
     writeTestKravatte_WBC_AE("Kravatte_WBC_AE.txt");
 #endif
 
-    //selfTestKravatte_SIV("\x35\xab\x95\x41\x36\xcd\x3a\x34\x1d\x29\x89\x72\xee\x2e\xc8\x21");
-    //selfTestKravatte_SAE("\x51\xc6\x6d\xdb\xeb\xc3\x80\xc4\x90\xab\x88\x75\x60\xfa\x26\xb8");
-    //selfTestKravatte_WBC("\xa4\x42\x53\xfa\x5a\x46\xc7\xd5\xc0\xb8\x02\xd8\xfe\x30\x69\x11");
-    //selfTestKravatte_WBC_AE("\x50\x43\xc6\x01\x48\x7f\x04\x0c\x75\xfa\x1c\x9e\x48\x97\xe7\x15");
+    //selfTestKravatteSANE("\x99\x93\x6b\x93\x37\xcb\x88\xb1\xe0\x97\xf6\x79\x98\xc4\xa6\x75");
+    //selfTestKravatteSANSE("\x25\x15\x37\xb4\xc7\x1f\x14\x37\x22\x3d\x59\xa2\x92\xf6\x6d\x82");
+    //selfTestKravatte_WBC("\x42\xae\xe6\x1b\xcf\x8f\x06\x34\xc6\xb2\x11\x0a\xf4\xa0\xdd\xc1");
+    //selfTestKravatte_WBC_AE("\xda\xa6\x2c\xab\xa7\xe4\xe1\xef\xb5\x4c\x62\x78\x26\xf8\x72\x27");
 #endif
 }

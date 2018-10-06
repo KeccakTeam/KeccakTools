@@ -16,11 +16,12 @@
 #include <cmath>
 #include <string>
 #include <vector>
+
 #include "Farfalle.h"
 
 using namespace std;
 
-static void _assert(bool condition, const string &synopsis, const char *fct)
+static void Farfalle_assert(bool condition, const string &synopsis, const char *fct)
 {
 	if (!condition)
 	{
@@ -29,9 +30,9 @@ static void _assert(bool condition, const string &synopsis, const char *fct)
 }
 
 #if defined(__GNUC__)
-#define assert(cond, msg)  _assert(cond, msg, __PRETTY_FUNCTION__)
+#define assert(cond, msg)  Farfalle_assert(cond, msg, __PRETTY_FUNCTION__)
 #else
-#define assert(cond, msg)  _assert(cond, msg, __FUNCTION__)
+#define assert(cond, msg)  Farfalle_assert(cond, msg, __FUNCTION__)
 #endif
 
 /* IdentityRollingFunction */
@@ -99,15 +100,15 @@ unsigned int Farfalle::width() const
 	return p_b.width;
 }
 
-/* Farfalle-SAE */
-FarfalleSAE::FarfalleSAE(const Farfalle  &F,
-                         unsigned int     t,
-                         unsigned int     l,
-                         const BitString &K,
-                         const BitString &N,
-                         BitString &T,
-                         bool sender)
-	: F(F), t(t), l(l), K(K)
+/* Farfalle-SANE */
+FarfalleSANE::FarfalleSANE(const Farfalle  &F,
+                           unsigned int     t,
+                           unsigned int     l,
+                           const BitString &K,
+                           const BitString &N,
+                           BitString &T,
+                           bool sender)
+	: F(F), t(t), l(l), K(K), e(0)
 {
 	offset = l * ((t + l - 1) / l);
 	history = N;
@@ -123,39 +124,41 @@ FarfalleSAE::FarfalleSAE(const Farfalle  &F,
 	}
 }
 
-pair<BitString, BitString> FarfalleSAE::wrap(const BitString &A, const BitString &P)
+pair<BitString, BitString> FarfalleSANE::wrap(const BitString &A, const BitString &P)
 {
 	BitString C = P ^ F(K, history, P.size(), offset);
 
 	if (A.size() > 0 || P.size() == 0)
 	{
-		history = (A || 0) * history;
+		history = (A || 0 || e) * history;
 	}
 
 	if (P.size() > 0)
 	{
-		history = (C || 1) * history;
+		history = (C || 1 || e) * history;
 	}
 
 	BitString T = F(K, history, t);
+	e = (e + 1) % 2;
 	return make_pair(C, T);
 }
 
-BitString FarfalleSAE::unwrap(const BitString &A, const BitString &C, const BitString &T)
+BitString FarfalleSANE::unwrap(const BitString &A, const BitString &C, const BitString &T)
 {
 	BitString P = C ^ F(K, history, C.size(), offset);
 
 	if (A.size() > 0 || C.size() == 0)
 	{
-		history = (A || 0) * history;
+		history = (A || 0 || e) * history;
 	}
 
 	if (C.size() > 0)
 	{
-		history = (C || 1) * history;
+		history = (C || 1 || e) * history;
 	}
 
 	BitString Tp = F(K, history, t);
+	e = (e + 1) % 2;
 
 	if (Tp == T)
 	{
@@ -167,24 +170,55 @@ BitString FarfalleSAE::unwrap(const BitString &A, const BitString &C, const BitS
 	}
 }
 
-/* Farfalle-SIV */
-FarfalleSIV::FarfalleSIV(const Farfalle  &F,
-                         unsigned int     t)
-	: F(F), t(t)
+/* Farfalle-SANSE */
+FarfalleSANSE::FarfalleSANSE(const Farfalle  &F,
+                             unsigned int     t,
+                             const BitString &K)
+	: F(F), t(t), K(K), e(0)
 {
 }
 
-pair<BitString, BitString> FarfalleSIV::wrap(const BitString &K, const BitString &A, const BitString &P) const
+pair<BitString, BitString> FarfalleSANSE::wrap(const BitString &A, const BitString &P)
 {
-	BitString T = F(K, P * A, t);
-	BitString C = P ^ F(K, T * A, P.size());
+	if (A.size() > 0 || P.size() == 0)
+	{
+		history = (A || 0 || e) * history;
+	}
+
+	BitString T, C;
+
+	if (P.size() > 0)
+	{
+		T =     F(K, (P || 0 || 1 || e) * history, t);
+		C = P ^ F(K, (T || 1 || 1 || e) * history, P.size());
+		history = (P || 0 || 1 || e) * history;
+	}
+	else
+	{
+		T = F(K, history, t);
+	}
+
+	e = (e + 1) % 2;
 	return make_pair(C, T);
 }
 
-BitString FarfalleSIV::unwrap(const BitString &K, const BitString &A, const BitString &C, const BitString &T) const
+BitString FarfalleSANSE::unwrap(const BitString &A, const BitString &C, const BitString &T)
 {
-	BitString P  = C ^ F(K, T * A, C.size());
-	BitString Tp = F(K, P * A, t);
+	if (A.size() > 0 || C.size() == 0)
+	{
+		history = (A || 0 || e) * history;
+	}
+
+	BitString P;
+
+	if (C.size() > 0)
+	{
+		P = C ^ F(K, (T || 1 || 1 || e) * history, C.size());
+		history = (P || 0 || 1 || e) * history;
+	}
+
+	BitString Tp = F(K, history, t);
+	e = (e + 1) % 2;
 
 	if (Tp == T)
 	{
