@@ -44,16 +44,16 @@ class Kravatte : public Farfalle
 		Kravatte();
 };
 
-class KravatteSAE : public FarfalleSAE
+class KravatteSANE : public FarfalleSANE
 {
 	public:
-		KravatteSAE(const BitString &K, const BitString &N, BitString &T, bool sender);
+		KravatteSANE(const BitString &K, const BitString &N, BitString &T, bool sender);
 };
 
-class KravatteSIV : public FarfalleSIV
+class KravatteSANSE : public FarfalleSANSE
 {
 	public:
-		KravatteSIV();
+		KravatteSANSE(const BitString &K);
 };
 
 class KravatteWBC : public FarfalleWBC

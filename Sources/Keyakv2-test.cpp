@@ -37,7 +37,7 @@ void displayByteString(ostream& fout, const string& synopsis, const string& data
     fout << endl;
 }
 
-void assert(bool condition, const string& synopsis)
+static void Farfalle_assert(bool condition, const string& synopsis)
 {
     if (!condition)
         throw Exception(synopsis);
@@ -53,7 +53,7 @@ void testKeyakStartEngine(Keyak& global, Keyak& wrap, Keyak& unwrap, ofstream& f
     displayByteString(fout, "> K", K);
     displayByteString(fout, "> N", N);
     rv = wrap.StartEngine(K, N, tagFlag, T, false, forgetFlag);
-    assert(rv, "wrap.StartEngine() did not return true.");
+    Farfalle_assert(rv, "wrap.StartEngine() did not return true.");
     if (tagFlag) {
         displayByteString(fout, "< T (tag)", T.str());
         stringstream empty, dummy, TT(T.str());
@@ -62,7 +62,7 @@ void testKeyakStartEngine(Keyak& global, Keyak& wrap, Keyak& unwrap, ofstream& f
 
     T.seekg(0, ios_base::beg);
     rv = unwrap.StartEngine(K, N, tagFlag, T, true, forgetFlag);
-    assert(rv, "unwrap.StartEngine() did not return true.");
+    Farfalle_assert(rv, "unwrap.StartEngine() did not return true.");
     fout << endl;
 }
 
@@ -79,7 +79,7 @@ void testKeyakWrapUnwrap(Keyak& global, Keyak& wrap, Keyak& unwrap, ofstream& fo
     stringstream plaintextPrime;
     stringstream tag;
     rv = wrap.Wrap(plaintext, ciphertext, metadata, tag, false, forgetFlag!=0);
-    assert(rv, "wrap.Wrap() did not return true.");
+    Farfalle_assert(rv, "wrap.Wrap() did not return true.");
 
     displayByteString(fout, "< O (ciphertext)", ciphertext.str());
     displayByteString(fout, "< T (tag)", tag.str());
@@ -94,8 +94,8 @@ void testKeyakWrapUnwrap(Keyak& global, Keyak& wrap, Keyak& unwrap, ofstream& fo
     metadata.clear(); metadata.seekg(0, ios_base::beg);
     tag.seekg(0, ios_base::beg);
     rv = unwrap.Wrap(ciphertext, plaintextPrime, metadata, tag, true, forgetFlag!=0);
-    assert(rv, "unwrap.Wrap() did not return true.");
-    assert(plaintext.str() == plaintextPrime.str(), "The plaintexts do not match.");
+    Farfalle_assert(rv, "unwrap.Wrap() did not return true.");
+    Farfalle_assert(plaintext.str() == plaintextPrime.str(), "The plaintexts do not match.");
 }
 
 int testKeyak(ofstream& fout, Keyak keyak, bool oneBlockSUV, const string& expectedGlobalTag)
@@ -233,7 +233,7 @@ int testKeyak(ofstream& fout, Keyak keyak, bool oneBlockSUV, const string& expec
             displayByteString(cout, "Expected", expectedGlobalTag);
             displayByteString(cout, "Actual", T.str());
         }
-        assert(T.str() == expectedGlobalTag, "The global tag is incorrect.");
+        Farfalle_assert(T.str() == expectedGlobalTag, "The global tag is incorrect.");
     }
 
     return (0);

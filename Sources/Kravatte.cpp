@@ -66,10 +66,10 @@ namespace KravatteParams
 	KravatteCompressionRollingFunction roll_c;
 	KravatteExpansionRollingFunction   roll_e;
 
-	unsigned int                       param_SAE_t = 128;
-	unsigned int                       param_SAE_l = 8;
+	unsigned int                       param_SANE_t = 128;
+	unsigned int                       param_SANE_l = 8;
 
-	unsigned int                       param_SIV_t = 256;
+	unsigned int                       param_SANSE_t = 256;
 
 	unsigned int                       param_WBC_l = 8;
 
@@ -93,15 +93,15 @@ Kravatte::Kravatte()
 {
 }
 
-/* Kravatte-SAE */
-KravatteSAE::KravatteSAE(const BitString &K, const BitString &N, BitString &T, bool sender)
-	: FarfalleSAE(make_Kravatte(), KravatteParams::param_SAE_t, KravatteParams::param_SAE_l, K, N, T, sender)
+/* Kravatte-SANE */
+KravatteSANE::KravatteSANE(const BitString &K, const BitString &N, BitString &T, bool sender)
+	: FarfalleSANE(make_Kravatte(), KravatteParams::param_SANE_t, KravatteParams::param_SANE_l, K, N, T, sender)
 {
 }
 
-/* Kravatte-SIV */
-KravatteSIV::KravatteSIV()
-	: FarfalleSIV(make_Kravatte(), KravatteParams::param_SIV_t)
+/* Kravatte-SANSE */
+KravatteSANSE::KravatteSANSE(const BitString &K)
+	: FarfalleSANSE(make_Kravatte(), KravatteParams::param_SANSE_t, K)
 {
 }
 

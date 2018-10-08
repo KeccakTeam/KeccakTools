@@ -22,7 +22,7 @@ using namespace std;
 
 UINT8  enc8(unsigned int x);
 
-static void _assert(bool condition, const string &synopsis, const char *fct)
+static void Farfalle_assert(bool condition, const string &synopsis, const char *fct)
 {
     if ( !condition ) {
         throw Exception(string(fct) + "(): " + synopsis);
@@ -30,9 +30,9 @@ static void _assert(bool condition, const string &synopsis, const char *fct)
 }
 
 #if defined(__GNUC__)
-#define assert(cond, msg)  _assert(cond, msg, __PRETTY_FUNCTION__)
+#define assert(cond, msg)  Farfalle_assert(cond, msg, __PRETTY_FUNCTION__)
 #else
-#define assert(cond, msg)  _assert(cond, msg, __FUNCTION__)
+#define assert(cond, msg)  Farfalle_assert(cond, msg, __FUNCTION__)
 #endif
 
 MonkeyDuplex::MonkeyDuplex(BaseIterableTransformation &f,

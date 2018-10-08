@@ -17,11 +17,10 @@
 
 #include <iostream>
 #include <memory>
-#include "padding.h"
+
+#include "bitstring.h"
 #include "transformations.h"
 #include "types.h"
-#include "bitstring.h"
-
 using namespace std;
 
 /**
@@ -71,8 +70,6 @@ class IdentityRollingFunction : public BaseRollingFunction
 		BitString operator()(const BitString &k, unsigned int i) const;
 };
 
-typedef Exception  FarException;
-
 /**
  * Class implementing the Farfalle construction
  */
@@ -93,9 +90,9 @@ class Farfalle
 };
 
 /**
- * Class implementing Farfalle-SAE
+ * Class implementing Farfalle-SANE
  */
-class FarfalleSAE
+class FarfalleSANE
 {
 	private:
 		Farfalle           F;
@@ -104,26 +101,30 @@ class FarfalleSAE
 		BitString          K;
 		BitStrings         history;
 		unsigned int       offset;
+		unsigned int       e;
 
 	public:
-		FarfalleSAE(const Farfalle &F, unsigned int t, unsigned int l, const BitString &K, const BitString &N, BitString &T, bool sender);
+		FarfalleSANE(const Farfalle &F, unsigned int t, unsigned int l, const BitString &K, const BitString &N, BitString &T, bool sender);
 		pair<BitString, BitString>  wrap(const BitString &A, const BitString &P);
 		BitString                   unwrap(const BitString &A, const BitString &C, const BitString &T);
 };
 
 /**
- * Class implementing Farfalle-SIV
+ * Class implementing Farfalle-SANSE
  */
-class FarfalleSIV
+class FarfalleSANSE
 {
 	private:
 		Farfalle           F;
 		const unsigned int t;
+		BitString          K;
+		BitStrings         history;
+		unsigned int       e;
 
 	public:
-		FarfalleSIV(const Farfalle &F, unsigned int t);
-		pair<BitString, BitString>  wrap(const BitString &K, const BitString &A, const BitString &P) const;
-		BitString                   unwrap(const BitString &K, const BitString &A, const BitString &C, const BitString &T) const;
+		FarfalleSANSE(const Farfalle &F, unsigned int t, const BitString &K);
+		pair<BitString, BitString>  wrap(const BitString &A, const BitString &P);
+		BitString                   unwrap(const BitString &A, const BitString &C, const BitString &T);
 };
 
 /**
