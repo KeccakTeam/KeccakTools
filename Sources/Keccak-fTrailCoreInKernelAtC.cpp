@@ -45,7 +45,6 @@ TrailCoreInKernelAtC::TrailCoreInKernelAtC(const vector<SliceValue>& backgroundA
         CoreInfo workCoreInfo;
 
         workCoreInfo.hammingWeightAtA = 0;
-        workCoreInfo.hammingWeightAtA = 0;
         workCoreInfo.nrActiveRowsAtA = 0;
 
         workCoreInfo.stateAtB.assign(laneSize,0);
